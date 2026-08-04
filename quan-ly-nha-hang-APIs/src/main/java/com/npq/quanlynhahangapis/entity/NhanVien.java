@@ -10,19 +10,13 @@ public class NhanVien {
 
     @MapsId
     @OneToOne
+    @JoinColumn(name = "ma_nhan_vien")
     private NguoiDung nguoiDung;
 
 
-    @Column
     @ManyToOne
+    @JoinColumn(name = "ma_chi_nhanh", nullable = false)
     private ChiNhanh chiNhanh;
 }
 
-//KhachHang(MaKH, #MaNguoiDung)
-//NhanVien(MaNV, #MaNguoiDung, #MaChiNhanh)
-//QuanLyChiNhanh(MaQL, #MaNguoiDung, #MaChiNhanh)
-//QuanTriVien(MaQTV, #MaNguoiDung)
-// Mấy bảng trên là bảng cha – con mới đúng 1-1, ví dụ:
-//NhanVien(#MaNV, ChucVu, #MaChiNhanh)
-//#MaNV vừa là khóa ngoại tham khảo tới NguoiDung.MaNguoiDung vừa là khóa chính.
-// Nếu làm vậy khó thì em để như cũ. Như cũ thì là 1-n.
+// NV n-1 ChiNhanh

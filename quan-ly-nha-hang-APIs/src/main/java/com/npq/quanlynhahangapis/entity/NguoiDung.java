@@ -2,36 +2,40 @@ package com.npq.quanlynhahangapis.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
 public class NguoiDung {
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int maNguoiDung;
 
-    @Column
+    @Column(length = 20)
     private String taiKhoan;
 
     @Column
     private String matKhau;
 
-    @Column
+    @Column(length = 30)
     private String ho;
 
-    @Column
+    @Column(length = 20)
     private String ten;
 
-    @Column
+    @Column(length = 50)
     private String email;
 
-    @Column
+    @Column(length = 20)
     private String soDienThoai;
 
     @Column
     @CreationTimestamp
     private LocalDateTime ngayTao;
+
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime ngayCapNhat;
 
 }
