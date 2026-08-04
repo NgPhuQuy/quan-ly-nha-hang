@@ -9,8 +9,11 @@ public class ChiNhanh {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int maChiNhanh;
+    private String tenChiNhanh;
 
     @OneToMany(mappedBy = "chiNhanh")
-    private List<NhanVien> nhanViens;
+    private List<NhanVien> listNhanVien;
 
+    @OneToMany(mappedBy = "chiNhanh")
+    private List<KhuVuc> listKhuVuc;
 }

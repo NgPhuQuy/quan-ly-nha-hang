@@ -13,10 +13,7 @@ public class NhanVien {
     @JoinColumn(name = "ma_nhan_vien")
     private NguoiDung nguoiDung;
 
-
     @ManyToOne
     @JoinColumn(name = "ma_chi_nhanh", nullable = false)
     private ChiNhanh chiNhanh;
 }
-
-// NV n-1 ChiNhanh
