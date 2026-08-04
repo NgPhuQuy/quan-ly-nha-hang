@@ -1,8 +1,12 @@
 package com.npq.quanlynhahangapis.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+
+import java.util.List;
 
 @Entity
+@Builder
 public class KhachHang {
     @Id
     @Column
@@ -17,4 +21,7 @@ public class KhachHang {
     private int diemTichLuy;
 
     // them rank cho khach hang dua tren diem tich luy
+
+    @OneToMany(mappedBy = "khachHang")
+    private List<DatLich> listDatLich;
 }
