@@ -12,6 +12,9 @@ public class ChiNhanh {
     private String tenChiNhanh;
 
     @OneToMany(mappedBy = "chiNhanh")
+    private List<QuanLy> quanLy;
+
+    @OneToMany(mappedBy = "chiNhanh")
     private List<NhanVien> listNhanVien;
 
     @OneToMany(mappedBy = "chiNhanh")
