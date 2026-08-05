@@ -11,8 +11,8 @@ import java.util.Optional;
 @NullMarked
 public interface NguoiDungRepository extends JpaRepository<NguoiDung, Integer> {
     @Override
-    public List<NguoiDung> findAll();
-
+    List<NguoiDung> findAll();
+//    Optional<NguoiDung> taoNguoiDung();
 //    @Override
 //    Optional<NguoiDung> findById(Integer integer);
 //

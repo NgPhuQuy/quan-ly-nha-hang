@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Builder
+@Getter
+@Setter
 public class NguoiDung {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,8 +21,9 @@ public class NguoiDung {
     @Column(length = 20)
     private String taiKhoan;
 
-    @Column
     private String matKhau;
+
+    private String avatar;
 
     @Column(length = 30)
     private String ho;
@@ -34,12 +37,11 @@ public class NguoiDung {
     @Column(length = 20)
     private String soDienThoai;
 
-    @Column
     @CreationTimestamp
     private LocalDateTime ngayTao;
 
-    @Column
     @UpdateTimestamp
     private LocalDateTime ngayCapNhat;
 
+    private Boolean trangThai = Boolean.TRUE;
 }
