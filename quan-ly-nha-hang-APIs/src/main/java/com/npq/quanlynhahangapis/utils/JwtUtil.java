@@ -1,18 +1,76 @@
 package com.npq.quanlynhahangapis.utils;
 
-import jakarta.validation.Valid;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.function.Function;
 
 public class JwtUtil {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
     @Value("${jwt.expiration}")
-    private long expiration;
+    private long jwtExpiration;
 
-    private SecretKey getSigningKey(){
-        return Keys
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
+
+    public String taoToken(Integer maNguoiDung, String taiKhoan, String vaiTro) {
+        return Jwts.builder()
+                .subject(taiKhoan)
+                .claim("maNguoiDung", maNguoiDung)
+                .claim("vaiTro", vaiTro)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    public String layTKTuToken(String token) {
+        return layClaim(token, Claims::getSubject);
+    }
+
+    public Integer layMaNDTuToken(String token) {
+        Claims claims = layTatCaClaim(token);
+        return claims.get("maNguoiDung", Integer.class);
+    }
+
+    public String layVaiTroTuToken(String token) {
+        Claims claims = layTatCaClaim(token);
+        return claims.get("vaiTro", String.class);
+    }
+
+    private <T> T layClaim(String token, Function<Claims, T> claimsResolver) {
+        Claims claims = layTatCaClaim(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims layTatCaClaim(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    public boolean tokenHopLe(String token){
+        return true;
+    }
+
+//    public boolean tokenHopLe(String token) {
+//        try {
+//            Claims claims = layTatCaClaim(token);
+//            return !claims.getExpiration().before(new Date());   // false nếu đã hết hạn
+//        } catch (ExpiredJwtException e) {
+//            return false;   // hết hạn
+//        } catch (JwtException | IllegalArgumentException e) {
+//            return false;   // chữ ký sai, token bị sửa, hoặc format không đúng chuẩn JWT
+//        }
+//    }
 }
