@@ -26,8 +26,8 @@ public class NguoiDungController {
 
     @PostMapping("/auth/login")
     ResponseEntity<?> dangNhap(@RequestBody @Valid NguoiDungRequest dto) {
-        System.out.println("login check");
         if (nguoiDungService.authenticate(dto.taiKhoan(), dto.matKhau())) {
+
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

@@ -27,8 +27,26 @@ public class NguoiDungService {
         return chuyenSangDto(nguoiDung);
     }
 
-    public NguoiDungResponse dangKy(NguoiDungRequest dto) {
+    public NguoiDungResponse dangKy(@Valid NguoiDungRequest dto) {
+        // validate tai khoan
+        if (nguoiDungRepository.existsByTaiKhoan(dto.taiKhoan())) {
+            throw new IllegalArgumentException("Tài khoản này đã được đăng ký!");
+        }
+
+        // tai avatar len cloudinary TODO
+//        if (dto.avatar())
+
+        //impl JWT va encode mat khau TODO
         //        String mk = dto.matKhau();
+
+        if (nguoiDungRepository.existsByEmail(dto.email())) {
+            throw new IllegalArgumentException("Email này đã được đăng ký!");
+        }
+
+        if (nguoiDungRepository.existsBySoDienThoai(dto.soDienThoai())) {
+            throw new IllegalArgumentException("Số điện thoại này đã được đăng ký!");
+        }
+
         NguoiDung nguoiDung = NguoiDung.builder()
                 .taiKhoan(dto.taiKhoan())
                 .matKhau(dto.matKhau())
