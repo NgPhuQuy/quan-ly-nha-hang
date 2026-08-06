@@ -44,5 +44,5 @@ public class NguoiDung {
     private LocalDateTime ngayCapNhat;
 
     @Builder.Default
-    private Boolean trangThai = Boolean.TRUE;
+    private Boolean trangThai = true;
 }

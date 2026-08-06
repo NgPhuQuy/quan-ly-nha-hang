@@ -12,6 +12,6 @@ public record NguoiDungResponse(
         String soDienThoai,
         LocalDateTime ngayTao,
         LocalDateTime ngayCapNhat,
-        Boolean trangThaiHoatDong
+        boolean trangThai
 ) {
 }
