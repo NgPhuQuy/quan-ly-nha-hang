@@ -9,5 +9,4 @@ import java.util.Optional;
 @NullMarked
 public interface NguoiDungRepository extends JpaRepository<NguoiDung, Integer> {
     Optional<NguoiDung> findByTaiKhoan(String taiKhoan);
-
 }

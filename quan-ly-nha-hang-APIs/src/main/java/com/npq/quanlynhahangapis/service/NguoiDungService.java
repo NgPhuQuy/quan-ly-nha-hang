@@ -4,8 +4,7 @@ import com.npq.quanlynhahangapis.dto.request.NguoiDungRequest;
 import com.npq.quanlynhahangapis.dto.response.NguoiDungResponse;
 import com.npq.quanlynhahangapis.entity.NguoiDung;
 import com.npq.quanlynhahangapis.repository.NguoiDungRepository;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,14 +27,6 @@ public class NguoiDungService {
         return chuyenSangDto(nguoiDung);
     }
 
-    public NguoiDungResponse dangNhap(NguoiDungRequest dto) {
-        NguoiDung nguoiDung = nguoiDungRepository.findByTaiKhoan(dto.taiKhoan())
-                .orElseThrow(() -> new IllegalArgumentException("Tài khoản hoặc mật khẩu không chính xác!"));
-        if (nguoiDung.getMatKhau().equals(dto.matKhau()))
-
-            return chuyenSangDto();
-    }
-
     public NguoiDungResponse dangKy(NguoiDungRequest dto) {
         //        String mk = dto.matKhau();
         NguoiDung nguoiDung = NguoiDung.builder()
@@ -51,7 +42,10 @@ public class NguoiDungService {
         return chuyenSangDto(nguoiDungRepository.save(nguoiDung));
     }
 
-    public boolean authentication(@NotBlank(message = "Tài khoản không được để trống!") String s, @NotBlank @Size(min = 8, message = "Mật khẩu tối thiểu 8 ký tự!") String s1) {
+    public boolean authenticate(@Valid String taiKhoan, @Valid String matKhau) {
+        NguoiDung nguoiDung = nguoiDungRepository.findByTaiKhoan(taiKhoan)
+                .orElseThrow(() -> new IllegalArgumentException("Tài khoản hoặc mật khẩu không chính xác!"));
+        return nguoiDung.getMatKhau().equals(matKhau);
     }
 
     private NguoiDungResponse chuyenSangDto(NguoiDung nguoiDung) {
