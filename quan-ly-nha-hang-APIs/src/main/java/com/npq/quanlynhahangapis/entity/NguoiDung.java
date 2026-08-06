@@ -18,7 +18,7 @@ public class NguoiDung {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int maNguoiDung;
 
-    @Column(length = 20)
+    @Column(length = 20, unique = true)
     private String taiKhoan;
 
     private String matKhau;
@@ -31,10 +31,10 @@ public class NguoiDung {
     @Column(length = 20)
     private String ten;
 
-    @Column(length = 50)
+    @Column(length = 50, unique = true)
     private String email;
 
-    @Column(length = 20)
+    @Column(length = 20, unique = true)
     private String soDienThoai;
 
     @CreationTimestamp
@@ -43,5 +43,6 @@ public class NguoiDung {
     @UpdateTimestamp
     private LocalDateTime ngayCapNhat;
 
+    @Builder.Default
     private Boolean trangThai = Boolean.TRUE;
 }

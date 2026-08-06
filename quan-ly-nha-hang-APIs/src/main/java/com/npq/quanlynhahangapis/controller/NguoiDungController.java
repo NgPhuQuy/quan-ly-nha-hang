@@ -19,7 +19,8 @@ public class NguoiDungController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<NguoiDungResponse> dangKy(@RequestBody NguoiDungRequest dto) {
+    ResponseEntity<?> dangKy(@RequestBody NguoiDungRequest dto) {
+
         return ResponseEntity.status(HttpStatus.CREATED).body(nguoiDungService.dangKy(dto));
     }
 
