@@ -1,10 +1,14 @@
 package com.npq.quanlynhahangapis.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
+import lombok.*;
 
 @Entity(name = "dat_lich")
 @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class DatLich {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

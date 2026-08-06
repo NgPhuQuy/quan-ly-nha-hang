@@ -1,12 +1,16 @@
 package com.npq.quanlynhahangapis.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class KhachHang {
     @Id
     @Column
