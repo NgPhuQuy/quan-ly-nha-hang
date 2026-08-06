@@ -1,5 +1,6 @@
 package com.npq.quanlynhahangapis.dto.request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -12,6 +13,7 @@ public record NguoiDungRequest(
         String avatar,
         String ho,
         String ten,
+        @Email(message = "Email không hợp lệ!")
         String email,
         String soDienThoai
 ) {
