@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping
 public class NguoiDungController {
 
     private final NguoiDungService nguoiDungService;
@@ -26,6 +26,7 @@ public class NguoiDungController {
 
     @PostMapping("/auth/login")
     ResponseEntity<?> dangNhap(@RequestBody @Valid NguoiDungRequest dto) {
+        System.out.println("login check");
         if (nguoiDungService.authenticate(dto.taiKhoan(), dto.matKhau())) {
             return ResponseEntity.ok().build();
         }
