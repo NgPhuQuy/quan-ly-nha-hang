@@ -3,7 +3,7 @@ package com.npq.quanlynhahangapis.service;
 import com.npq.quanlynhahangapis.dto.request.NguoiDungRequest;
 import com.npq.quanlynhahangapis.dto.response.NguoiDungResponse;
 import com.npq.quanlynhahangapis.entity.NguoiDung;
-import com.npq.quanlynhahangapis.repository.NguoiDungRepository;
+import com.npq.quanlynhahangapis.repository.*;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +12,17 @@ import java.util.List;
 @Service
 public class NguoiDungService {
     private final NguoiDungRepository nguoiDungRepository;
+    private final AdminRepository adminRepository;
+    private final QuanLyRepository quanLyRepository;
+    private final KhachHangRepository khachHangRepository;
+    private final NhanVienRepository nhanVienRepository;
 
-    public NguoiDungService(NguoiDungRepository nguoiDungRepository) {
+    public NguoiDungService(NguoiDungRepository nguoiDungRepository, AdminRepository adminRepository, QuanLyRepository quanLyRepository, KhachHangRepository khachHangRepository, NhanVienRepository nhanVienRepository) {
         this.nguoiDungRepository = nguoiDungRepository;
+        this.adminRepository = adminRepository;
+        this.quanLyRepository = quanLyRepository;
+        this.khachHangRepository = khachHangRepository;
+        this.nhanVienRepository = nhanVienRepository;
     }
 
     public List<NguoiDungResponse> layDanhSachNguoiDung() {
@@ -61,9 +69,7 @@ public class NguoiDungService {
     }
 
     public boolean authenticate(@Valid String taiKhoan, @Valid String matKhau) {
-        NguoiDung nguoiDung = nguoiDungRepository.findByTaiKhoan(taiKhoan)
-                .orElseThrow(() -> new IllegalArgumentException("Tài khoản hoặc mật khẩu không chính xác!"));
-        return nguoiDung.getMatKhau().equals(matKhau);
+        return layNguoiDungTheoTaiKhoan(taiKhoan).getMatKhau().equals(matKhau);
     }
 
     private NguoiDungResponse chuyenSangDto(NguoiDung nguoiDung) {
@@ -81,5 +87,22 @@ public class NguoiDungService {
         );
     }
 
+    public NguoiDung layNguoiDungTheoTaiKhoan(String taiKhoan) {
+        return nguoiDungRepository.findByTaiKhoan(taiKhoan)
+                .orElseThrow(() -> new IllegalArgumentException("Tài khoản hoặc mật khẩu không chính xác!"));
+    }
 
+    public String layVaiTro(Integer maNguoiDung) {
+        if (adminRepository.existsById(maNguoiDung)){
+            return "ADMIN";
+        } else if (quanLyRepository.existsById(maNguoiDung)) {
+            return "QUANLY";
+        }else if (nhanVienRepository.existsById(maNguoiDung)){
+            return "NHANVIEN";
+        }else if (khachHangRepository.existsById(maNguoiDung)){
+            return "KHACHHANG";
+        }else {
+            throw new IllegalArgumentException("Người dùng chưa có vai trò");
+        }
+    }
 }

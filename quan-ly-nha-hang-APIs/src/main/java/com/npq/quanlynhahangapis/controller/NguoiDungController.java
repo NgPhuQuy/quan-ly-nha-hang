@@ -1,8 +1,11 @@
 package com.npq.quanlynhahangapis.controller;
 
+import com.npq.quanlynhahangapis.dto.request.DangNhapRequest;
 import com.npq.quanlynhahangapis.dto.request.NguoiDungRequest;
 import com.npq.quanlynhahangapis.dto.response.NguoiDungResponse;
+import com.npq.quanlynhahangapis.entity.NguoiDung;
 import com.npq.quanlynhahangapis.service.NguoiDungService;
+import com.npq.quanlynhahangapis.utils.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +17,11 @@ public class NguoiDungController {
 
     private final NguoiDungService nguoiDungService;
 
-    public NguoiDungController(NguoiDungService nguoiDungService) {
+    private final JwtUtil jwtUtil;
+
+    public NguoiDungController(NguoiDungService nguoiDungService, JwtUtil jwtUtil) {
         this.nguoiDungService = nguoiDungService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/users")
@@ -25,15 +31,18 @@ public class NguoiDungController {
     }
 
     @PostMapping("/auth/login")
-    ResponseEntity<?> dangNhap(@RequestBody @Valid NguoiDungRequest dto) {
+    ResponseEntity<?> dangNhap(@RequestBody @Valid DangNhapRequest dto) {
         if (nguoiDungService.authenticate(dto.taiKhoan(), dto.matKhau())) {
-
-            return ResponseEntity.ok().build();
+            NguoiDung nguoiDung = nguoiDungService.layNguoiDungTheoTaiKhoan(dto.taiKhoan());
+            String token = jwtUtil.taoToken(nguoiDung.getMaNguoiDung(),
+                    nguoiDung.getTaiKhoan(),
+                    nguoiDungService.layVaiTro(nguoiDung.getMaNguoiDung()));
+            return ResponseEntity.ok().body(token);
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    @GetMapping("/{maNguoiDung}")
+    @GetMapping("users/{maNguoiDung}")
     ResponseEntity<NguoiDungResponse> layTheoId(@PathVariable Integer maNguoiDung) {
         return ResponseEntity.ok(nguoiDungService.layNguoiDungTheoId(maNguoiDung));
     }
