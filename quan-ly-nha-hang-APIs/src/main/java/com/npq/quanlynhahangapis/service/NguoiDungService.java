@@ -2,19 +2,31 @@ package com.npq.quanlynhahangapis.service;
 
 import com.npq.quanlynhahangapis.dto.request.NguoiDungRequest;
 import com.npq.quanlynhahangapis.dto.response.NguoiDungResponse;
+import com.npq.quanlynhahangapis.entity.KhachHang;
 import com.npq.quanlynhahangapis.entity.NguoiDung;
-import com.npq.quanlynhahangapis.repository.NguoiDungRepository;
+import com.npq.quanlynhahangapis.exception.UsernameExistedException;
+import com.npq.quanlynhahangapis.repository.*;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class NguoiDungService {
     private final NguoiDungRepository nguoiDungRepository;
+    private final AdminRepository adminRepository;
+    private final QuanLyRepository quanLyRepository;
+    private final KhachHangRepository khachHangRepository;
+    private final NhanVienRepository nhanVienRepository;
 
-    public NguoiDungService(NguoiDungRepository nguoiDungRepository) {
+    public NguoiDungService(NguoiDungRepository nguoiDungRepository, AdminRepository adminRepository, QuanLyRepository quanLyRepository, KhachHangRepository khachHangRepository, NhanVienRepository nhanVienRepository) {
         this.nguoiDungRepository = nguoiDungRepository;
+        this.adminRepository = adminRepository;
+        this.quanLyRepository = quanLyRepository;
+        this.khachHangRepository = khachHangRepository;
+        this.nhanVienRepository = nhanVienRepository;
     }
 
     public List<NguoiDungResponse> layDanhSachNguoiDung() {
@@ -30,7 +42,7 @@ public class NguoiDungService {
     public NguoiDungResponse dangKy(@Valid NguoiDungRequest dto) {
         // validate tai khoan
         if (nguoiDungRepository.existsByTaiKhoan(dto.taiKhoan())) {
-            throw new IllegalArgumentException("Tài khoản này đã được đăng ký!");
+            throw new UsernameExistedException("Tài khoản này đã được đăng ký!");
         }
 
         // tai avatar len cloudinary TODO
@@ -57,13 +69,15 @@ public class NguoiDungService {
                 .soDienThoai(dto.soDienThoai())
                 .build();
 
+        KhachHang khachHang = KhachHang.builder()
+                .nguoiDung(nguoiDung)
+                .build();
+        khachHangRepository.save(khachHang);
         return chuyenSangDto(nguoiDungRepository.save(nguoiDung));
     }
 
     public boolean authenticate(@Valid String taiKhoan, @Valid String matKhau) {
-        NguoiDung nguoiDung = nguoiDungRepository.findByTaiKhoan(taiKhoan)
-                .orElseThrow(() -> new IllegalArgumentException("Tài khoản hoặc mật khẩu không chính xác!"));
-        return nguoiDung.getMatKhau().equals(matKhau);
+        return layNguoiDungTheoTaiKhoan(taiKhoan).getMatKhau().equals(matKhau);
     }
 
     private NguoiDungResponse chuyenSangDto(NguoiDung nguoiDung) {
@@ -81,5 +95,22 @@ public class NguoiDungService {
         );
     }
 
+    public NguoiDung layNguoiDungTheoTaiKhoan(String taiKhoan) {
+        return nguoiDungRepository.findByTaiKhoan(taiKhoan)
+                .orElseThrow(() -> new IllegalArgumentException("Tài khoản hoặc mật khẩu không chính xác!"));
+    }
 
+    public String layVaiTro(Integer maNguoiDung) {
+        if (adminRepository.existsById(maNguoiDung)) {
+            return "ADMIN";
+        } else if (quanLyRepository.existsById(maNguoiDung)) {
+            return "QUANLY";
+        } else if (nhanVienRepository.existsById(maNguoiDung)) {
+            return "NHANVIEN";
+        } else if (khachHangRepository.existsById(maNguoiDung)) {
+            return "KHACHHANG";
+        } else {
+            throw new IllegalArgumentException("Người dùng chưa có vai trò");
+        }
+    }
 }

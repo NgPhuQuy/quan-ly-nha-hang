@@ -1,15 +1,21 @@
 package com.npq.quanlynhahangapis.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
 
+@Component
+@Slf4j
 public class JwtUtil {
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -59,18 +65,14 @@ public class JwtUtil {
                 .getPayload();
     }
 
-    public boolean tokenHopLe(String token){
-        return true;
+    public boolean tokenHopLe(String token) {
+        try {
+            Claims claims = layTatCaClaim(token);
+            return claims.getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            return false;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
-
-//    public boolean tokenHopLe(String token) {
-//        try {
-//            Claims claims = layTatCaClaim(token);
-//            return !claims.getExpiration().before(new Date());   // false nếu đã hết hạn
-//        } catch (ExpiredJwtException e) {
-//            return false;   // hết hạn
-//        } catch (JwtException | IllegalArgumentException e) {
-//            return false;   // chữ ký sai, token bị sửa, hoặc format không đúng chuẩn JWT
-//        }
-//    }
 }
