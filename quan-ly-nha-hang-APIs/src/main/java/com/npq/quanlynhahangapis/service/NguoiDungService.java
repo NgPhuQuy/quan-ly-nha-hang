@@ -6,6 +6,7 @@ import com.npq.quanlynhahangapis.dto.response.DangNhapResponse;
 import com.npq.quanlynhahangapis.dto.response.NguoiDungResponse;
 import com.npq.quanlynhahangapis.entity.KhachHang;
 import com.npq.quanlynhahangapis.entity.NguoiDung;
+import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.repository.*;
 import com.npq.quanlynhahangapis.utils.JwtUtil;
 import jakarta.validation.Valid;
@@ -41,7 +42,8 @@ public class NguoiDungService {
         // validate tai khoan
         if (nguoiDungRepository.existsByTaiKhoan(dto.taiKhoan())) {
 //            throw new UsernameExistedException("Tài khoản này đã được đăng ký!"); //TODO
-            throw new IllegalArgumentException("");
+//            throw new IllegalArgumentException("");
+            throw new AppException()
         }
 
         // tai avatar len cloudinary TODO
