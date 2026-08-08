@@ -33,7 +33,7 @@ public class NguoiDungService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         return chuyenSangDto(nguoiDung);
     }
-//todo tai sao 2 cai func nay lai tra ve 2 kieu du lieu khac nhau, muc dich la gi???
+// tai sao 2 cai func nay lai tra ve 2 kieu du lieu khac nhau, muc dich la gi???
 // func 1 la tra ve dto gui ra response
 // func 2 la tra ve obj de service su dung de validate
 
