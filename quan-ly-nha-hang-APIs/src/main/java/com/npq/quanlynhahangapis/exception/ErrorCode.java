@@ -4,9 +4,14 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-    USER_EXISTED(400, "Tài khoản này đã được đăng ký!"),
+    USER_EXISTED(400, "Tài khoản này đã được sử dụng!"),
+    EMAIL_EXISTED(400,"Email này đã được sử dụng!"),
+    PHONE_EXISTED(400, "Số điện thọại này đã được sử dụng!"),
+
     USER_NOT_FOUND(404, "Không tìm thấy người dùng!"),//todo cân nhắc thêm
-    INVALID_PASSWORD(400, "Mật khẩu không chính xác!"),//todo cân nhắc thêm
+    ROLE_NOT_FOUND(404,"Người dùng hiện tại chưa được cấp quyền!"),
+
+    INVALID_CREDENTIALS(400, "Tài khoản hoặc mật khẩu không chính xác!"),
     UNAUTHORIZED(401, "Bạn chưa đăng nhập, vui lòng đăng nhập để sử dụng các tính năng!"),
     TOKEN_EXPIRATION(401, "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!");
 

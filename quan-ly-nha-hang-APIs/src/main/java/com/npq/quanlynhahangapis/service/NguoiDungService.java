@@ -7,62 +7,52 @@ import com.npq.quanlynhahangapis.dto.response.NguoiDungResponse;
 import com.npq.quanlynhahangapis.entity.KhachHang;
 import com.npq.quanlynhahangapis.entity.NguoiDung;
 import com.npq.quanlynhahangapis.exception.AppException;
+import com.npq.quanlynhahangapis.exception.ErrorCode;
 import com.npq.quanlynhahangapis.repository.*;
 import com.npq.quanlynhahangapis.utils.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class NguoiDungService {
+    private final PasswordEncoder passwordEncoder;
     private final NguoiDungRepository nguoiDungRepository;
     private final AdminRepository adminRepository;
     private final QuanLyRepository quanLyRepository;
     private final KhachHangRepository khachHangRepository;
     private final NhanVienRepository nhanVienRepository;
-
     private final JwtUtil jwtUtil;
-
-    public List<NguoiDungResponse> layDanhSachNguoiDung() {
-        return nguoiDungRepository.findAll().stream().map(this::chuyenSangDto).toList();
-    }
 
     public NguoiDungResponse layNguoiDungTheoId(int maNguoiDung) {
         NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         return chuyenSangDto(nguoiDung);
+    }
+//todo tai sao 2 cai func nay lai tra ve 2 kieu du lieu khac nhau, muc dich la gi???
+// func 1 la tra ve dto gui ra response
+// func 2 la tra ve obj de service su dung de validate
+
+    public NguoiDung layNguoiDungTheoTaiKhoan(String taiKhoan) {
+        return nguoiDungRepository.findByTaiKhoan(taiKhoan)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
     public NguoiDungResponse dangKy(@Valid NguoiDungRequest dto) {
-        // validate tai khoan
-        if (nguoiDungRepository.existsByTaiKhoan(dto.taiKhoan())) {
-//            throw new UsernameExistedException("Tài khoản này đã được đăng ký!"); //TODO
-//            throw new IllegalArgumentException("");
-            throw new AppException()
-        }
+        if (nguoiDungRepository.existsByTaiKhoan(dto.taiKhoan())) throw new AppException(ErrorCode.USER_EXISTED);
+        if (nguoiDungRepository.existsByEmail(dto.email())) throw new AppException(ErrorCode.EMAIL_EXISTED);
+        if (nguoiDungRepository.existsBySoDienThoai(dto.soDienThoai())) throw new AppException(ErrorCode.PHONE_EXISTED);
 
-        // tai avatar len cloudinary TODO
+//         tai avatar len cloudinary TODO
 //        if (dto.avatar())
-
-        //impl JWT va encode mat khau TODO
-        //        String mk = dto.matKhau();
-
-        if (nguoiDungRepository.existsByEmail(dto.email())) {
-            throw new IllegalArgumentException("Email này đã được đăng ký!");
-        }
-
-        if (nguoiDungRepository.existsBySoDienThoai(dto.soDienThoai())) {
-            throw new IllegalArgumentException("Số điện thoại này đã được đăng ký!");
-        }
 
         NguoiDung nguoiDung = NguoiDung.builder()
                 .taiKhoan(dto.taiKhoan())
-                .matKhau(dto.matKhau())
+                .matKhau(passwordEncoder.encode(dto.matKhau()))
                 .avatar(dto.avatar())
                 .ho(dto.ho())
                 .ten(dto.ten())
@@ -78,45 +68,6 @@ public class NguoiDungService {
         return chuyenSangDto(nguoiDungRepository.save(nguoiDung));
     }
 
-    public boolean authenticate(@Valid String taiKhoan, @Valid String matKhau) {
-        return layNguoiDungTheoTaiKhoan(taiKhoan).getMatKhau().equals(matKhau);
-    }
-
-    private NguoiDungResponse chuyenSangDto(NguoiDung nguoiDung) {
-        return new NguoiDungResponse(
-                nguoiDung.getMaNguoiDung(),
-                nguoiDung.getTaiKhoan(),
-                nguoiDung.getAvatar(),
-                nguoiDung.getHo(),
-                nguoiDung.getTen(),
-                nguoiDung.getEmail(),
-                nguoiDung.getSoDienThoai(),
-                nguoiDung.getNgayTao(),
-                nguoiDung.getNgayCapNhat(),
-                nguoiDung.getTrangThai()
-        );
-    }
-
-    public NguoiDung layNguoiDungTheoTaiKhoan(String taiKhoan) {
-        return nguoiDungRepository.findByTaiKhoan(taiKhoan)
-                .orElseThrow(() -> new IllegalArgumentException("Tài khoản hoặc mật khẩu không chính xác!"));
-        //todo them exception notfoundusername
-    }
-
-    public String layVaiTro(Integer maNguoiDung) {
-        if (adminRepository.existsById(maNguoiDung)) {
-            return "ADMIN";
-        } else if (quanLyRepository.existsById(maNguoiDung)) {
-            return "QUANLY";
-        } else if (nhanVienRepository.existsById(maNguoiDung)) {
-            return "NHANVIEN";
-        } else if (khachHangRepository.existsById(maNguoiDung)) {
-            return "KHACHHANG";
-        } else {
-            throw new IllegalArgumentException("Người dùng chưa có vai trò");
-        }
-    }
-
     public DangNhapResponse dangNhap(@Valid DangNhapRequest dto) {
         if (this.authenticate(dto.taiKhoan(), dto.matKhau())) {
             NguoiDung nguoiDung = layNguoiDungTheoTaiKhoan(dto.taiKhoan());
@@ -129,7 +80,40 @@ public class NguoiDungService {
                     .token(token)
                     .build();
         }
-        throw new IllegalArgumentException("");
-        //todo them AuthenticationFailureException
+        throw new AppException(ErrorCode.INVALID_CREDENTIALS);
     }
+
+    public boolean authenticate(@Valid String taiKhoan, @Valid String matKhau) {
+        NguoiDung nguoiDung = layNguoiDungTheoTaiKhoan(taiKhoan);
+        return passwordEncoder.matches(nguoiDung.getMatKhau(), matKhau);
+    }
+
+    public String layVaiTro(Integer maNguoiDung) {
+        if (adminRepository.existsById(maNguoiDung)) {
+            return "ADMIN";
+        } else if (quanLyRepository.existsById(maNguoiDung)) {
+            return "QUANLY";
+        } else if (nhanVienRepository.existsById(maNguoiDung)) {
+            return "NHANVIEN";
+        } else if (khachHangRepository.existsById(maNguoiDung)) {
+            return "KHACHHANG";
+        } else {
+            throw new AppException(ErrorCode.ROLE_NOT_FOUND);
+        }
+    }
+
+    private NguoiDungResponse chuyenSangDto(NguoiDung nguoiDung) {
+        return NguoiDungResponse.builder()
+                .maNguoiDung(nguoiDung.getMaNguoiDung())
+                .taiKhoan(nguoiDung.getTaiKhoan())
+                .avatar(nguoiDung.getAvatar())
+                .ho(nguoiDung.getHo())
+                .ten(nguoiDung.getTen())
+                .email(nguoiDung.getEmail())
+                .soDienThoai(nguoiDung.getSoDienThoai())
+                .trangThai(nguoiDung.getTrangThai())
+                .build();
+
+    }
+
 }

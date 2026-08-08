@@ -1,6 +1,5 @@
 package com.npq.quanlynhahangapis.exception;
 
-import com.npq.quanlynhahangapis.dto.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

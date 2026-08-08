@@ -10,6 +10,7 @@ import com.npq.quanlynhahangapis.utils.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.Repository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,15 +28,15 @@ public class NguoiDungController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nguoiDungService.dangKy(dto));
     }
 
+
     @PostMapping("/auth/login")
     ResponseEntity<?> dangNhap(@RequestBody @Valid DangNhapRequest dto) {
         return ResponseEntity.ok(nguoiDungService.dangNhap(dto));
     }
 
     @GetMapping("users/{maNguoiDung}")
-    ResponseEntity<NguoiDungResponse> layTheoId(@PathVariable Integer maNguoiDung) {
+    ResponseEntity<?> layTheoId(@PathVariable Integer maNguoiDung) {
         return ResponseEntity.ok(nguoiDungService.layNguoiDungTheoId(maNguoiDung));
     }
-
 
 }
