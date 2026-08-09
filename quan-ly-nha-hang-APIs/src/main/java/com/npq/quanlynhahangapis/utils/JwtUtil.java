@@ -1,7 +1,5 @@
 package com.npq.quanlynhahangapis.utils;
 
-import com.npq.quanlynhahangapis.dto.request.DangNhapRequest;
-import com.npq.quanlynhahangapis.entity.NguoiDung;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;

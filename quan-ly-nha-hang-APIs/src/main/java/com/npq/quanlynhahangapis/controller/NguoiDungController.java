@@ -2,15 +2,10 @@ package com.npq.quanlynhahangapis.controller;
 
 import com.npq.quanlynhahangapis.dto.request.DangNhapRequest;
 import com.npq.quanlynhahangapis.dto.request.NguoiDungRequest;
-import com.npq.quanlynhahangapis.dto.response.DangNhapResponse;
-import com.npq.quanlynhahangapis.dto.response.NguoiDungResponse;
-import com.npq.quanlynhahangapis.entity.NguoiDung;
 import com.npq.quanlynhahangapis.service.NguoiDungService;
-import com.npq.quanlynhahangapis.utils.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.Repository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -15,7 +15,7 @@ public class Ban {
     private int maBan;
 
     @Column(length = 20)
-    private String soBan; // bao gom thong tin co ban vd: VIP-0001, OUTSIDE-0001
+    private String soBan; // todo bao gom thong tin co ban vd: VIP-0001, OUTSIDE-0001
     private int sucChua;
 
     @ManyToOne

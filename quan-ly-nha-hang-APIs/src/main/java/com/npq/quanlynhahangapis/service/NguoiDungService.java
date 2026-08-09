@@ -89,17 +89,11 @@ public class NguoiDungService {
     }
 
     public String layVaiTro(Integer maNguoiDung) {
-        if (adminRepository.existsById(maNguoiDung)) {
-            return "ADMIN";
-        } else if (quanLyRepository.existsById(maNguoiDung)) {
-            return "QUANLY";
-        } else if (nhanVienRepository.existsById(maNguoiDung)) {
-            return "NHANVIEN";
-        } else if (khachHangRepository.existsById(maNguoiDung)) {
-            return "KHACHHANG";
-        } else {
-            throw new AppException(ErrorCode.ROLE_NOT_FOUND);
-        }
+        if (adminRepository.existsById(maNguoiDung)) return "ADMIN";
+        if (quanLyRepository.existsById(maNguoiDung)) return "QUANLY";
+        if (nhanVienRepository.existsById(maNguoiDung)) return "NHANVIEN";
+        if (khachHangRepository.existsById(maNguoiDung)) return "KHACHHANG";
+        throw new AppException(ErrorCode.ROLE_NOT_FOUND);
     }
 
     private NguoiDungResponse chuyenSangDto(NguoiDung nguoiDung) {
