@@ -68,11 +68,16 @@ public class JwtUtil {
     public boolean tokenHopLe(String token) {
         try {
             Claims claims = layTatCaClaim(token);
-            return claims.getExpiration().before(new Date());
+            return claims.getExpiration().after(new Date());
         } catch (ExpiredJwtException e) {
             return false;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public String layTaiKhoanTuToken(String token) {
+        Claims claims = layTatCaClaim(token);
+        return claims.getSubject();
     }
 }

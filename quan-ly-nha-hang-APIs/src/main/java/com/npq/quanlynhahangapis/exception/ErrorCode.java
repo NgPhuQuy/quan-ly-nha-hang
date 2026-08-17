@@ -8,6 +8,7 @@ public enum ErrorCode {
     EMAIL_EXISTED(400, "Email này đã được sử dụng!"),
     PHONE_EXISTED(400, "Số điện thọại này đã được sử dụng!"),
 
+    SOURCE_NOT_FOUND(404, "Không tìm thấy "),
     USER_NOT_FOUND(404, "Không tìm thấy người dùng!"),
     ROLE_NOT_FOUND(404, "Người dùng hiện tại chưa được cấp vai trò!"),
 

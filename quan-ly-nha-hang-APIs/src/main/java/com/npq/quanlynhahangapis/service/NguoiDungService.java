@@ -12,11 +12,9 @@ import com.npq.quanlynhahangapis.repository.*;
 import com.npq.quanlynhahangapis.utils.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NguoiDungService {
@@ -83,9 +81,9 @@ public class NguoiDungService {
         throw new AppException(ErrorCode.INVALID_CREDENTIALS);
     }
 
-    public boolean authenticate(@Valid String taiKhoan, @Valid String matKhau) {
+    public boolean authenticate(String taiKhoan, String matKhau) {
         NguoiDung nguoiDung = layNguoiDungTheoTaiKhoan(taiKhoan);
-        return passwordEncoder.matches(nguoiDung.getMatKhau(), matKhau);
+        return passwordEncoder.matches(matKhau, nguoiDung.getMatKhau());
     }
 
     public String layVaiTro(Integer maNguoiDung) {
