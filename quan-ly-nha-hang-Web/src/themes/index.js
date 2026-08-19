@@ -1,0 +1,5 @@
+export const CARD_BG = 'linear-gradient(145deg,rgba(38,22,10,0.92) 0%,rgba(22,14,7,0.96) 100%)'
+export const goldFaint = 'rgba(200,136,42,0.18)'
+export const cream = 'rgba(240,216,144,0.85)'
+export const creamMuted = 'rgba(240,216,144,0.42)'
+export const HERO_OVERLAY = 'linear-gradient(180deg,rgba(12,9,5,0.52) 0%,rgba(12,9,5,0.18) 35%,rgba(12,9,5,0.65) 72%,rgba(12,9,5,0.97) 100%)'

@@ -1,4 +1,4 @@
-import Apis, { endpoints } from "../configs/Apis";
+import Apis, { endpoints } from "../services/apis";
 import { useEffect, useState } from "react";
 
 const Home = () => {
