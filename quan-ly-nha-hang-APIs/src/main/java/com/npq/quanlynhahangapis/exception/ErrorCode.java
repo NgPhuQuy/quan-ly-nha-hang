@@ -14,7 +14,8 @@ public enum ErrorCode {
 
     INVALID_CREDENTIALS(400, "Tài khoản hoặc mật khẩu không chính xác!"),
     UNAUTHORIZED(401, "Bạn chưa đăng nhập, vui lòng đăng nhập để sử dụng các tính năng!"),
-    TOKEN_EXPIRATION(401, "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!");
+    TOKEN_EXPIRATION(401, "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!"),
+    INVALID_TOKEN(401, "Token không hợp lệ!");
 
     private final int status;
     private final String message;
