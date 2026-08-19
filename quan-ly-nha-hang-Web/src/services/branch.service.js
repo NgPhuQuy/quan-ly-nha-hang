@@ -1,7 +1,5 @@
 import Apis, { endpoints } from "../services/apis";
-import { useEffect, useState } from "react";
 
-const Home = () => {
     const [chiNhanh, setChiNhanh] = useState([]);
     // const [loading, setLoading] = useState(false);
 
@@ -42,7 +40,3 @@ const Home = () => {
             </ul>
         </div>
     );
-
-}
-
-export default Home;
