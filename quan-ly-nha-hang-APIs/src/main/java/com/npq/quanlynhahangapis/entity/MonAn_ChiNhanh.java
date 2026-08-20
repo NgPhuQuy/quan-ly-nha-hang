@@ -2,11 +2,9 @@ package com.npq.quanlynhahangapis.entity;
 
 import com.npq.quanlynhahangapis.entity.enums.TrangThaiMonAn;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@Builder
 @Entity
 @Getter
 @Setter
@@ -28,5 +26,6 @@ public class MonAn_ChiNhanh {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "trang_thai")
-    private TrangThaiMonAn trangThaiMonAn;
+    @Builder.Default
+    private TrangThaiMonAn trangThaiMonAn = TrangThaiMonAn.DANG_BAN;
 }

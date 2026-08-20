@@ -10,6 +10,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MaMonAnChiNhanh implements Serializable {
-    private Integer maChiNhanh;
-    private Integer maMonAn;
+    private Integer chiNhanh;
+    private Integer monAn;
 }
