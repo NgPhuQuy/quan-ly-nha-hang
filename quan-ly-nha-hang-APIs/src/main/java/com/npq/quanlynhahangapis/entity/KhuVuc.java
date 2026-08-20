@@ -14,7 +14,7 @@ import java.util.List;
 public class KhuVuc {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int maKhuVuc;
+    private Integer maKhuVuc;
     private String tenKhuVuc;
 
     @ManyToOne

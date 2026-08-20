@@ -14,7 +14,7 @@ import java.util.List;
 public class KhachHang {
     @Id
     @Column
-    private int maKhachHang;
+    private Integer maKhachHang;
 
     @MapsId
     @OneToOne
@@ -22,7 +22,7 @@ public class KhachHang {
     private NguoiDung nguoiDung;
 
     @Column
-    private int diemTichLuy;
+    private Integer diemTichLuy;
 
     // them rank cho khach hang dua tren diem tich luy
 

@@ -12,7 +12,7 @@ import lombok.*;
 public class NhanVien {
     @Id
     @Column
-    private int maNhanVien;
+    private Integer maNhanVien;
 
     @MapsId
     @OneToOne

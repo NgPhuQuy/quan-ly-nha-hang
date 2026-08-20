@@ -12,7 +12,7 @@ import lombok.*;
 public class DatLich {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int maDatLich;
+    private Integer maDatLich;
 
     @ManyToOne
     @JoinColumn(name = "ma_khach_hang", nullable = false)

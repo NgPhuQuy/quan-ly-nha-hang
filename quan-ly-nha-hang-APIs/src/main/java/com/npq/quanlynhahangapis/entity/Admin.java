@@ -12,7 +12,7 @@ import lombok.*;
 public class Admin {
     @Id
     @Column
-    private int maAdmin;
+    private Integer maAdmin;
 
     @OneToOne
     @MapsId

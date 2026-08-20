@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class NguoiDung {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int maNguoiDung;
+    private Integer maNguoiDung;
 
     @Column(length = 20, unique = true)
     private String taiKhoan;

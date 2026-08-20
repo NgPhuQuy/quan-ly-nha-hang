@@ -12,7 +12,7 @@ import lombok.*;
 public class QuanLy {
     @Id
     @Column
-    private int maQuanLy;
+    private Integer maQuanLy;
 
     @MapsId
     @OneToOne

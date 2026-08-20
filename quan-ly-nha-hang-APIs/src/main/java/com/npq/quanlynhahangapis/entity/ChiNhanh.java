@@ -14,7 +14,7 @@ import java.util.List;
 public class ChiNhanh {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int maChiNhanh;
+    private Integer maChiNhanh;
     private String tenChiNhanh;
 
     @OneToMany(mappedBy = "chiNhanh")
