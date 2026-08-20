@@ -1,18 +1,32 @@
 package com.npq.quanlynhahangapis.entity;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.npq.quanlynhahangapis.entity.enums.TrangThaiMonAn;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "mon_an_chi_nhanh")
+@IdClass(MaMonAnChiNhanh.class)
 public class MonAn_ChiNhanh {
-    @EmbeddedId
+
+    @Id
     @ManyToOne
     @JoinColumn(name = "ma_mon_an")
     private MonAn monAn;
+
+    @Id
     @ManyToOne
     @JoinColumn(name = "ma_chi_nhanh")
     private ChiNhanh chiNhanh;
-    private boolean trangThai;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "trang_thai")
+    private TrangThaiMonAn trangThaiMonAn;
 }

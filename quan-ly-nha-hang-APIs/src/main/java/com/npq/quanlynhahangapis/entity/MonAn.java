@@ -10,7 +10,7 @@ public class MonAn {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer maMonAn;
     private String tenMonAn;
-    @Column(precision = 12,scale = 2)
+    @Column(precision = 12, scale = 2)
     private BigDecimal giaMonAn;
 
 }
