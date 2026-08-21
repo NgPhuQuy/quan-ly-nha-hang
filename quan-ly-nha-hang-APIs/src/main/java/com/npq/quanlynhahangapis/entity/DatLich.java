@@ -3,7 +3,7 @@ package com.npq.quanlynhahangapis.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity(name = "dat_lich")
+@Entity
 @Builder
 @Getter
 @Setter
