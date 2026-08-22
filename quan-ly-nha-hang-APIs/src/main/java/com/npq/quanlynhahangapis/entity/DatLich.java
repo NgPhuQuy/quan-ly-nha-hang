@@ -3,6 +3,8 @@ package com.npq.quanlynhahangapis.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Builder
 @Getter
@@ -21,4 +23,7 @@ public class DatLich {
     @ManyToOne
     @JoinColumn(name = "ma_ban", nullable = false)
     private Ban ban;
+
+    private LocalDateTime thoiGian;
+    private Integer soLuongNguoi;
 }
