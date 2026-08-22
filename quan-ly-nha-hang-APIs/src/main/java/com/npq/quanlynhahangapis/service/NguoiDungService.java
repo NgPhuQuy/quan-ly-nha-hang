@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,13 +41,18 @@ public class NguoiDungService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
-    public NguoiDungResponse dangKy(@Valid NguoiDungRequest dto) {
-        if (nguoiDungRepository.existsByTaiKhoan(dto.taiKhoan())) throw new AppException(ErrorCode.USER_EXISTED);
-        if (nguoiDungRepository.existsByEmail(dto.email())) throw new AppException(ErrorCode.EMAIL_EXISTED);
-        if (nguoiDungRepository.existsBySoDienThoai(dto.soDienThoai())) throw new AppException(ErrorCode.PHONE_EXISTED);
+    @Transactional
+    public NguoiDungResponse dangKy(NguoiDungRequest dto) {
+        if (nguoiDungRepository.existsByTaiKhoan(dto.taiKhoan()))
+            throw new AppException(ErrorCode.USER_EXISTED);
 
-//         tai avatar len cloudinary TODO
-//        if (dto.avatar())
+        if (nguoiDungRepository.existsByEmail(dto.email()))
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
+
+        if (nguoiDungRepository.existsBySoDienThoai(dto.soDienThoai()))
+            throw new AppException(ErrorCode.PHONE_EXISTED);
+
+        //todo tai avatar len cloudinary
 
         NguoiDung nguoiDung = NguoiDung.builder()
                 .taiKhoan(dto.taiKhoan())
@@ -58,12 +64,15 @@ public class NguoiDungService {
                 .soDienThoai(dto.soDienThoai())
                 .build();
 
+        nguoiDungRepository.save(nguoiDung);
+
         KhachHang khachHang = KhachHang.builder()
                 .nguoiDung(nguoiDung)
                 .build();
 
         khachHangRepository.save(khachHang);
-        return chuyenSangDto(nguoiDungRepository.save(nguoiDung));
+
+        return chuyenSangDto(nguoiDung);
     }
 
     public DangNhapResponse dangNhap(@Valid DangNhapRequest dto) {
