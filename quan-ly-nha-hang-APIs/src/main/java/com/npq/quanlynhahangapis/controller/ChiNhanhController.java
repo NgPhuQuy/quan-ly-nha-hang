@@ -24,6 +24,11 @@ public class ChiNhanhController {
         return ResponseEntity.ok(chiNhanhService.capNhatChiNhanh(request));
     }
 
+    @GetMapping("/chi-nhanh/{maChiNhanh}")
+    ResponseEntity<?> chiTietChiNhanh(@PathVariable Integer maChiNhanh) {
+        return ResponseEntity.ok(chiNhanhService.chiTietChiNhanh(maChiNhanh));
+    }
+
 //    @PatchMapping("/chi-nhanh/{maChiNhanh}/trang-thai")
 //    ResponseEntity<?> doiTrangThai(@PathVariable Integer maChiNhanh){
 
@@ -32,10 +37,5 @@ public class ChiNhanhController {
     @GetMapping("/chi-nhanh")
     ResponseEntity<?> danhSachChiNhanh() {
         return ResponseEntity.ok(chiNhanhService.layDSChiNhanh());
-    }
-
-    @GetMapping("/chi-nhanh/{maChiNhanh}")
-    ResponseEntity<?> chiTietChiNhanh(@PathVariable Integer maChiNhanh) {
-        return ResponseEntity.ok(chiNhanhService.layChiNhanhTheoID(maChiNhanh));
     }
 }

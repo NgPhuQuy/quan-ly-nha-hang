@@ -37,13 +37,13 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = authHeader.substring(7);
 
         if (jwtUtil.tokenHopLe(token)) {
-            String taiKhoan = jwtUtil.layTaiKhoanTuToken(token);
+            Integer maNguoiDung = jwtUtil.layMaNDTuToken(token);
             String vaiTro = jwtUtil.layVaiTroTuToken(token);
 
             var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + vaiTro));
 
             UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(taiKhoan, null, authorities);
+                    new UsernamePasswordAuthenticationToken(maNguoiDung, null, authorities);
 
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }

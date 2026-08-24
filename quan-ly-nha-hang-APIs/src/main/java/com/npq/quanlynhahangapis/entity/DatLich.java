@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -29,4 +30,8 @@ public class DatLich {
     private LocalTime gio;
     private Integer soKhach;
     private String ghiChu;
+
+    @OneToMany(mappedBy = "datLich", fetch = FetchType.LAZY)
+    private List<DatTruoc> listDatTruoc;
+
 }

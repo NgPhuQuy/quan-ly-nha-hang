@@ -14,8 +14,5 @@ import org.springframework.web.bind.annotation.RestController;
 public class BanController {
     private final BanService banService;
 
-    @GetMapping("/khu-vuc/{maKhuVuc}/ban")
-    ResponseEntity<?> danhSachBan(@PathVariable Integer maKhuVuc) {
-        return ResponseEntity.ok(banService.layDSBan(maKhuVuc));
-    }
+
 }

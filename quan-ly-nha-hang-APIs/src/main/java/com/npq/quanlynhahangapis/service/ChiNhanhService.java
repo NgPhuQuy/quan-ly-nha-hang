@@ -25,9 +25,8 @@ public class ChiNhanhService {
     }
 
     public ChiNhanh layChiNhanhTheoId(Integer maChiNhanh) {
-        ChiNhanh chiNhanh = chiNhanhRepository.findById(maChiNhanh)
+        return chiNhanhRepository.findById(maChiNhanh)
                 .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
-        return chiNhanh;
     }
 
     public ChiNhanhResponse layChiNhanhTheoID(Integer maChiNhanh) {
@@ -38,6 +37,8 @@ public class ChiNhanhService {
         return ChiNhanhResponse.builder()
                 .maChiNhanh(chiNhanh.getMaChiNhanh())
                 .tenChiNhanh(chiNhanh.getTenChiNhanh())
+                .trangThaiChiNhanh(chiNhanh.isTrangThai())
+                .sucChua(chiNhanh.getSucChua())
                 .build();
     }
 
@@ -53,6 +54,11 @@ public class ChiNhanhService {
                 .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
         chiNhanh.setTenChiNhanh(request.tenChiNhanh());
         return chuyenSangDto(chiNhanhRepository.save(chiNhanh));
+    }
+
+    public ChiNhanhResponse chiTietChiNhanh(Integer maChiNhanh) {
+        return chuyenSangDto(chiNhanhRepository.findById(maChiNhanh)
+                .orElseThrow(()-> new AppException(ErrorCode.SOURCE_NOT_FOUND)));
     }
 
 //    public ChiNhanhResponse doiTrangThaiChiNhanh(Integer maChiNhanh) {

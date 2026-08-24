@@ -16,6 +16,7 @@ public class ChiNhanh {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer maChiNhanh;
     private String tenChiNhanh;
+    private Integer sucChua;
     private boolean trangThai;
 
     @OneToMany(mappedBy = "chiNhanh")

@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-public record DatChoRequest(
+public record DatLichRequest(
         Integer maChiNhanh,
         LocalDate ngay,
         LocalTime gio,

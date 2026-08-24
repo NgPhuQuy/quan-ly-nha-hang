@@ -1,7 +1,7 @@
 package com.npq.quanlynhahangapis.controller;
 
-import com.npq.quanlynhahangapis.dto.request.DatChoRequest;
-import com.npq.quanlynhahangapis.service.DatChoService;
+import com.npq.quanlynhahangapis.dto.request.DatLichRequest;
+import com.npq.quanlynhahangapis.service.DatLichService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -29,7 +29,7 @@ public class DatLichController {
     }
 
     @PostMapping("/dat-lich")
-    ResponseEntity<?> datLich(@RequestBody DatChoRequest request) {
+    ResponseEntity<?> datLich(@RequestBody DatLichRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(datLichService.datLich(request));
     }
 }

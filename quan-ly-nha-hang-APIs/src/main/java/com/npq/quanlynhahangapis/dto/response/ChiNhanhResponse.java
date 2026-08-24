@@ -6,6 +6,7 @@ import lombok.Builder;
 public record ChiNhanhResponse(
         Integer maChiNhanh,
         String tenChiNhanh,
-        Boolean trangThaiChiNhanh
+        Boolean trangThaiChiNhanh,
+        Integer sucChua
 ) {
 }

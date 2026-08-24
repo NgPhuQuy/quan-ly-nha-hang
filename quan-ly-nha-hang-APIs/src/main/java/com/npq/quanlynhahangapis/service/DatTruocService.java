@@ -1,6 +1,6 @@
 package com.npq.quanlynhahangapis.service;
 
-import com.npq.quanlynhahangapis.dto.request.DatChoRequest;
+import com.npq.quanlynhahangapis.dto.request.DatLichRequest;
 import com.npq.quanlynhahangapis.dto.response.DatTruocResponse;
 import com.npq.quanlynhahangapis.entity.DatTruoc;
 import com.npq.quanlynhahangapis.repository.DatTruocRepository;
@@ -18,7 +18,7 @@ public class DatTruocService {
     private final DatTruocRepository datTruocRepository;
 
 
-    public DatTruocResponse datTruocMonAn(DatChoRequest request) {
+    public DatTruocResponse datTruocMonAn(DatLichRequest request) {
         DatTruoc dt = DatTruoc.builder()
 //                .datCho(request.datCho())
 //                .matHang(request.matHang())
