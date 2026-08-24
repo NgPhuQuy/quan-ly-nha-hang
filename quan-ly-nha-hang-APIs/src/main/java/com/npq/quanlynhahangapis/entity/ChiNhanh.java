@@ -17,7 +17,11 @@ public class ChiNhanh {
     private Integer maChiNhanh;
     private String tenChiNhanh;
     private Integer sucChua;
-    private boolean trangThai;
+    @Builder.Default
+    private boolean trangThai = true;
+
+    @OneToMany(mappedBy = "chiNhanh")
+    private List<GioHoatDong> listGioHoatDong;
 
     @OneToMany(mappedBy = "chiNhanh")
     private List<QuanLy> quanLy;

@@ -23,7 +23,13 @@ public class GioHoatDong {
 
     @Enumerated(EnumType.STRING)
     private DayOfWeek thu;
-    private LocalTime gioMoCua;
-    private LocalTime gioDongCua;
-    private Boolean hoatDong;
+
+    @Builder.Default
+    private LocalTime gioMoCua = LocalTime.of(8, 0);
+
+    @Builder.Default
+    private LocalTime gioDongCua = LocalTime.of(22, 0);
+
+    @Builder.Default
+    private Boolean hoatDong = true;
 }

@@ -19,10 +19,13 @@ public class ChiNhanhController {
         return ResponseEntity.status(HttpStatus.CREATED).body(chiNhanhService.taoChiNhanh(request));
     }
 
-    @PutMapping("/chi-nhanh/{maChiNhanh}")
-    ResponseEntity<?> capNhat(@RequestBody ChiNhanhRequest request) {
-        return ResponseEntity.ok(chiNhanhService.capNhatChiNhanh(request));
-    }
+    //todo hoan chinh cai phan nay sau
+    //chinh sua chi nhanh PUT
+//    @PutMapping("/chi-nhanh/{maChiNhanh}")
+//    ResponseEntity<?> capNhat(@PathVariable Integer maChiNhanh, @RequestBody ChiNhanhRequest request) {
+//        request = new ChiNhanhRequest(maChiNhanh, request.tenChiNhanh(), request.trangThaiChiNhanh());
+//        return ResponseEntity.ok(chiNhanhService.capNhatChiNhanh(request));
+//    }
 
     @GetMapping("/chi-nhanh/{maChiNhanh}")
     ResponseEntity<?> chiTietChiNhanh(@PathVariable Integer maChiNhanh) {

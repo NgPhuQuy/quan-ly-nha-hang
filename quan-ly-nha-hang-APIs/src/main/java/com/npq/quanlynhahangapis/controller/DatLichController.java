@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @RestController
@@ -19,17 +21,27 @@ public class DatLichController {
     private final DatLichService datLichService;
 
     @GetMapping("/dat-lich")
-    ResponseEntity<?> danhSachDatCho() {
+    ResponseEntity<?> danhSachDatLich() {
         return ResponseEntity.ok(datLichService.layDSDatLich());
     }
 
     @GetMapping("/dat-lich/{maDatLich}")
-    ResponseEntity<?> danhSachDatLich(@RequestBody Integer maDatLich) {
+    ResponseEntity<?> danhSachDatLich(@PathVariable Integer maDatLich) {
         return ResponseEntity.ok(datLichService.layTheoId(maDatLich));
     }
 
     @PostMapping("/dat-lich")
     ResponseEntity<?> datLich(@RequestBody DatLichRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(datLichService.datLich(request));
+    }
+
+    @GetMapping("/dat-lich/khung-gio")
+    ResponseEntity<?> layKhungGio(
+            @RequestParam Integer maChiNhanh,
+            @RequestParam LocalDate ngay,
+            @RequestParam Integer soKhach
+    ) {
+        return ResponseEntity.ok(datLichService.layKhungGio(maChiNhanh, ngay, soKhach)
+        );
     }
 }

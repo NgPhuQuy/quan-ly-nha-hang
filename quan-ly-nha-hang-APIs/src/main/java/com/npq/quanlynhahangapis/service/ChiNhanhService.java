@@ -8,6 +8,7 @@ import com.npq.quanlynhahangapis.exception.ErrorCode;
 import com.npq.quanlynhahangapis.repository.ChiNhanhRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChiNhanhService {
     private final ChiNhanhRepository chiNhanhRepository;
+    private final GioHoatDongService gioHoatDongService;
 
     public List<ChiNhanhResponse> layDSChiNhanh() {
         return chiNhanhRepository
@@ -42,23 +44,33 @@ public class ChiNhanhService {
                 .build();
     }
 
+    @Transactional
     public ChiNhanhResponse taoChiNhanh(ChiNhanhRequest request) {
         ChiNhanh chiNhanh = ChiNhanh.builder()
                 .tenChiNhanh(request.tenChiNhanh())
+                .sucChua(request.sucChua())
                 .build();
-        return chuyenSangDto(chiNhanhRepository.save(chiNhanh));
+
+        chiNhanh = chiNhanhRepository.save(chiNhanh);
+
+        // sinh thoi gian mac dinh cho chi nhanh
+        gioHoatDongService.thoiGianMacDinh(chiNhanh);
+
+        return chuyenSangDto(chiNhanh);
     }
 
     public ChiNhanhResponse capNhatChiNhanh(ChiNhanhRequest request) {
         ChiNhanh chiNhanh = chiNhanhRepository.findById(request.maChiNhanh())
                 .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
         chiNhanh.setTenChiNhanh(request.tenChiNhanh());
+        chiNhanh.setSucChua(request.sucChua());
+        chiNhanh.setTrangThai(request.trangThaiChiNhanh());
         return chuyenSangDto(chiNhanhRepository.save(chiNhanh));
     }
 
     public ChiNhanhResponse chiTietChiNhanh(Integer maChiNhanh) {
         return chuyenSangDto(chiNhanhRepository.findById(maChiNhanh)
-                .orElseThrow(()-> new AppException(ErrorCode.SOURCE_NOT_FOUND)));
+                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND)));
     }
 
 //    public ChiNhanhResponse doiTrangThaiChiNhanh(Integer maChiNhanh) {

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-//@AllArgsConstructor
 @Getter
 @Setter
 public class DatTruocService {
