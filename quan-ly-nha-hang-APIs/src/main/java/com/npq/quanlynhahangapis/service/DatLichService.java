@@ -1,17 +1,13 @@
 package com.npq.quanlynhahangapis.service;
 
 import com.npq.quanlynhahangapis.dto.request.DatLichRequest;
+import com.npq.quanlynhahangapis.dto.request.DatTruocRequest;
 import com.npq.quanlynhahangapis.dto.response.DatLichResponse;
 import com.npq.quanlynhahangapis.dto.response.KhungGioResponse;
-import com.npq.quanlynhahangapis.entity.ChiNhanh;
-import com.npq.quanlynhahangapis.entity.DatLich;
-import com.npq.quanlynhahangapis.entity.GioHoatDong;
-import com.npq.quanlynhahangapis.entity.KhachHang;
+import com.npq.quanlynhahangapis.entity.*;
 import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
-import com.npq.quanlynhahangapis.repository.DatLichRepository;
-import com.npq.quanlynhahangapis.repository.GioHoatDongRepository;
-import com.npq.quanlynhahangapis.repository.KhachHangRepository;
+import com.npq.quanlynhahangapis.repository.*;
 import com.npq.quanlynhahangapis.utils.JwtUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +15,9 @@ import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -34,12 +32,15 @@ public class DatLichService {
     private static final int SLOT_INTERVAL_MINUTES = 30;
     private static final int BOOKING_DURATION_HOURS = 2;
 
+    private final DatTruocRepository datTruocRepository;
+    private final MatHangRepository matHangRepository;
     private final DatLichRepository datLichRepository;
     private final GioHoatDongRepository gioHoatDongRepository;
     private final KhachHangRepository khachHangRepository;
     private final ChiNhanhService chiNhanhService;
     private final JwtUtil jwtUtil;
 
+    @Transactional
     public DatLichResponse datLich(DatLichRequest request) {
         if (request == null || request.maChiNhanh() == null || request.ngay() == null
                 || request.gio() == null || request.soKhach() == null || request.soKhach() <= 0) {
@@ -85,6 +86,21 @@ public class DatLichService {
                 .soKhach(request.soKhach())
                 .ghiChu(request.ghiChu())
                 .build();
+
+        if (request.listDatTruoc()!=null){
+            for (DatTruocRequest r : request.listDatTruoc()) {
+                MatHang matHang = matHangRepository.findById(r.maMatHang())
+                        .orElseThrow(()-> new AppException(ErrorCode.SOURCE_NOT_FOUND));
+                BigDecimal giaSnapShot = matHang.getGiaMatHang();
+                DatTruoc dt = DatTruoc.builder()
+                        .datLich(datLich)
+                        .matHang(matHang)
+                        .soLuong(r.soLuong())
+                        .donGia(giaSnapShot)
+                        .build();
+                datTruocRepository.save(dt);
+            }
+        }
 
         return chuyenSangDto(datLichRepository.save(datLich));
     }

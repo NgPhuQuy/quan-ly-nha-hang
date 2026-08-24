@@ -1,7 +1,5 @@
 package com.npq.quanlynhahangapis.dto.request;
 
-import com.npq.quanlynhahangapis.entity.MatHang;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -12,6 +10,7 @@ public record DatLichRequest(
         LocalTime gio,
         Integer soKhach,
         String ghiChu,
-        List<MatHang> listMatHang
+
+        List<DatTruocRequest> listDatTruoc
 ) {
 }
