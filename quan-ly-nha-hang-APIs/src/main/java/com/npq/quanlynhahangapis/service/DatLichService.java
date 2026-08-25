@@ -17,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -85,24 +84,23 @@ public class DatLichService {
                 .gio(request.gio())
                 .soKhach(request.soKhach())
                 .ghiChu(request.ghiChu())
+                .listDatTruoc(request.listDatTruoc()
+                        .stream()
+                        .map(this::chuyenSangObj)
+                        .toList())
                 .build();
 
-        if (request.listDatTruoc()!=null){
-            for (DatTruocRequest r : request.listDatTruoc()) {
-                MatHang matHang = matHangRepository.findById(r.maMatHang())
-                        .orElseThrow(()-> new AppException(ErrorCode.SOURCE_NOT_FOUND));
-                BigDecimal giaSnapShot = matHang.getGiaMatHang();
-                DatTruoc dt = DatTruoc.builder()
-                        .datLich(datLich)
-                        .matHang(matHang)
-                        .soLuong(r.soLuong())
-                        .donGia(giaSnapShot)
-                        .build();
-                datTruocRepository.save(dt);
-            }
-        }
-
         return chuyenSangDto(datLichRepository.save(datLich));
+    }
+
+    private DatTruoc chuyenSangObj(DatTruocRequest request) {
+        MatHang matHang = matHangRepository.findById(request.maMatHang())
+                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
+        return DatTruoc.builder()
+                .matHang(matHang)
+                .soLuong(request.soLuong())
+                .donGia(matHang.getGiaMatHang())
+                .build();
     }
 
     public List<KhungGioResponse> layKhungGio(Integer maChiNhanh, LocalDate ngay, Integer soKhach) {
@@ -123,11 +121,8 @@ public class DatLichService {
 
         while (!slotBatDau.plusHours(BOOKING_DURATION_HOURS).isAfter(gioHoatDong.getGioDongCua())) {
             LocalTime slotKetThuc = slotBatDau.plusHours(BOOKING_DURATION_HOURS);
-
             int conCho = tinhConCho(chiNhanh, datLiches, slotBatDau, slotKetThuc);
-
             result.add(new KhungGioResponse(slotBatDau, conCho, conCho >= soKhach));
-
             slotBatDau = slotBatDau.plusMinutes(SLOT_INTERVAL_MINUTES);
         }
 
@@ -139,15 +134,20 @@ public class DatLichService {
     }
 
     public DatLichResponse layTheoId(Integer maDatLich) {
-        return chuyenSangDto(datLichRepository.getReferenceById(maDatLich));
+        return chuyenSangDto(datLichRepository
+                .findById(maDatLich)
+                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND)));
     }
 
     private GioHoatDong layGioHoatDong(Integer maChiNhanh, LocalDate ngay) {
         DayOfWeek thu = ngay.getDayOfWeek();
-
         List<GioHoatDong> list = gioHoatDongRepository.findByChiNhanh_MaChiNhanh(maChiNhanh);
 
-        return list.stream().filter(gio -> gio.getThu() == thu).filter(gio -> Boolean.TRUE.equals(gio.getHoatDong())).findFirst().orElseThrow(() -> new AppException(ErrorCode.CLOSED_DAY));
+        return list.stream().
+                filter(gio -> gio.getThu() == thu)
+                .filter(gio -> Boolean.TRUE.equals(gio.getHoatDong()))
+                .findFirst()
+                .orElseThrow(() -> new AppException(ErrorCode.CLOSED_DAY));
     }
 
     private int tinhConCho(ChiNhanh chiNhanh, List<DatLich> listDatLich, LocalTime slotBatDau, LocalTime slotKetThuc) {

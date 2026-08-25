@@ -26,7 +26,7 @@ public class DatLichController {
     }
 
     @GetMapping("/dat-lich/{maDatLich}")
-    ResponseEntity<?> danhSachDatLich(@PathVariable Integer maDatLich) {
+    ResponseEntity<?> chiTietDatLich(@PathVariable Integer maDatLich) {
         return ResponseEntity.ok(datLichService.layTheoId(maDatLich));
     }
 

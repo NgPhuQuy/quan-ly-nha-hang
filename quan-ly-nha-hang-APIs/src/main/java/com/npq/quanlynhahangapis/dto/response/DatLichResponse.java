@@ -1,6 +1,5 @@
 package com.npq.quanlynhahangapis.dto.response;
 
-import com.npq.quanlynhahangapis.entity.DatTruoc;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -14,7 +13,7 @@ public record DatLichResponse(
         LocalTime gio,
         Integer soKhach,
         String ghiChu,
-        List<DatTruoc> listDatTruoc
+        List<DatTruocResponse> listDatTruoc
 ) {
 }
 

@@ -29,9 +29,9 @@ public class DatTruocService {
     }
 
     private DatTruocResponse chuyenSangDto(DatTruoc dto) {
-        return DatTruocResponse.builder()
+        return DatTruocResponse.builder().maDatLich().maMatHang().tenMatHang().soLuong().donGia().build()
 //                .datCho(dto.getDatCho())
-//                .matHang(dto.getMatHang())
+                .maMatHang(dto.getMatHang().getMaMatHang())
                 .soLuong(dto.getSoLuong())
                 .donGia(dto.getDonGia())
                 .build();
