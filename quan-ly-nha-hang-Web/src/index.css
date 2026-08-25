@@ -94,7 +94,14 @@
 }
 
 @utility gold-shimmer {
-  background: linear-gradient(90deg, #c8882a, #e8b84b, #f0d890, #e8b84b, #c8882a);
+  background: linear-gradient(
+    90deg,
+    #c8882a,
+    #e8b84b,
+    #f0d890,
+    #e8b84b,
+    #c8882a
+  );
   background-size: 200% auto;
   background-clip: text;
   -webkit-background-clip: text;
@@ -134,7 +141,11 @@
 }
 
 @utility card-warm {
-  background: linear-gradient(135deg, rgba(45, 27, 14, 0.9), rgba(26, 18, 10, 0.95));
+  background: linear-gradient(
+    135deg,
+    rgba(45, 27, 14, 0.9),
+    rgba(26, 18, 10, 0.95)
+  );
   border: 1px solid rgba(200, 136, 42, 0.18);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
 }
@@ -176,7 +187,9 @@
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(200, 136, 42, 0.25);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(200, 136, 42, 0.25);
   }
 }
 

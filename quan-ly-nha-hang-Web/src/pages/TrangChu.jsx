@@ -7,6 +7,16 @@ import KeuGoiDatBan from "../components/landing/KeuGoiDatBan";
 import ChanTrang from "../components/landing/ChanTrangFooter";
 
 function TrangChu({ khiDatBan, khiTraCuu }) {
-    return <div><ThanhDieuHuong khiDatBan={khiDatBan} khiTraCuu={khiTraCuu} /><PhanGioiThieu khiDatBan={khiDatBan} /><KhuVucChiNhanh khiDatBan={khiDatBan} /><BoSuuTapMonAn /><CamNhanKhachHang /><KeuGoiDatBan khiDatBan={khiDatBan} khiTraCuu={khiTraCuu} /><ChanTrang /></div>;
+  return (
+    <div>
+      <ThanhDieuHuong khiDatBan={khiDatBan} khiTraCuu={khiTraCuu} />
+      <PhanGioiThieu khiDatBan={khiDatBan} />
+      <KhuVucChiNhanh khiDatBan={khiDatBan} />
+      <BoSuuTapMonAn />
+      <CamNhanKhachHang />
+      <KeuGoiDatBan khiDatBan={khiDatBan} khiTraCuu={khiTraCuu} />
+      <ChanTrang />
+    </div>
+  );
 }
 export default TrangChu;
