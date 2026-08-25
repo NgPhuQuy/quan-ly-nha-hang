@@ -20,7 +20,23 @@ import java.util.List;
 @Setter
 public class MatHangService {
     private final TrangThaiMatHangChiNhanhRepository trangThaiMatHangChiNhanhRepository;
+    private final TrangThaiMatHangChiNhanhService trangThaiMatHangChiNhanhService;
     private final MatHangRepository matHangRepository;
+
+    public MatHangResponse taoMatHang(MatHangRequest request) {
+        //xu li upload anh len cloudinary
+        // ...
+
+        MatHang matHang = MatHang.builder()
+                .tenMatHang(request.tenMatHang())
+                .giaMatHang(request.giaMatHang())
+                .loaiMatHang(request.loaiMatHang())
+                .build();
+
+        trangThaiMatHangChiNhanhService.sinhMonAnChiNhanhMacDinh(matHang);
+
+        return chuyenSangDto(matHangRepository.save(matHang));
+    }
 
     public List<MatHangResponse> layDSMonAn(Integer maChiNhanh) {
         return trangThaiMatHangChiNhanhRepository
@@ -63,6 +79,7 @@ public class MatHangService {
 
     private MatHangResponse chuyenSangDto(MatHang matHang) {
         return MatHangResponse.builder()
+                .maMatHang(matHang.getMaMatHang())
                 .tenMatHang(matHang.getTenMatHang())
                 .anhMinhHoa(matHang.getAnhMinhHoa())
                 .giaMatHang(matHang.getGiaMatHang())
@@ -71,12 +88,4 @@ public class MatHangService {
     }
 
 
-    public MatHangResponse taoMatHang(MatHangRequest request) {
-        return matHangRepository.save(MatHang.builder()
-                .tenMatHang(request.tenMatHang())
-                .anhMinhHoa()
-                .giaMatHang(request.giaMatHang())
-                .loaiMatHang(request.loaiMatHang())
-                .build());
-    }
 }

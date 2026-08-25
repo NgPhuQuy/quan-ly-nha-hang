@@ -4,6 +4,7 @@ import com.npq.quanlynhahangapis.dto.request.MatHangRequest;
 import com.npq.quanlynhahangapis.service.MatHangService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class MatHangController {
     private final MatHangService matHangService;
 
-    @PostMapping("/mat-hang")
+    @PostMapping(value = "/mat-hang")
     ResponseEntity<?> taoMatHang(@RequestBody MatHangRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(matHangService.taoMatHang(request));
     }
