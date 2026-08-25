@@ -89,7 +89,7 @@ public class DatLichService {
 
         List<DatTruoc> listDatTruoc = new ArrayList<>();
 
-        for (DatTruocRequest r : request.listDatTruoc()){
+        for (DatTruocRequest r : request.listDatTruoc()) {
             DatTruoc datTruoc = this.chuyenSangObj(r, datLich);
             listDatTruoc.add(datTruoc);
         }

@@ -11,6 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
+@Builder
 public class MaTrangThaiMatHangChiNhanh implements Serializable {
     private Integer matHang;
     private Integer chiNhanh;

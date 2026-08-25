@@ -17,6 +17,7 @@ import java.util.List;
 public class ChiNhanhService {
     private final ChiNhanhRepository chiNhanhRepository;
     private final GioHoatDongService gioHoatDongService;
+    private final TrangThaiMatHangChiNhanhService trangThaiMatHangChiNhanhService;
 
     public List<ChiNhanhResponse> layDSChiNhanh() {
         return chiNhanhRepository
@@ -55,6 +56,9 @@ public class ChiNhanhService {
 
         // sinh thoi gian mac dinh cho chi nhanh
         gioHoatDongService.thoiGianMacDinh(chiNhanh);
+
+        // sinh list mat hang(mon an, dich vu,...) cho chi nhanh
+        trangThaiMatHangChiNhanhService.sinhTrangThaiMatHangMacDinh(chiNhanh);
 
         return chuyenSangDto(chiNhanh);
     }
