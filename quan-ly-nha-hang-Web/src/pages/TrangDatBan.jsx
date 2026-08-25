@@ -7,6 +7,7 @@ import TomTatDatBan from "../components/datBan/TomTatDatBan";
 import { CHI_NHANH_MAU } from "../data/chiNhanh";
 import { DIP_DAT_BAN, DICH_VU_BO_SUNG, MON_AN } from "../data/datBan";
 import { layDanhSachChiNhanh } from "../services/chiNhanh.service";
+import { apiDatLich } from "../services/datLich.service";
 
 const CAC_BUOC = ["Chọn bàn", "Chọn giờ", "Món ăn", "Thông tin", "Hoàn tất"];
 
@@ -49,11 +50,30 @@ function TrangDatBan({ khiQuayLai }) {
       (tong, id) => tong + (DICH_VU_BO_SUNG.find((m) => m.id === id)?.gia || 0),
       0,
     );
-  const xacNhan = () => {
-    setMaDatBan(
-      `5S-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
-    );
-    setBuoc(5);
+  const xacNhan = async () => {
+    const duLieu = {
+      maChiNhanh: Number(String(chiNhanh).replace(/\D/g, "")),
+      ngay,
+      gio: gioDaChon.length === 5 ? `${gioDaChon}:00` : gioDaChon,
+      soKhach,
+      ghiChu: thongTin.ghiChu,
+      listDatTruoc: monAn.map((mon) => ({
+        maMatHang: Number(String(mon.monAnId).replace(/\D/g, "")),
+        soLuong: mon.soLuong,
+      })),
+    };
+
+    try {
+      const ketQua = await apiDatLich(duLieu);
+      setMaDatBan(
+        ketQua.maDatBan ||
+          `5S-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
+      );
+      setBuoc(5);
+    } catch (error) {
+      console.error("Không thể đặt bàn:", error);
+      window.alert("Đặt bàn thất bại. Vui lòng thử lại.");
+    }
   };
   const datLai = () => {
     setBuoc(1);

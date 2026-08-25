@@ -4,7 +4,7 @@ import { CHI_NHANH_MAU } from "../data/chiNhanh";
 export const chuanHoaChiNhanh = (duLieu) => {
   if (!Array.isArray(duLieu)) return [];
   return duLieu.map((chiNhanh, viTri) => ({
-    id: chiNhanh.id ?? viTri,
+    id: chiNhanh.maChiNhanh ?? chiNhanh.id ?? viTri + 1,
     ten: chiNhanh.tenChiNhanh ?? chiNhanh.ten ?? `Chi nhánh ${viTri + 1}`,
     diaChi: chiNhanh.diaChi ?? "Đang cập nhật địa chỉ",
     soDienThoai: chiNhanh.soDienThoai ?? "Đang cập nhật số điện thoại",
