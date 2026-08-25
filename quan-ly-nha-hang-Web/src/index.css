@@ -1,111 +1,192 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap");
+@import "tailwindcss";
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+@theme {
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Outfit", system-ui, sans-serif;
+  --color-warm-black: #0f0b08;
+  --color-espresso: #1a120a;
+  --color-amber: #c8882a;
+  --color-gold: #e8b84b;
+  --color-champagne: #f0d890;
+  --color-cream: #faf3e0;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-body {
-  margin: 0;
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+* {
   box-sizing: border-box;
 }
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+html {
+  scroll-behavior: smooth;
 }
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
+body {
   margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-warm-black);
+  color: var(--color-cream);
+  -webkit-font-smoothing: antialiased;
 }
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+button {
+  cursor: pointer;
+}
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(200, 136, 42, 0.3);
+  border-radius: 3px;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out both;
+}
+.delay-1 {
+  animation-delay: 0.1s;
+}
+.delay-2 {
+  animation-delay: 0.2s;
+}
+.delay-3 {
+  animation-delay: 0.3s;
+}
+.delay-4 {
+  animation-delay: 0.4s;
+}
+.gold-shimmer {
+  background: linear-gradient(
+    90deg,
+    #c8882a,
+    #e8b84b,
+    #f0d890,
+    #e8b84b,
+    #c8882a
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-amber), var(--color-gold));
+  color: var(--color-espresso);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: 0.25s ease;
+  box-shadow: 0 4px 16px rgba(200, 136, 42, 0.35);
+}
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(200, 136, 42, 0.5);
+}
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.btn-ghost {
+  border: 1px solid rgba(200, 136, 42, 0.4);
+  color: var(--color-gold);
+  transition: 0.25s ease;
+}
+.btn-ghost:hover {
+  background: rgba(200, 136, 42, 0.1);
+  border-color: rgba(200, 136, 42, 0.7);
+}
+.card-warm {
+  background: linear-gradient(
+    135deg,
+    rgba(45, 27, 14, 0.9),
+    rgba(26, 18, 10, 0.95)
+  );
+  border: 1px solid rgba(200, 136, 42, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+}
+.input-warm,
+.select-warm {
+  width: 100%;
+  background: rgba(26, 18, 10, 0.8);
+  border: 1px solid rgba(200, 136, 42, 0.25);
+  color: var(--color-cream);
+  border-radius: 12px;
+}
+.input-warm:focus,
+.select-warm:focus {
+  outline: none;
+  border-color: rgba(200, 136, 42, 0.6);
+  box-shadow: 0 0 0 3px rgba(200, 136, 42, 0.1);
+}
+.input-warm::placeholder {
+  color: rgba(240, 216, 144, 0.3);
+}
+.branch-card {
+  transition: 0.3s ease;
+}
+.branch-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(200, 136, 42, 0.25);
+}
+.branch-image,
+.food-card img {
+  transition: transform 0.5s ease;
+}
+.branch-card:hover .branch-image,
+.food-card:hover img {
+  transform: scale(1.05);
+}
+.time-available,
+.time-scarce,
+.time-full {
+  border-radius: 12px;
+  padding: 10px 12px;
+  text-align: center;
+  transition: 0.2s ease;
+}
+.time-available {
+  background: rgba(74, 140, 92, 0.15);
+  border: 1px solid rgba(74, 140, 92, 0.45);
+  color: #7ecb96;
+}
+.time-available.selected {
+  background: rgba(74, 140, 92, 0.3);
+  border-color: #7ecb96;
+}
+.time-scarce {
+  background: rgba(196, 122, 32, 0.15);
+  border: 1px solid rgba(196, 122, 32, 0.45);
+  color: #e8a04a;
+}
+.time-scarce.selected {
+  background: rgba(196, 122, 32, 0.3);
+  border-color: #e8a04a;
+}
+.time-full {
+  background: rgba(107, 64, 64, 0.2);
+  border: 1px solid rgba(107, 64, 64, 0.3);
+  color: rgba(180, 120, 120, 0.5);
+  text-decoration: line-through;
+  cursor: not-allowed;
 }
