@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import BuocChon from "../components/datBan/BuocChon";
 import BuocChonGio from "../components/datBan/BuocChonGio";
 import BuocMonAn from "../components/datBan/BuocMonAn";
@@ -6,6 +6,7 @@ import BuocThongTin from "../components/datBan/BuocThongTin";
 import TomTatDatBan from "../components/datBan/TomTatDatBan";
 import { CHI_NHANH_MAU } from "../data/chiNhanh";
 import { DIP_DAT_BAN, DICH_VU_BO_SUNG, MON_AN } from "../data/datBan";
+import { layDanhSachChiNhanh } from "../services/chiNhanh.service";
 
 const CAC_BUOC = ["Chọn bàn", "Chọn giờ", "Món ăn", "Thông tin", "Hoàn tất"];
 
@@ -19,7 +20,9 @@ function TrangDatBan({ khiQuayLai }) {
     const [thongTin, setThongTin] = useState({ hoTen: "", soDienThoai: "", email: "", ghiChu: "", dip: "khong" });
     const [dichVuBoSung, setDichVuBoSung] = useState([]);
     const [maDatBan, setMaDatBan] = useState("");
-    const thongTinChiNhanh = useMemo(() => CHI_NHANH_MAU.find((mau) => mau.id === chiNhanh), [chiNhanh]);
+    const [chiNhanhs, setChiNhanhs] = useState(CHI_NHANH_MAU);
+    useEffect(() => { layDanhSachChiNhanh().then((duLieu) => { if (duLieu.length) setChiNhanhs(duLieu); }).catch(() => {}); }, []);
+    const thongTinChiNhanh = useMemo(() => chiNhanhs.find((mau) => String(mau.id) === String(chiNhanh)), [chiNhanhs, chiNhanh]);
     const tongTien = monAn.reduce((tong, mon) => tong + (MON_AN.find((m) => m.id === mon.monAnId)?.gia || 0) * mon.soLuong, 0) + dichVuBoSung.reduce((tong, id) => tong + (DICH_VU_BO_SUNG.find((m) => m.id === id)?.gia || 0), 0);
     const xacNhan = () => { setMaDatBan(`5S-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`); setBuoc(5); };
     const datLai = () => { setBuoc(1); setChiNhanh(""); setNgay(""); setSoKhach(2); setGioDaChon(""); setMonAn([]); setThongTin({ hoTen: "", soDienThoai: "", email: "", ghiChu: "", dip: "khong" }); setDichVuBoSung([]); setMaDatBan(""); };
