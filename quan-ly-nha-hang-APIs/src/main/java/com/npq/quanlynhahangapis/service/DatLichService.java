@@ -37,6 +37,7 @@ public class DatLichService {
     private final GioHoatDongRepository gioHoatDongRepository;
     private final KhachHangRepository khachHangRepository;
     private final ChiNhanhService chiNhanhService;
+    private final DatTruocService datTruocService;
     private final JwtUtil jwtUtil;
 
     @Transactional
@@ -84,19 +85,25 @@ public class DatLichService {
                 .gio(request.gio())
                 .soKhach(request.soKhach())
                 .ghiChu(request.ghiChu())
-                .listDatTruoc(request.listDatTruoc()
-                        .stream()
-                        .map(this::chuyenSangObj)
-                        .toList())
                 .build();
+
+        List<DatTruoc> listDatTruoc = new ArrayList<>();
+
+        for (DatTruocRequest r : request.listDatTruoc()){
+            DatTruoc datTruoc = this.chuyenSangObj(r, datLich);
+            listDatTruoc.add(datTruoc);
+        }
+        datLich.setListDatTruoc(listDatTruoc);
+        datTruocRepository.saveAll(listDatTruoc);
 
         return chuyenSangDto(datLichRepository.save(datLich));
     }
 
-    private DatTruoc chuyenSangObj(DatTruocRequest request) {
+    private DatTruoc chuyenSangObj(DatTruocRequest request, DatLich datLich) {
         MatHang matHang = matHangRepository.findById(request.maMatHang())
                 .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
         return DatTruoc.builder()
+                .datLich(datLich)
                 .matHang(matHang)
                 .soLuong(request.soLuong())
                 .donGia(matHang.getGiaMatHang())
@@ -178,7 +185,10 @@ public class DatLichService {
                 .gio(dto.getGio())
                 .soKhach(dto.getSoKhach())
                 .ghiChu(dto.getGhiChu())
-                .listDatTruoc(dto.getListDatTruoc())
+                .listDatTruoc(dto.getListDatTruoc()
+                        .stream()
+                        .map(datTruocService::chuyenSangDto)
+                        .toList())
                 .build();
     }
 }

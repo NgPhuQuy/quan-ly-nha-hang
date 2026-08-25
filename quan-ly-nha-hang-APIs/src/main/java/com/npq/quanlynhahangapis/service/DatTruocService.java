@@ -3,6 +3,7 @@ package com.npq.quanlynhahangapis.service;
 import com.npq.quanlynhahangapis.dto.request.DatLichRequest;
 import com.npq.quanlynhahangapis.dto.response.DatTruocResponse;
 import com.npq.quanlynhahangapis.entity.DatTruoc;
+import com.npq.quanlynhahangapis.entity.MatHang;
 import com.npq.quanlynhahangapis.repository.DatTruocRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,22 +17,12 @@ import org.springframework.stereotype.Service;
 public class DatTruocService {
     private final DatTruocRepository datTruocRepository;
 
-
-    public DatTruocResponse datTruocMonAn(DatLichRequest request) {
-        DatTruoc dt = DatTruoc.builder()
-//                .datCho(request.datCho())
-//                .matHang(request.matHang())
-//                .soLuong(request.soLuong())
-//                .donGia(request.donGia())
-                .build();
-
-        return chuyenSangDto(datTruocRepository.save(dt));
-    }
-
-    private DatTruocResponse chuyenSangDto(DatTruoc dto) {
-        return DatTruocResponse.builder().maDatLich().maMatHang().tenMatHang().soLuong().donGia().build()
-//                .datCho(dto.getDatCho())
-                .maMatHang(dto.getMatHang().getMaMatHang())
+    public DatTruocResponse chuyenSangDto(DatTruoc dto) {
+        MatHang matHang = dto.getMatHang();
+        return DatTruocResponse.builder()
+                .maDatLich(dto.getDatLich().getMaDatLich())
+                .maMatHang(matHang.getMaMatHang())
+                .tenMatHang(matHang.getTenMatHang())
                 .soLuong(dto.getSoLuong())
                 .donGia(dto.getDonGia())
                 .build();
