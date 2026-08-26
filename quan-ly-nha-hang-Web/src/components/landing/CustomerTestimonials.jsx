@@ -4,11 +4,11 @@ import { CAM_NHAN_KHACH_HANG } from "../../data/camNhanKhachHang";
 function CustomerTestimonials() {
   const [activeIndex, setActiveIndex] = useState(0);
   useEffect(() => {
-    const boDem = setInterval(
+    const rotationTimer = setInterval(
       () => setActiveIndex((index) => (index + 1) % CAM_NHAN_KHACH_HANG.length),
       5500,
     );
-    return () => clearInterval(boDem);
+    return () => clearInterval(rotationTimer);
   }, []);
   const testimonial = CAM_NHAN_KHACH_HANG[activeIndex];
   return (

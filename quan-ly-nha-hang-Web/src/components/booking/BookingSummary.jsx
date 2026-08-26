@@ -72,7 +72,7 @@ function BookingSummary({
           style={{ borderColor: "rgba(200,136,42,.1)" }}
         >
           <span className="text-xs" style={{ color: "rgba(240,216,144,.45)" }}>
-            Food and services:{" "}
+            Pre-orders and extras:{" "}
           </span>
           <span className="text-sm">{totalAmount.toLocaleString("vi-VN")}₫</span>
         </div>

@@ -36,12 +36,12 @@ function BookingConfirmation({
           <div><span className="block text-xs opacity-40">Time</span>{time}</div>
           <div><span className="block text-xs opacity-40">Date</span>{date}</div>
           <div><span className="block text-xs opacity-40">Guests</span>{guestCount}</div>
-          <div><span className="block text-xs opacity-40">Booked by</span>{guestDetails.hoTen}</div>
+          <div><span className="block text-xs opacity-40">Guest name</span>{guestDetails.hoTen}</div>
           <div><span className="block text-xs opacity-40">Phone</span>{guestDetails.soDienThoai}</div>
         </div>
         <div className="mt-6 border-t pt-5" style={{ borderColor: "rgba(200,136,42,.1)" }}>
           <div className="flex justify-between">
-            <span className="text-sm opacity-50">Food and services</span>
+            <span className="text-sm opacity-50">Pre-orders and extras</span>
             <span>{totalAmount.toLocaleString("vi-VN")}₫</span>
           </div>
           {guestDetails.dip !== "khong" && (

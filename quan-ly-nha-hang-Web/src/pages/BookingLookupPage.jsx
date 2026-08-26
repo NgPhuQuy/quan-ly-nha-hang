@@ -2,12 +2,12 @@ import { useBookingLookup } from "../hooks/useBookingLookup";
 
 function BookingLookupPage({ onBack }) {
   const {
-    bookingCode: maDatBan,
-    setBookingCode: setMaDatBan,
-    loading: dangTai,
-    booking: ketQua,
-    notFound: khongTimThay,
-    searchBooking: traCuu,
+    bookingCode,
+    setBookingCode,
+    loading,
+    booking,
+    notFound,
+    searchBooking,
   } = useBookingLookup();
 
   return (
@@ -44,21 +44,21 @@ function BookingLookupPage({ onBack }) {
         <div className="mt-8 flex gap-2">
           <input
             className="input-warm px-4 py-3"
-            value={maDatBan}
-            onChange={(event) => setMaDatBan(event.target.value)}
-            onKeyDown={(event) => event.key === "Enter" && traCuu()}
+            value={bookingCode}
+            onChange={(event) => setBookingCode(event.target.value)}
+            onKeyDown={(event) => event.key === "Enter" && searchBooking()}
             placeholder="Example: 5S-2026-1234"
           />
           <button
-            onClick={traCuu}
-            disabled={dangTai || !maDatBan.trim()}
+            onClick={searchBooking}
+            disabled={loading || !bookingCode.trim()}
             className="btn-primary rounded-xl px-5 disabled:opacity-50"
           >
-            {dangTai ? "..." : "Search"}
+            {loading ? "..." : "Search"}
           </button>
         </div>
 
-        {khongTimThay && (
+        {notFound && (
           <div
             className="mt-6 rounded-2xl p-5 text-center text-sm"
             style={{
@@ -72,52 +72,52 @@ function BookingLookupPage({ onBack }) {
           </div>
         )}
 
-        {ketQua && (
+        {booking && (
           <div className="card-warm mt-6 rounded-2xl p-5">
             <div className="flex justify-between">
               <span className="opacity-50">Booking reference</span>
-              <span>{ketQua.maDatLich || maDatBan}</span>
+              <span>{booking.maDatLich || bookingCode}</span>
             </div>
             <div className="mt-3 flex justify-between">
               <span className="opacity-50">Status</span>
-              <span style={{ color: "#7ecb96" }}>{ketQua.trangThai}</span>
+              <span style={{ color: "#7ecb96" }}>{booking.trangThai}</span>
             </div>
-            {ketQua.tenChiNhanh && (
+            {booking.tenChiNhanh && (
               <div className="mt-3 flex justify-between">
                 <span className="opacity-50">Branch</span>
-                <span>{ketQua.tenChiNhanh}</span>
+                <span>{booking.tenChiNhanh}</span>
               </div>
             )}
-            {ketQua.ngay && (
+            {booking.ngay && (
               <div className="mt-3 flex justify-between">
                 <span className="opacity-50">Date</span>
-                <span>{ketQua.ngay}</span>
+                <span>{booking.ngay}</span>
               </div>
             )}
-            {ketQua.gio && (
+            {booking.gio && (
               <div className="mt-3 flex justify-between">
                 <span className="opacity-50">Time</span>
-                <span>{ketQua.gio}</span>
+                <span>{booking.gio}</span>
               </div>
             )}
-            {ketQua.soKhach !== "" && (
+            {booking.soKhach !== "" && (
               <div className="mt-3 flex justify-between">
                 <span className="opacity-50">Guests</span>
-                <span>{ketQua.soKhach}</span>
+                <span>{booking.soKhach}</span>
               </div>
             )}
-            {ketQua.hoTen && (
+            {booking.hoTen && (
               <div className="mt-3 flex justify-between">
-                <span className="opacity-50">Booked by</span>
-                <span>{ketQua.hoTen}</span>
+                <span className="opacity-50">Guest name</span>
+                <span>{booking.hoTen}</span>
               </div>
             )}
-            {ketQua.ghiChu && (
+            {booking.ghiChu && (
               <div
                 className="mt-4 border-t pt-4 text-xs opacity-60"
                 style={{ borderColor: "rgba(200,136,42,.1)" }}
               >
-                Notes: {ketQua.ghiChu}
+                Notes: {booking.ghiChu}
               </div>
             )}
           </div>

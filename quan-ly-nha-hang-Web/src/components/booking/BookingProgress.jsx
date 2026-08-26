@@ -1,9 +1,9 @@
 const BOOKING_STEPS = [
-  "Choose a table",
+  "Choose a branch",
   "Choose a time",
-  "Food",
-  "Details",
-  "Complete",
+  "Pre-order",
+  "Guest details",
+  "Confirmation",
 ];
 
 function BookingProgress({ currentStep }) {
