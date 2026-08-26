@@ -11,11 +11,13 @@ export const authApis = () =>
   });
 
 export const endpoints = {
-  dat_lich: '/dat-lich',
-  chi_nhanh: '/chi-nhanh',
-  login: '/auth/login',
-  register: '/users',
+  dat_lich: "/dat-lich",
+  chi_nhanh: "/chi-nhanh",
+  login: "/auth/login",
+  register: "/users",
   mon_an: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/mon-an`,
+  thuc_uong: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/thuc-uong`,
+  dich_vu: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/dich-vu`,
   chi_tiet_dat_lich: (maDatLich) => `/dat-lich/${maDatLich}`,
 };
 

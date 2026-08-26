@@ -7,7 +7,8 @@ import TomTatDatBan from "../components/datBan/TomTatDatBan";
 import { CHI_NHANH_MAU } from "../data/chiNhanh";
 import { DIP_DAT_BAN, DICH_VU_BO_SUNG, MON_AN } from "../data/datBan";
 import { layDanhSachChiNhanh } from "../services/chiNhanh.service";
-import { apiDatLich } from "../services/datLich.service";
+import { layDanhSachMonAn, layDanhSachDichVu } from "../services/monAn.service";
+import { datLich } from "../services/datLich.service";
 
 const CAC_BUOC = ["Chọn bàn", "Chọn giờ", "Món ăn", "Thông tin", "Hoàn tất"];
 
@@ -35,6 +36,19 @@ function TrangDatBan({ khiQuayLai }) {
       })
       .catch(() => {});
   }, []);
+
+  // Danh sách món ăn/thức uống/dịch vụ PHỤ THUỘC chi nhánh — mỗi chi nhánh
+  // có thể có thực đơn khác nhau, nên chỉ fetch sau khi khách chọn chi nhánh
+  // (khác với danh sách chi nhánh, fetch ngay lúc mở trang).
+  const [danhSachMonAn, setDanhSachMonAn] = useState(MON_AN);
+  const [danhSachDichVu, setDanhSachDichVu] = useState(DICH_VU_BO_SUNG);
+  useEffect(() => {
+    if (!chiNhanh) return;
+    const maChiNhanh = Number(String(chiNhanh).replace(/\D/g, ""));
+    layDanhSachMonAn(maChiNhanh).then(setDanhSachMonAn);
+    layDanhSachDichVu(maChiNhanh).then(setDanhSachDichVu);
+  }, [chiNhanh]);
+
   const thongTinChiNhanh = useMemo(
     () => chiNhanhs.find((mau) => String(mau.id) === String(chiNhanh)),
     [chiNhanhs, chiNhanh],
@@ -43,11 +57,13 @@ function TrangDatBan({ khiQuayLai }) {
     monAn.reduce(
       (tong, mon) =>
         tong +
-        (MON_AN.find((m) => m.id === mon.monAnId)?.gia || 0) * mon.soLuong,
+        (danhSachMonAn.find((m) => m.id === mon.monAnId)?.gia || 0) *
+          mon.soLuong,
       0,
     ) +
     dichVuBoSung.reduce(
-      (tong, id) => tong + (DICH_VU_BO_SUNG.find((m) => m.id === id)?.gia || 0),
+      (tong, id) =>
+        tong + (danhSachDichVu.find((m) => m.id === id)?.gia || 0),
       0,
     );
   const xacNhan = async () => {
@@ -64,7 +80,7 @@ function TrangDatBan({ khiQuayLai }) {
     };
 
     try {
-      const ketQua = await apiDatLich(duLieu);
+      const ketQua = await datLich(duLieu);
       setMaDatBan(
         ketQua.maDatLich ||
           ketQua.maDatBan ||
@@ -162,6 +178,7 @@ function TrangDatBan({ khiQuayLai }) {
               )}
               {buoc === 3 && (
                 <BuocMonAn
+                  danhSachMonAn={danhSachMonAn}
                   monAn={monAn}
                   setMonAn={setMonAn}
                   khiTiepTuc={() => setBuoc(4)}
@@ -170,6 +187,7 @@ function TrangDatBan({ khiQuayLai }) {
               )}
               {buoc === 4 && (
                 <BuocThongTin
+                  danhSachDichVu={danhSachDichVu}
                   thongTin={thongTin}
                   setThongTin={setThongTin}
                   dichVuBoSung={dichVuBoSung}
@@ -186,6 +204,8 @@ function TrangDatBan({ khiQuayLai }) {
               soKhach={soKhach}
               monAn={monAn}
               dichVuBoSung={dichVuBoSung}
+              danhSachMonAn={danhSachMonAn}
+              danhSachDichVu={danhSachDichVu}
             />
           </div>
         ) : (

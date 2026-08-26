@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { MON_AN } from "../../data/datBan";
 
-function BuocMonAn({ monAn, setMonAn, khiTiepTuc, khiQuayLai }) {
+function BuocMonAn({ danhSachMonAn, monAn, setMonAn, khiTiepTuc, khiQuayLai }) {
   const [nhom, setNhom] = useState("Tất cả");
   const cacNhom = ["Tất cả", "Khai vị", "Món chính", "Tráng miệng", "Đồ uống"];
   const danhSach =
-    nhom === "Tất cả" ? MON_AN : MON_AN.filter((mon) => mon.nhom === nhom);
+    nhom === "Tất cả"
+      ? danhSachMonAn
+      : danhSachMonAn.filter((mon) => mon.nhom === nhom);
   const laySoLuong = (id) =>
     monAn.find((mon) => mon.monAnId === id)?.soLuong || 0;
   const tang = (mon) =>
@@ -60,6 +61,11 @@ function BuocMonAn({ monAn, setMonAn, khiTiepTuc, khiQuayLai }) {
         ))}
       </div>
       <div className="space-y-3">
+        {danhSach.length === 0 && (
+          <p className="py-8 text-center text-sm opacity-40">
+            Đang tải thực đơn...
+          </p>
+        )}
         {danhSach.map((mon) => (
           <div
             key={mon.id}

@@ -1,19 +1,26 @@
-import { DICH_VU_BO_SUNG, MON_AN } from "../../data/datBan";
-
-// Nhận `thongTinChiNhanh` (object) trực tiếp từ trang cha — nơi đã tra đúng
-// trong danh sách chi nhánh THẬT (từ API), thay vì tự tra lại trong mock data
-// tĩnh ở đây (trước đây gây bug: hiện "Chưa chọn" dù đã chọn, vì mock và API
-// có thể khác định dạng id).
-function TomTatDatBan({ thongTinChiNhanh, ngay, gio, soKhach, monAn, dichVuBoSung }) {
+// Nhận `danhSachMonAn`/`danhSachDichVu` (data thật đã fetch ở trang cha) thay
+// vì tự import mock tĩnh ở đây — cùng lý do đã sửa bug với chi nhánh trước đó:
+// mock và API có thể khác id, tự tra mock sẽ tính sai giá.
+function TomTatDatBan({
+  thongTinChiNhanh,
+  ngay,
+  gio,
+  soKhach,
+  monAn,
+  dichVuBoSung,
+  danhSachMonAn,
+  danhSachDichVu,
+}) {
   const tongTien =
     monAn.reduce(
       (tong, mon) =>
         tong +
-        (MON_AN.find((m) => m.id === mon.monAnId)?.gia || 0) * mon.soLuong,
+        (danhSachMonAn.find((m) => m.id === mon.monAnId)?.gia || 0) *
+          mon.soLuong,
       0,
     ) +
     dichVuBoSung.reduce(
-      (tong, id) => tong + (DICH_VU_BO_SUNG.find((m) => m.id === id)?.gia || 0),
+      (tong, id) => tong + (danhSachDichVu.find((m) => m.id === id)?.gia || 0),
       0,
     );
   return (

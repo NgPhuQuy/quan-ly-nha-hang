@@ -1,10 +1,5 @@
 import apis, { endpoints } from "./apis";
 
-export const apiDatLich = async (duLieu) => {
-  const res = await apis.post(endpoints.dat_lich, duLieu);
-  return res.data;
-};
-
 // Chuẩn hoá field trả về từ backend — tên field thật có thể khác tuỳ module,
 // nên fallback qua nhiều khả năng thay vì assume cứng 1 tên duy nhất.
 const chuanHoaKetQuaTraCuu = (duLieu) => ({
@@ -19,7 +14,12 @@ const chuanHoaKetQuaTraCuu = (duLieu) => ({
   ghiChu: duLieu.ghiChu ?? "",
 });
 
-apiDatLich.getChiTietDatLich = async (maDatLich) => {
+export const datLich = async (duLieu) => {
+  const res = await apis.post(endpoints.dat_lich, duLieu);
+  return res.data;
+};
+
+export const traCuuDatLich = async (maDatLich) => {
   const res = await apis.get(endpoints.chi_tiet_dat_lich(maDatLich));
   return chuanHoaKetQuaTraCuu(res.data);
 };

@@ -1,15 +1,34 @@
+import { useEffect, useRef } from "react";
 import { ANH } from "../../assets/anh";
 import { lopPhuHero } from "../../themes";
 
 function PhanGioiThieu({ khiDatBan }) {
+  const heroRef = useRef(null);
+  const anhRef = useRef(null);
+
+  useEffect(() => {
+    const capNhat = () => {
+      if (!anhRef.current || !heroRef.current) return;
+      const rect = heroRef.current.getBoundingClientRect();
+      const ti_le = Math.max(0, Math.min(1, -rect.top / rect.height));
+      anhRef.current.style.transform = `scale(1.1) translateY(${ti_le * 50}px)`;
+    };
+    window.addEventListener("scroll", capNhat, { passive: true });
+    return () => window.removeEventListener("scroll", capNhat);
+  }, []);
+
   return (
-    <section className="relative flex h-[100svh] min-h-[520px] items-center justify-center overflow-hidden bg-[#0c0905]">
+    <section
+      ref={heroRef}
+      className="relative flex h-[100svh] min-h-[520px] items-center justify-center overflow-hidden bg-[#0c0905]"
+    >
       <div className="absolute inset-0">
         <img
+          ref={anhRef}
           src={ANH.hero}
           alt="Không gian 5S Dining"
           className="h-full w-full object-cover"
-          style={{ transform: "scale(1.08)" }}
+          style={{ transform: "scale(1.1)" }}
         />
         <div className="absolute inset-0" style={{ background: lopPhuHero }} />
       </div>

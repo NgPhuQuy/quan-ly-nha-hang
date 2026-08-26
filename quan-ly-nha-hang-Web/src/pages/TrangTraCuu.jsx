@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { apiTraCuuDatLich } from "../services/datLich.service";
+import { traCuuDatLich } from "../services/datLich.service";
 
 function TrangTraCuu({ khiQuayLai }) {
   const [maDatBan, setMaDatBan] = useState("");
@@ -13,7 +13,7 @@ function TrangTraCuu({ khiQuayLai }) {
     setKetQua(null);
     setKhongTimThay(false);
     try {
-      const duLieu = await apiTraCuuDatLich(maDatBan.trim());
+      const duLieu = await traCuuDatLich(maDatBan.trim());
       setKetQua(duLieu);
     } catch (error) {
       console.error("Không tra cứu được đặt bàn:", error);

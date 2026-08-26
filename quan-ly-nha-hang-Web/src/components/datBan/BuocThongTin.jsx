@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { DICH_VU_BO_SUNG, DIP_DAT_BAN } from "../../data/datBan";
+import { DIP_DAT_BAN } from "../../data/datBan";
 
 function BuocThongTin({
+  danhSachDichVu,
   thongTin,
   setThongTin,
   dichVuBoSung,
@@ -103,7 +104,7 @@ function BuocThongTin({
       <div className="mt-8">
         <p className="mb-3 text-sm">Dịch vụ bổ sung</p>
         <div className="grid gap-3 sm:grid-cols-2">
-          {DICH_VU_BO_SUNG.map((dichVu) => {
+          {danhSachDichVu.map((dichVu) => {
             const dangChon = dichVuBoSung.includes(dichVu.id);
             return (
               <button
