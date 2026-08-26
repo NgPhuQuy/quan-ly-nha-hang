@@ -31,6 +31,13 @@ function PhanGioiThieu({ khiDatBan }) {
           style={{ transform: "scale(1.1)" }}
         />
         <div className="absolute inset-0" style={{ background: lopPhuHero }} />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at 35% 55%,rgba(200,136,42,0.07) 0%,transparent 58%)",
+          }}
+        />
       </div>
       <div className="relative mx-auto max-w-3xl px-5 text-center">
         <p
@@ -74,10 +81,17 @@ function PhanGioiThieu({ khiDatBan }) {
         </div>
       </div>
       <div
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 text-xs uppercase tracking-widest"
+        className="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2"
         style={{ color: "rgba(200,136,42,.35)" }}
       >
-        Cuộn xuống
+        <span className="text-xs uppercase tracking-widest">Cuộn xuống</span>
+        <div
+          className="h-7 w-px"
+          style={{
+            background:
+              "linear-gradient(180deg,rgba(200,136,42,.35),transparent)",
+          }}
+        />
       </div>
     </section>
   );

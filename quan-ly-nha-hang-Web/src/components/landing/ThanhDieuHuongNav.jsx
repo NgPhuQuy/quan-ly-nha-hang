@@ -53,11 +53,30 @@ function ThanhDieuHuong({ khiDatBan, khiTraCuu }) {
           className="hidden items-center gap-7 text-sm md:flex"
           style={{ color: kemMo }}
         >
-          <a href="#menu">Menu</a>
-          <a href="#branches">Chi nhánh</a>
-          <a href="#about">Về chúng tôi</a>
-          <a href="#contact">Liên hệ</a>
-          <button onClick={traCuu}>Tra cứu</button>
+          <a href="#menu" className="transition-colors hover:text-amber-300">
+            Menu
+          </a>
+          <a
+            href="#branches"
+            className="transition-colors hover:text-amber-300"
+          >
+            Chi nhánh
+          </a>
+          <a href="#about" className="transition-colors hover:text-amber-300">
+            Về chúng tôi
+          </a>
+          <a
+            href="#contact"
+            className="transition-colors hover:text-amber-300"
+          >
+            Liên hệ
+          </a>
+          <button
+            onClick={traCuu}
+            className="transition-colors hover:text-amber-300"
+          >
+            Tra cứu
+          </button>
         </div>
         <div className="flex items-center gap-3">
           <button
