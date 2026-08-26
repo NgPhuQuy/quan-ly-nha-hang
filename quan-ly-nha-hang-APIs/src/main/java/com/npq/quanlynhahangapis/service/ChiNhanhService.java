@@ -18,11 +18,13 @@ public class ChiNhanhService {
     private final ChiNhanhRepository chiNhanhRepository;
     private final GioHoatDongService gioHoatDongService;
     private final TrangThaiMatHangChiNhanhService trangThaiMatHangChiNhanhService;
+    private final CloudinaryService cloudinaryService;
 
     public List<ChiNhanhResponse> layDSChiNhanh() {
         return chiNhanhRepository
                 .findAll()
                 .stream()
+                .filter(ChiNhanh::isTrangThai)
                 .map(this::chuyenSangDto)
                 .toList();
     }
@@ -42,14 +44,21 @@ public class ChiNhanhService {
                 .tenChiNhanh(chiNhanh.getTenChiNhanh())
                 .trangThaiChiNhanh(chiNhanh.isTrangThai())
                 .sucChua(chiNhanh.getSucChua())
+                .soDienThoai(chiNhanh.getSoDienThoai())
+                .diaChi(chiNhanh.getDiaChi())
+                .anhChiNhanh(chiNhanh.getAnhChiNhanh())
                 .build();
     }
 
     @Transactional
     public ChiNhanhResponse taoChiNhanh(ChiNhanhRequest request) {
+        String url = cloudinaryService.taiAnhLenCloudinary(request.anhChiNhanh());
         ChiNhanh chiNhanh = ChiNhanh.builder()
                 .tenChiNhanh(request.tenChiNhanh())
                 .sucChua(request.sucChua())
+                .soDienThoai(request.soDienThoai())
+                .diaChi(request.diaChi())
+                .anhChiNhanh(url)
                 .build();
 
         chiNhanh = chiNhanhRepository.save(chiNhanh);

@@ -7,6 +7,9 @@ public record ChiNhanhResponse(
         Integer maChiNhanh,
         String tenChiNhanh,
         Boolean trangThaiChiNhanh,
-        Integer sucChua
+        Integer sucChua,
+        String soDienThoai,
+        String diaChi,
+        String anhChiNhanh
 ) {
 }

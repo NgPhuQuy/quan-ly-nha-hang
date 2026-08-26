@@ -4,6 +4,7 @@ import com.npq.quanlynhahangapis.dto.request.ChiNhanhRequest;
 import com.npq.quanlynhahangapis.service.ChiNhanhService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +15,8 @@ public class ChiNhanhController {
 
     private final ChiNhanhService chiNhanhService;
 
-    @PostMapping("/chi-nhanh")
-    ResponseEntity<?> taoChiNhanh(@RequestBody ChiNhanhRequest request) {
+    @PostMapping(path = "/chi-nhanh", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<?> taoChiNhanh(@ModelAttribute ChiNhanhRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(chiNhanhService.taoChiNhanh(request));
     }
 

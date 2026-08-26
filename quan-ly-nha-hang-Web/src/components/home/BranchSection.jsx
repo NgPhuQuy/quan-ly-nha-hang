@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { fetchBranches } from "../../services/branch.service";
-import { cardBackground, cream, mutedCream, subtleGoldBorder } from "../../themes";
+import {
+  cardBackground,
+  cream,
+  mutedCream,
+  subtleGoldBorder,
+} from "../../themes";
 import GoldDivider from "./GoldDivider";
 
 function BranchSection({ onBookTable }) {
@@ -40,7 +45,7 @@ function BranchSection({ onBookTable }) {
         <div className="grid gap-4 sm:grid-cols-3">
           {branches.map((branch) => (
             <article
-              key={branch.id}
+              key={branch.maChiNhanh}
               className="branch-card overflow-hidden rounded-2xl"
               style={{
                 background: cardBackground,
@@ -49,14 +54,14 @@ function BranchSection({ onBookTable }) {
             >
               <div className="h-[175px] overflow-hidden">
                 <img
-                  src={branch.anh}
-                  alt={branch.ten}
+                  src={branch.anhChiNhanh}
+                  alt={branch.tenChiNhanh}
                   className="branch-image h-full w-full object-cover"
                 />
               </div>
               <div className="p-4">
                 <h3 className="font-serif" style={{ color: cream }}>
-                  {branch.ten}
+                  {branch.tenChiNhanh}
                 </h3>
                 <p className="mt-1 text-xs" style={{ color: mutedCream }}>
                   {branch.diaChi}
@@ -78,7 +83,7 @@ function BranchSection({ onBookTable }) {
                     className="text-xs"
                     style={{ color: "rgba(240,216,144,.26)" }}
                   >
-                    {branch.soCho} seats
+                    {branch.sucChua} seats
                   </span>
                 </div>
               </div>
