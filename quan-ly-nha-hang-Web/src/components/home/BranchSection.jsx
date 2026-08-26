@@ -6,10 +6,10 @@ import {
   mutedCream,
   subtleGoldBorder,
 } from "../../themes";
-import GoldDivider from "./GoldDivider";
 
 function BranchSection({ onBookTable }) {
   const [branches, setBranches] = useState([]);
+
   useEffect(() => {
     fetchBranches()
       .then((data) => {
@@ -17,6 +17,7 @@ function BranchSection({ onBookTable }) {
       })
       .catch(() => {});
   }, []);
+
   return (
     <section
       id="branches"
@@ -31,6 +32,7 @@ function BranchSection({ onBookTable }) {
           >
             Our locations
           </p>
+
           <h2
             style={{
               fontFamily: "var(--font-serif)",
@@ -40,45 +42,81 @@ function BranchSection({ onBookTable }) {
           >
             Find your table
           </h2>
-          <GoldDivider />
+
+          {/* Gold Divider */}
+          <div className="my-2 flex items-center gap-3">
+            <div
+              className="h-px flex-1"
+              style={{
+                background:
+                  "linear-gradient(90deg,transparent,rgba(200,136,42,.45))",
+              }}
+            />
+            <svg width="9" height="9" viewBox="0 0 9 9">
+              <path
+                d="M4.5 0L6 3H9L6.5 5L7.5 9L4.5 7L1.5 9L2.5 5L0 3H3Z"
+                fill="rgba(200,136,42,.6)"
+              />
+            </svg>
+            <div
+              className="h-px flex-1"
+              style={{
+                background:
+                  "linear-gradient(90deg,rgba(200,136,42,.45),transparent)",
+              }}
+            />
+          </div>
         </div>
-        <div className="grid gap-4 sm:grid-cols-3">
+
+        <div className="grid items-stretch gap-4 sm:grid-cols-3">
           {branches.map((branch) => (
             <article
               key={branch.maChiNhanh}
-              className="branch-card overflow-hidden rounded-2xl"
+              className="branch-card flex h-full flex-col overflow-hidden rounded-2xl"
               style={{
                 background: cardBackground,
                 border: `1px solid ${subtleGoldBorder}`,
               }}
             >
-              <div className="h-[175px] overflow-hidden">
+              {/* Image */}
+              <div className="h-[175px] shrink-0 overflow-hidden">
                 <img
                   src={branch.anhChiNhanh}
                   alt={branch.tenChiNhanh}
                   className="branch-image h-full w-full object-cover"
                 />
               </div>
-              <div className="p-4">
-                <h3 className="font-serif" style={{ color: cream }}>
+
+              {/* Content */}
+              <div className="flex flex-1 flex-col p-4">
+                <h3
+                  className="min-h-[28px] font-serif"
+                  style={{ color: cream }}
+                >
                   {branch.tenChiNhanh}
                 </h3>
-                <p className="mt-1 text-xs" style={{ color: mutedCream }}>
-                  {branch.diaChi}
-                </p>
-                <p
-                  className="mt-1 text-xs"
-                  style={{ color: "rgba(200,136,42,.5)" }}
-                >
-                  {branch.soDienThoai}
-                </p>
-                <div className="mt-3 flex items-center justify-between">
+
+                <div className="min-h-[40px]">
+                  <p className="mt-1 text-xs" style={{ color: mutedCream }}>
+                    {branch.diaChi || "\u00A0"}
+                  </p>
+
+                  <p
+                    className="mt-1 text-xs"
+                    style={{ color: "rgba(200,136,42,.5)" }}
+                  >
+                    {branch.soDienThoai || "\u00A0"}
+                  </p>
+                </div>
+
+                <div className="mt-auto flex items-center justify-between pt-3">
                   <button
                     onClick={onBookTable}
                     className="btn-primary rounded-full px-4 py-1.5 text-xs"
                   >
                     Book a table
                   </button>
+
                   <span
                     className="text-xs"
                     style={{ color: "rgba(240,216,144,.26)" }}
@@ -94,4 +132,5 @@ function BranchSection({ onBookTable }) {
     </section>
   );
 }
+
 export default BranchSection;

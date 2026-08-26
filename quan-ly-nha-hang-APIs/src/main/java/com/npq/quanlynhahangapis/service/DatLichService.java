@@ -66,7 +66,7 @@ public class DatLichService {
         LocalTime gioKetThuc = gioBatDau.plusHours(BOOKING_DURATION_HOURS);
 
         if (gioBatDau.isBefore(gioHoatDong.getGioMoCua())
-                || gioKetThuc.isAfter(gioHoatDong.getGioDongCua())) {
+                || gioBatDau.isAfter(gioHoatDong.getGioDongCua())) {
             throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
         }
 
@@ -127,7 +127,7 @@ public class DatLichService {
         List<KhungGioResponse> result = new ArrayList<>();
         LocalTime slotBatDau = gioHoatDong.getGioMoCua();
 
-        while (!slotBatDau.plusHours(BOOKING_DURATION_HOURS).isAfter(gioHoatDong.getGioDongCua())) {
+        while (!slotBatDau.isAfter(gioHoatDong.getGioDongCua())) {
             LocalTime slotKetThuc = slotBatDau.plusHours(BOOKING_DURATION_HOURS);
             int conCho = tinhConCho(chiNhanh, datLiches, slotBatDau, slotKetThuc);
             result.add(new KhungGioResponse(slotBatDau, conCho, conCho >= soKhach));
@@ -158,7 +158,8 @@ public class DatLichService {
                 .orElseThrow(() -> new AppException(ErrorCode.CLOSED_DAY));
     }
 
-    private int tinhConCho(ChiNhanh chiNhanh, List<DatLich> listDatLich, LocalTime slotBatDau, LocalTime slotKetThuc) {
+    private int tinhConCho(ChiNhanh chiNhanh, List<DatLich> listDatLich,
+                           LocalTime slotBatDau, LocalTime slotKetThuc) {
         int tongSoKhach = 0;
 
         for (DatLich datLich : listDatLich) {

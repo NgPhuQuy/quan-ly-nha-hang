@@ -78,7 +78,7 @@ public class MatHangService {
         return matHangResponse.loaiMatHang().equals(LoaiMatHang.DICH_VU);
     }
 
-    private MatHangResponse chuyenSangDto(MatHang matHang) {
+    public MatHangResponse chuyenSangDto(MatHang matHang) {
         return MatHangResponse.builder()
                 .maMatHang(matHang.getMaMatHang())
                 .tenMatHang(matHang.getTenMatHang())

@@ -15,13 +15,12 @@ import org.springframework.stereotype.Service;
 @Setter
 public class DatTruocService {
     private final DatTruocRepository datTruocRepository;
+    private final MatHangService matHangService;
 
     public DatTruocResponse chuyenSangDto(DatTruoc dto) {
         MatHang matHang = dto.getMatHang();
         return DatTruocResponse.builder()
-                .maDatLich(dto.getDatLich().getMaDatLich())
-                .maMatHang(matHang.getMaMatHang())
-                .tenMatHang(matHang.getTenMatHang())
+                .matHang(matHangService.chuyenSangDto(matHang))
                 .soLuong(dto.getSoLuong())
                 .donGia(dto.getDonGia())
                 .build();

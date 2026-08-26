@@ -6,9 +6,7 @@ import java.math.BigDecimal;
 
 @Builder
 public record DatTruocResponse(
-        Integer maDatLich,
-        Integer maMatHang,
-        String tenMatHang,
+        MatHangResponse matHang,
         Integer soLuong,
         BigDecimal donGia
 ) {
