@@ -1,5 +1,4 @@
 import apis, { endpoints } from "./apis";
-import { CHI_NHANH_MAU } from "../data/chiNhanh";
 
 export const normalizeBranch = (data) => {
   if (!Array.isArray(data)) return [];
@@ -8,8 +7,8 @@ export const normalizeBranch = (data) => {
     ten: branch.tenChiNhanh ?? branch.ten ?? `Branch ${index + 1}`,
     diaChi: branch.diaChi ?? "Address unavailable",
     soDienThoai: branch.soDienThoai ?? "Phone unavailable",
-    soCho: branch.soCho ?? 0,
-    anh: branch.anh ?? CHI_NHANH_MAU[index % CHI_NHANH_MAU.length].anh,
+    soCho: branch.soCho ?? branch.sucChua ?? 0,
+    anh: branch.anh ?? "",
   }));
 };
 

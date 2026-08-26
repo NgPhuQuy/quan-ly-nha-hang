@@ -1,6 +1,5 @@
-// Nhận `danhSachMonAn`/`danhSachDichVu` (data thật đã fetch ở trang cha) thay
-// vì tự import mock tĩnh ở đây — cùng lý do đã sửa bug với chi nhánh trước đó:
-// mock và API có thể khác id, tự tra mock sẽ tính sai giá.
+// Use the fetched menu and service data from the parent so API ids and prices
+// stay consistent instead of relying on static mock data.
 function BookingSummary({
   branch,
   date,

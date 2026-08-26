@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import { CHI_NHANH_MAU } from "../../data/chiNhanh";
 import { fetchBranches } from "../../services/branch.service";
 import { cardBackground, cream, mutedCream, subtleGoldBorder } from "../../themes";
 import GoldDivider from "../common/GoldDivider";
 
 function BranchSection({ onBookTable }) {
-  const [chiNhanhs, setChiNhanhs] = useState(CHI_NHANH_MAU);
+  const [branches, setBranches] = useState([]);
   useEffect(() => {
     fetchBranches()
-      .then((duLieu) => {
-        if (duLieu.length) setChiNhanhs(duLieu);
+      .then((data) => {
+        if (data.length) setBranches(data);
       })
       .catch(() => {});
   }, []);
@@ -39,9 +38,9 @@ function BranchSection({ onBookTable }) {
           <GoldDivider />
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
-          {chiNhanhs.map((chiNhanh) => (
+          {branches.map((branch) => (
             <article
-              key={chiNhanh.id}
+              key={branch.id}
               className="branch-card overflow-hidden rounded-2xl"
               style={{
                 background: cardBackground,
@@ -50,23 +49,23 @@ function BranchSection({ onBookTable }) {
             >
               <div className="h-[175px] overflow-hidden">
                 <img
-                  src={chiNhanh.anh}
-                  alt={chiNhanh.ten}
+                  src={branch.anh}
+                  alt={branch.ten}
                   className="branch-image h-full w-full object-cover"
                 />
               </div>
               <div className="p-4">
                 <h3 className="font-serif" style={{ color: cream }}>
-                  {chiNhanh.ten}
+                  {branch.ten}
                 </h3>
                 <p className="mt-1 text-xs" style={{ color: mutedCream }}>
-                  {chiNhanh.diaChi}
+                  {branch.diaChi}
                 </p>
                 <p
                   className="mt-1 text-xs"
                   style={{ color: "rgba(200,136,42,.5)" }}
                 >
-                  {chiNhanh.soDienThoai}
+                  {branch.soDienThoai}
                 </p>
                 <div className="mt-3 flex items-center justify-between">
                   <button
@@ -79,7 +78,7 @@ function BranchSection({ onBookTable }) {
                     className="text-xs"
                     style={{ color: "rgba(240,216,144,.26)" }}
                   >
-                    {chiNhanh.soCho} seats
+                    {branch.soCho} seats
                   </span>
                 </div>
               </div>

@@ -1,4 +1,3 @@
-import { KHUNG_GIO } from "../../data/datBan";
 import { mutedCream } from "../../themes";
 
 function TimeGroup({ label, slots, selectedTime, setSelectedTime }) {
@@ -32,9 +31,9 @@ function TimeGroup({ label, slots, selectedTime, setSelectedTime }) {
   );
 }
 
-function TimeSelection({ selectedTime, setSelectedTime, onContinue, onBack }) {
-  const buoiTrua = KHUNG_GIO.filter((m) => m.gio < "15:00");
-  const buoiToi = KHUNG_GIO.filter((m) => m.gio >= "15:00");
+function TimeSelection({ timeSlots, selectedTime, setSelectedTime, onContinue, onBack }) {
+  const lunchSlots = timeSlots.filter((slot) => slot.gio < "15:00");
+  const dinnerSlots = timeSlots.filter((slot) => slot.gio >= "15:00");
 
   return (
     <div className="card-warm rounded-2xl p-5 sm:p-7">
@@ -52,13 +51,13 @@ function TimeSelection({ selectedTime, setSelectedTime, onContinue, onBack }) {
       </h1>
       <TimeGroup
         label="Lunch"
-        slots={buoiTrua}
+        slots={lunchSlots}
         selectedTime={selectedTime}
         setSelectedTime={setSelectedTime}
       />
       <TimeGroup
         label="Dinner"
-        slots={buoiToi}
+        slots={dinnerSlots}
         selectedTime={selectedTime}
         setSelectedTime={setSelectedTime}
       />

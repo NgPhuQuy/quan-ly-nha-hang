@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { CHI_NHANH_MAU } from "../data/chiNhanh";
-import { DICH_VU_BO_SUNG, MON_AN } from "../data/datBan";
 import { fetchBranches } from "../services/branch.service";
-import { fetchAdditionalServices, fetchMenuItems } from "../services/menu.service";
+import { fetchAdditionalServices, fetchMenuItems, fetchTimeSlots } from "../services/menu.service";
 import { createBooking } from "../services/booking.service";
 
 export function useBooking() {
@@ -21,14 +19,15 @@ export function useBooking() {
   });
   const [selectedServices, setSelectedServices] = useState([]);
   const [bookingCode, setBookingCode] = useState("");
-  const [branches, setBranches] = useState(CHI_NHANH_MAU);
-  const [menuItems, setMenuItems] = useState(MON_AN);
-  const [additionalServices, setAdditionalServices] = useState(DICH_VU_BO_SUNG);
+  const [branches, setBranches] = useState([]);
+  const [menuItems, setMenuItems] = useState([]);
+  const [additionalServices, setAdditionalServices] = useState([]);
+  const [timeSlots, setTimeSlots] = useState([]);
 
   useEffect(() => {
     fetchBranches()
       .then((data) => {
-        if (data.length) setBranches(data);
+        setBranches(data);
       })
       .catch(() => {});
   }, []);
@@ -39,6 +38,12 @@ export function useBooking() {
     fetchMenuItems(numericBranchId).then(setMenuItems);
     fetchAdditionalServices(numericBranchId).then(setAdditionalServices);
   }, [branchId]);
+
+  useEffect(() => {
+    if (!branchId || !date || !guestCount) return;
+    const numericBranchId = Number(String(branchId).replace(/\D/g, ""));
+    fetchTimeSlots(numericBranchId, date, guestCount).then(setTimeSlots);
+  }, [branchId, date, guestCount]);
 
   const selectedBranch = useMemo(
     () => branches.find((branch) => String(branch.id) === String(branchId)),
@@ -121,6 +126,7 @@ export function useBooking() {
     selectedBranch,
     menuItems,
     additionalServices,
+    timeSlots,
     totalAmount,
     submitBooking,
     resetBooking,

@@ -4,17 +4,17 @@ import { heroOverlay } from "../../themes";
 
 function HeroIntro({ onBookTable }) {
   const heroRef = useRef(null);
-  const anhRef = useRef(null);
+  const imageRef = useRef(null);
 
   useEffect(() => {
-    const capNhat = () => {
-      if (!anhRef.current || !heroRef.current) return;
+    const updateParallax = () => {
+      if (!imageRef.current || !heroRef.current) return;
       const rect = heroRef.current.getBoundingClientRect();
-      const ti_le = Math.max(0, Math.min(1, -rect.top / rect.height));
-      anhRef.current.style.transform = `scale(1.1) translateY(${ti_le * 50}px)`;
+      const progress = Math.max(0, Math.min(1, -rect.top / rect.height));
+      imageRef.current.style.transform = `scale(1.1) translateY(${progress * 50}px)`;
     };
-    window.addEventListener("scroll", capNhat, { passive: true });
-    return () => window.removeEventListener("scroll", capNhat);
+    window.addEventListener("scroll", updateParallax, { passive: true });
+    return () => window.removeEventListener("scroll", updateParallax);
   }, []);
 
   return (
@@ -24,7 +24,7 @@ function HeroIntro({ onBookTable }) {
     >
       <div className="absolute inset-0">
         <img
-          ref={anhRef}
+          ref={imageRef}
           src={ANH.hero}
           alt="The 5S Dining interior"
           className="h-full w-full object-cover"

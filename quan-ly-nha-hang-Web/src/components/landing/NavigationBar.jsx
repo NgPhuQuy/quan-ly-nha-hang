@@ -2,14 +2,14 @@ import { useState } from "react";
 import { mutedCream, subtleGoldBorder } from "../../themes";
 
 function NavigationBar({ onBookTable, onLookupBooking }) {
-  const [moMenu, setMoMenu] = useState(false);
-  const dongMenu = () => setMoMenu(false);
-  const datBan = () => {
-    dongMenu();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const closeMenu = () => setIsMenuOpen(false);
+  const handleBookTable = () => {
+    closeMenu();
     onBookTable();
   };
-  const traCuu = () => {
-    dongMenu();
+  const handleLookupBooking = () => {
+    closeMenu();
     onLookupBooking();
   };
 
@@ -72,7 +72,7 @@ function NavigationBar({ onBookTable, onLookupBooking }) {
             Contact
           </a>
           <button
-            onClick={traCuu}
+            onClick={handleLookupBooking}
             className="transition-colors hover:text-amber-300"
           >
             Find my booking
@@ -80,42 +80,42 @@ function NavigationBar({ onBookTable, onLookupBooking }) {
         </div>
         <div className="flex items-center gap-3">
           <button
-            onClick={datBan}
+            onClick={handleBookTable}
             className="btn-primary rounded-full px-4 py-2 text-sm sm:px-5"
           >
             Book a table
           </button>
           <button
-            onClick={() => setMoMenu((giaTri) => !giaTri)}
+            onClick={() => setIsMenuOpen((isOpen) => !isOpen)}
             className="flex h-9 w-9 flex-col items-center justify-center gap-1 md:hidden"
             style={{ color: "rgba(200,136,42,.7)" }}
           >
             <div
-              className={`h-0.5 w-5 ${moMenu ? "translate-y-1.5 rotate-45" : ""}`}
+              className={`h-0.5 w-5 ${isMenuOpen ? "translate-y-1.5 rotate-45" : ""}`}
               style={{ background: "currentColor" }}
             />
             <div
-              className={`h-0.5 w-5 ${moMenu ? "opacity-0" : ""}`}
+              className={`h-0.5 w-5 ${isMenuOpen ? "opacity-0" : ""}`}
               style={{ background: "currentColor" }}
             />
             <div
-              className={`h-0.5 w-5 ${moMenu ? "-translate-y-1.5 -rotate-45" : ""}`}
+              className={`h-0.5 w-5 ${isMenuOpen ? "-translate-y-1.5 -rotate-45" : ""}`}
               style={{ background: "currentColor" }}
             />
           </button>
         </div>
       </div>
       <div
-        className={`overflow-hidden transition-all md:hidden ${moMenu ? "max-h-56" : "max-h-0"}`}
+        className={`overflow-hidden transition-all md:hidden ${isMenuOpen ? "max-h-56" : "max-h-0"}`}
         style={{
           background: "rgba(12,9,5,.97)",
-          borderTop: moMenu ? `1px solid ${subtleGoldBorder}` : "none",
+          borderTop: isMenuOpen ? `1px solid ${subtleGoldBorder}` : "none",
         }}
       >
         <div className="space-y-3 px-5 py-4">
           <a
             href="#menu"
-            onClick={dongMenu}
+            onClick={closeMenu}
             className="block text-sm"
             style={{ color: mutedCream }}
           >
@@ -123,7 +123,7 @@ function NavigationBar({ onBookTable, onLookupBooking }) {
           </a>
           <a
             href="#branches"
-            onClick={dongMenu}
+            onClick={closeMenu}
             className="block text-sm"
             style={{ color: mutedCream }}
           >
@@ -131,7 +131,7 @@ function NavigationBar({ onBookTable, onLookupBooking }) {
           </a>
           <a
             href="#about"
-            onClick={dongMenu}
+            onClick={closeMenu}
             className="block text-sm"
             style={{ color: mutedCream }}
           >
@@ -139,14 +139,14 @@ function NavigationBar({ onBookTable, onLookupBooking }) {
           </a>
           <a
             href="#contact"
-            onClick={dongMenu}
+            onClick={closeMenu}
             className="block text-sm"
             style={{ color: mutedCream }}
           >
             Contact
           </a>
           <button
-            onClick={traCuu}
+            onClick={handleLookupBooking}
             className="block w-full text-left text-sm"
             style={{ color: mutedCream }}
           >

@@ -40,6 +40,7 @@ function BookingPage({ onBack }) {
               )}
               {booking.step === 2 && (
                 <TimeSelection
+                  timeSlots={booking.timeSlots}
                   selectedTime={booking.selectedTime}
                   setSelectedTime={booking.setSelectedTime}
                   onContinue={() => booking.setStep(3)}

@@ -1,78 +1,68 @@
 import apis, { endpoints } from "./apis";
 import { ANH } from "../assets/anh";
-import { DICH_VU_BO_SUNG, MON_AN } from "../data/datBan";
 
-const ANH_MON_MAC_DINH = [
-  ANH.monMenu1,
-  ANH.monMenu2,
-  ANH.monMenu3,
-  ANH.monMenu4,
-  ANH.monMenu5,
-  ANH.monMenu6,
-];
+const DEFAULT_MENU_IMAGES = [ANH.monMenu1, ANH.monMenu2, ANH.monMenu3, ANH.monMenu4, ANH.monMenu5, ANH.monMenu6];
 
-// Chuẩn hoá 1 món ăn/thức uống — field thật từ backend có thể khác tên,
-// nên fallback qua nhiều khả năng. `nhomMacDinh` dùng khi backend không tự
-// gắn nhóm (VD API /thuc-uong luôn chắc chắn là "Đồ uống", không cần hỏi lại).
-const chuanHoaMonAn = (duLieu, viTri, nhomMacDinh) => ({
-  id: duLieu.maMonAn ?? duLieu.maMatHang ?? duLieu.id ?? `mon-${viTri}`,
-  ten: duLieu.tenMonAn ?? duLieu.ten ?? duLieu.tenMatHang ?? "Đang cập nhật",
-  moTa: duLieu.moTa ?? "",
-  gia: duLieu.gia ?? duLieu.donGia ?? 0,
-  anh:
-    duLieu.anh ??
-    duLieu.hinhAnh ??
-    ANH_MON_MAC_DINH[viTri % ANH_MON_MAC_DINH.length],
-  nhom: duLieu.nhom ?? duLieu.loaiMon ?? duLieu.danhMuc ?? nhomMacDinh,
+const normalizeMenuItem = (data, index, defaultCategory) => ({
+  id: data.maMonAn ?? data.maMatHang ?? data.id ?? `item-${index}`,
+  ten: data.tenMonAn ?? data.ten ?? data.tenMatHang ?? "Updating",
+  moTa: data.moTa ?? "",
+  gia: data.gia ?? data.donGia ?? data.giaMatHang ?? 0,
+  anh: data.anh ?? data.hinhAnh ?? data.anhMinhHoa ?? DEFAULT_MENU_IMAGES[index % DEFAULT_MENU_IMAGES.length],
+  nhom: data.nhom ?? data.loaiMon ?? data.loaiMatHang ?? data.danhMuc ?? defaultCategory,
 });
 
-// Chuẩn hoá 1 dịch vụ bổ sung — biểu tượng (emoji) thường không có ở backend,
-// đoán theo từ khoá trong tên, không khớp thì dùng icon mặc định.
-const doanBieuTuong = (ten) => {
-  const t = ten.toLowerCase();
-  if (t.includes("hoa")) return "🌷";
-  if (t.includes("bánh")) return "🎂";
-  if (t.includes("rượu") || t.includes("vang")) return "🍷";
-  if (t.includes("ảnh") || t.includes("chụp")) return "📸";
+const guessServiceIcon = (name) => {
+  const normalizedName = name.toLowerCase();
+  if (normalizedName.includes("hoa")) return "🌷";
+  if (normalizedName.includes("bánh")) return "🎂";
+  if (normalizedName.includes("rượu") || normalizedName.includes("vang")) return "🍷";
+  if (normalizedName.includes("ảnh") || normalizedName.includes("chụp")) return "📸";
   return "✨";
 };
-const chuanHoaDichVu = (duLieu, viTri) => {
-  const ten = duLieu.tenDichVu ?? duLieu.ten ?? "Đang cập nhật";
+
+const normalizeService = (data, index) => {
+  const name = data.tenDichVu ?? data.ten ?? "Updating";
   return {
-    id: duLieu.maDichVu ?? duLieu.id ?? `dv-${viTri}`,
-    ten,
-    gia: duLieu.gia ?? duLieu.donGia ?? 0,
-    bieuTuong: duLieu.bieuTuong ?? doanBieuTuong(ten),
+    id: data.maDichVu ?? data.id ?? `service-${index}`,
+    ten: name,
+    gia: data.gia ?? data.donGia ?? 0,
+    bieuTuong: data.bieuTuong ?? guessServiceIcon(name),
   };
 };
 
 export const fetchMenuItems = async (branchId) => {
   try {
-    const [monAnRes, thucUongRes] = await Promise.all([
+    const [menuResponse, drinkResponse] = await Promise.all([
       apis.get(endpoints.mon_an(branchId)),
       apis.get(endpoints.thuc_uong(branchId)),
     ]);
-    const monAn = (monAnRes.data || []).map((mon, i) =>
-      chuanHoaMonAn(mon, i, "Món chính"),
-    );
-    const thucUong = (thucUongRes.data || []).map((mon, i) =>
-      chuanHoaMonAn(mon, i, "Đồ uống"),
-    );
-    const ketQua = [...monAn, ...thucUong];
-    return ketQua.length ? ketQua : MON_AN;
+    const menuItems = (menuResponse.data || []).map((item, index) => normalizeMenuItem(item, index, "Main courses"));
+    const drinks = (drinkResponse.data || []).map((item, index) => normalizeMenuItem(item, index, "Drinks"));
+    const items = [...menuItems, ...drinks];
+    return items;
   } catch (error) {
-    console.error("Không tải được danh sách món ăn/thức uống:", error);
-    return MON_AN;
+    console.error("Could not load menu items and drinks:", error);
+    return [];
   }
 };
 
 export const fetchAdditionalServices = async (branchId) => {
   try {
-    const res = await apis.get(endpoints.dich_vu(branchId));
-    const ketQua = (res.data || []).map((dv, i) => chuanHoaDichVu(dv, i));
-    return ketQua.length ? ketQua : DICH_VU_BO_SUNG;
+    const response = await apis.get(endpoints.dich_vu(branchId));
+    const services = (response.data || []).map((service, index) => normalizeService(service, index));
+    return services;
   } catch (error) {
-    console.error("Không tải được danh sách dịch vụ bổ sung:", error);
-    return DICH_VU_BO_SUNG;
+    console.error("Could not load additional services:", error);
+    return [];
   }
+};
+
+export const fetchTimeSlots = async (branchId, date, guestCount) => {
+  const response = await apis.get(endpoints.khung_gio(branchId, date, guestCount));
+  return (response.data || []).map((slot) => ({
+    gio: String(slot.gio).slice(0, 5),
+    conCho: slot.conCho,
+    trangThai: slot.coTheDat === false ? "het" : slot.conCho <= 2 ? "it" : "con",
+  }));
 };

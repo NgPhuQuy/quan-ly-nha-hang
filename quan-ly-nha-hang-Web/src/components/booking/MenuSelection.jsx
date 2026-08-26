@@ -2,14 +2,14 @@ import { useState } from "react";
 
 function MenuSelection({ menuItems, selectedItems, setSelectedItems, onContinue, onBack }) {
   const [nhom, setNhom] = useState("All");
-  const cacNhom = ["All", "Starters", "Main courses", "Desserts", "Drinks"];
-  const danhSach =
+  const menuCategories = ["All", "Starters", "Main courses", "Desserts", "Drinks"];
+  const filteredItems =
     nhom === "All"
       ? menuItems
       : menuItems.filter((mon) => mon.nhom === nhom);
-  const laySoLuong = (id) =>
+  const getQuantity = (id) =>
     selectedItems.find((item) => item.monAnId === id)?.soLuong || 0;
-  const tang = (mon) =>
+  const increaseQuantity = (mon) =>
     setSelectedItems((items) => {
       const daCo = items.find((item) => item.monAnId === mon.id);
       return daCo
@@ -18,7 +18,7 @@ function MenuSelection({ menuItems, selectedItems, setSelectedItems, onContinue,
           )
         : [...items, { monAnId: mon.id, soLuong: 1 }];
     });
-  const giam = (mon) =>
+  const decreaseQuantity = (mon) =>
     setSelectedItems((items) =>
       items.flatMap((item) =>
         item.monAnId !== mon.id
@@ -50,23 +50,23 @@ function MenuSelection({ menuItems, selectedItems, setSelectedItems, onContinue,
         You can skip this step and order at the restaurant.
       </p>
       <div className="mb-6 flex gap-2 overflow-x-auto">
-        {cacNhom.map((tenNhom) => (
+        {menuCategories.map((category) => (
           <button
-            key={tenNhom}
-            onClick={() => setNhom(tenNhom)}
-            className={`whitespace-nowrap rounded-full px-4 py-2 text-xs ${nhom === tenNhom ? "btn-primary" : "btn-ghost"}`}
+            key={category}
+            onClick={() => setNhom(category)}
+            className={`whitespace-nowrap rounded-full px-4 py-2 text-xs ${nhom === category ? "btn-primary" : "btn-ghost"}`}
           >
-            {tenNhom}
+            {category}
           </button>
         ))}
       </div>
       <div className="space-y-3">
-        {danhSach.length === 0 && (
+        {filteredItems.length === 0 && (
           <p className="py-8 text-center text-sm opacity-40">
             Loading menu...
           </p>
         )}
-        {danhSach.map((mon) => (
+        {filteredItems.map((mon) => (
           <div
             key={mon.id}
             className="flex gap-3 rounded-xl p-3"
@@ -97,17 +97,17 @@ function MenuSelection({ menuItems, selectedItems, setSelectedItems, onContinue,
             </div>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => giam(mon)}
-                disabled={!laySoLuong(mon.id)}
+                onClick={() => decreaseQuantity(mon)}
+                disabled={!getQuantity(mon.id)}
                 className="h-8 w-8 rounded-full border border-[rgba(200,136,42,.25)] disabled:opacity-30"
               >
                 −
               </button>
               <span className="w-5 text-center text-sm">
-                {laySoLuong(mon.id)}
+                {getQuantity(mon.id)}
               </span>
               <button
-                onClick={() => tang(mon)}
+                onClick={() => increaseQuantity(mon)}
                 className="h-8 w-8 rounded-full border border-[rgba(200,136,42,.25)]"
               >
                 +

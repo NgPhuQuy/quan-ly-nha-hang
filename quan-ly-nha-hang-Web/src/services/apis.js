@@ -18,6 +18,7 @@ export const endpoints = {
   mon_an: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/mon-an`,
   thuc_uong: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/thuc-uong`,
   dich_vu: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/dich-vu`,
+  khung_gio: (maChiNhanh, ngay, soKhach) => `/dat-lich/khung-gio?maChiNhanh=${maChiNhanh}&ngay=${ngay}&soKhach=${soKhach}`,
   chi_tiet_dat_lich: (maDatLich) => `/dat-lich/${maDatLich}`,
 };
 
