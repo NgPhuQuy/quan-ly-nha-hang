@@ -38,7 +38,8 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
-                ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                );
+//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         //todo dang bo chan tat ca de test api
         return http.build();
     }

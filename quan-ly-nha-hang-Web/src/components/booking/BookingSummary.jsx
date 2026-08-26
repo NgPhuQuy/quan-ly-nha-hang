@@ -2,25 +2,23 @@
 // vì tự import mock tĩnh ở đây — cùng lý do đã sửa bug với chi nhánh trước đó:
 // mock và API có thể khác id, tự tra mock sẽ tính sai giá.
 function BookingSummary({
-  thongTinChiNhanh,
-  ngay,
-  gio,
-  soKhach,
-  monAn,
-  dichVuBoSung,
-  danhSachMonAn,
-  danhSachDichVu,
+  branch,
+  date,
+  time,
+  guestCount,
+  selectedItems,
+  selectedServices,
+  menuItems,
+  additionalServices,
 }) {
-  const tongTien =
-    monAn.reduce(
-      (tong, mon) =>
-        tong +
-        (danhSachMonAn.find((m) => m.id === mon.monAnId)?.gia || 0) *
-          mon.soLuong,
+  const totalAmount =
+    selectedItems.reduce(
+      (total, item) =>
+        total + (menuItems.find((menuItem) => menuItem.id === item.monAnId)?.gia || 0) * item.soLuong,
       0,
     ) +
-    dichVuBoSung.reduce(
-      (tong, id) => tong + (danhSachDichVu.find((m) => m.id === id)?.gia || 0),
+    selectedServices.reduce(
+      (total, id) => total + (additionalServices.find((service) => service.id === id)?.gia || 0),
       0,
     );
   return (
@@ -39,7 +37,7 @@ function BookingSummary({
           >
             Branch
           </span>
-          {thongTinChiNhanh?.ten || "Not selected"}
+          {branch?.ten || "Not selected"}
         </div>
         <div>
           <span
@@ -48,7 +46,7 @@ function BookingSummary({
           >
             Date
           </span>
-          {ngay || "Not selected"}
+          {date || "Not selected"}
         </div>
         <div>
           <span
@@ -57,7 +55,7 @@ function BookingSummary({
           >
             Time
           </span>
-          {gio || "Not selected"}
+          {time || "Not selected"}
         </div>
         <div>
           <span
@@ -66,10 +64,10 @@ function BookingSummary({
           >
             Guests
           </span>
-          {soKhach}
+          {guestCount}
         </div>
       </div>
-      {tongTien > 0 && (
+      {totalAmount > 0 && (
         <div
           className="mt-5 border-t pt-4"
           style={{ borderColor: "rgba(200,136,42,.1)" }}
@@ -77,7 +75,7 @@ function BookingSummary({
           <span className="text-xs" style={{ color: "rgba(240,216,144,.45)" }}>
             Food and services:{" "}
           </span>
-          <span className="text-sm">{tongTien.toLocaleString("vi-VN")}₫</span>
+          <span className="text-sm">{totalAmount.toLocaleString("vi-VN")}₫</span>
         </div>
       )}
     </aside>

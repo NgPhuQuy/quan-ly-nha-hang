@@ -1,30 +1,30 @@
 import { useState } from "react";
 
-function MenuSelection({ danhSachMonAn, monAn, setMonAn, khiTiepTuc, khiQuayLai }) {
+function MenuSelection({ menuItems, selectedItems, setSelectedItems, onContinue, onBack }) {
   const [nhom, setNhom] = useState("All");
   const cacNhom = ["All", "Starters", "Main courses", "Desserts", "Drinks"];
   const danhSach =
     nhom === "All"
-      ? danhSachMonAn
-      : danhSachMonAn.filter((mon) => mon.nhom === nhom);
+      ? menuItems
+      : menuItems.filter((mon) => mon.nhom === nhom);
   const laySoLuong = (id) =>
-    monAn.find((mon) => mon.monAnId === id)?.soLuong || 0;
+    selectedItems.find((item) => item.monAnId === id)?.soLuong || 0;
   const tang = (mon) =>
-    setMonAn((danhSachMon) => {
-      const daCo = danhSachMon.find((m) => m.monAnId === mon.id);
+    setSelectedItems((items) => {
+      const daCo = items.find((item) => item.monAnId === mon.id);
       return daCo
-        ? danhSachMon.map((m) =>
-            m.monAnId === mon.id ? { ...m, soLuong: m.soLuong + 1 } : m,
+        ? items.map((item) =>
+            item.monAnId === mon.id ? { ...item, soLuong: item.soLuong + 1 } : item,
           )
-        : [...danhSachMon, { monAnId: mon.id, soLuong: 1 }];
+        : [...items, { monAnId: mon.id, soLuong: 1 }];
     });
   const giam = (mon) =>
-    setMonAn((danhSachMon) =>
-      danhSachMon.flatMap((m) =>
-        m.monAnId !== mon.id
-          ? [m]
-          : m.soLuong > 1
-            ? [{ ...m, soLuong: m.soLuong - 1 }]
+    setSelectedItems((items) =>
+      items.flatMap((item) =>
+        item.monAnId !== mon.id
+          ? [item]
+          : item.soLuong > 1
+            ? [{ ...item, soLuong: item.soLuong - 1 }]
             : [],
       ),
     );
@@ -118,13 +118,13 @@ function MenuSelection({ danhSachMonAn, monAn, setMonAn, khiTiepTuc, khiQuayLai 
       </div>
       <div className="mt-8 flex gap-3">
         <button
-          onClick={khiQuayLai}
+          onClick={onBack}
           className="btn-ghost flex-1 rounded-xl py-3"
         >
           Back
         </button>
         <button
-          onClick={khiTiepTuc}
+          onClick={onContinue}
           className="btn-primary flex-1 rounded-xl py-3"
         >
           Continue

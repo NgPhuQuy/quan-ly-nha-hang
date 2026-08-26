@@ -48,7 +48,8 @@ public class DatLichService {
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Integer maNguoiDung = (Integer) authentication.getPrincipal();
+//        Integer maNguoiDung = (Integer) authentication.getPrincipal();
+        Integer maNguoiDung = 1;
         KhachHang khachHang = khachHangRepository
                 .findById(maNguoiDung)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));

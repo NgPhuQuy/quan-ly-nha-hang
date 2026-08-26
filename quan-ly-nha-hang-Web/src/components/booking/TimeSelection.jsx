@@ -1,27 +1,27 @@
 import { KHUNG_GIO } from "../../data/datBan";
 import { mutedCream } from "../../themes";
 
-function NhomGio({ nhan, danhSach, gioDaChon, setGioDaChon }) {
-  if (!danhSach.length) return null;
+function TimeGroup({ label, slots, selectedTime, setSelectedTime }) {
+  if (!slots.length) return null;
   return (
     <div className="mb-5">
       <p className="mb-2.5 text-xs" style={{ color: mutedCream }}>
-        {nhan}
+        {label}
       </p>
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-        {danhSach.map((mocGio) =>
-          mocGio.trangThai === "het" ? (
-            <button key={mocGio.gio} disabled className="time-full">
-              {mocGio.gio}
+        {slots.map((slot) =>
+          slot.trangThai === "het" ? (
+            <button key={slot.gio} disabled className="time-full">
+              {slot.gio}
             </button>
           ) : (
             <button
-              key={mocGio.gio}
-              onClick={() => setGioDaChon(mocGio.gio)}
-              className={`${mocGio.trangThai === "it" ? "time-scarce" : "time-available"} ${gioDaChon === mocGio.gio ? "selected" : ""}`}
+              key={slot.gio}
+              onClick={() => setSelectedTime(slot.gio)}
+              className={`${slot.trangThai === "it" ? "time-scarce" : "time-available"} ${selectedTime === slot.gio ? "selected" : ""}`}
             >
-              {mocGio.gio}
-              {mocGio.trangThai === "it" && (
+              {slot.gio}
+              {slot.trangThai === "it" && (
                 <span className="mt-1 block text-[10px]">Few tables left</span>
               )}
             </button>
@@ -32,7 +32,7 @@ function NhomGio({ nhan, danhSach, gioDaChon, setGioDaChon }) {
   );
 }
 
-function TimeSelection({ gioDaChon, setGioDaChon, khiTiepTuc, khiQuayLai }) {
+function TimeSelection({ selectedTime, setSelectedTime, onContinue, onBack }) {
   const buoiTrua = KHUNG_GIO.filter((m) => m.gio < "15:00");
   const buoiToi = KHUNG_GIO.filter((m) => m.gio >= "15:00");
 
@@ -50,28 +50,28 @@ function TimeSelection({ gioDaChon, setGioDaChon, khiTiepTuc, khiQuayLai }) {
       >
         Choose an arrival time
       </h1>
-      <NhomGio
-        nhan="Lunch"
-        danhSach={buoiTrua}
-        gioDaChon={gioDaChon}
-        setGioDaChon={setGioDaChon}
+      <TimeGroup
+        label="Lunch"
+        slots={buoiTrua}
+        selectedTime={selectedTime}
+        setSelectedTime={setSelectedTime}
       />
-      <NhomGio
-        nhan="Dinner"
-        danhSach={buoiToi}
-        gioDaChon={gioDaChon}
-        setGioDaChon={setGioDaChon}
+      <TimeGroup
+        label="Dinner"
+        slots={buoiToi}
+        selectedTime={selectedTime}
+        setSelectedTime={setSelectedTime}
       />
       <div className="mt-8 flex gap-3">
         <button
-          onClick={khiQuayLai}
+          onClick={onBack}
           className="btn-ghost flex-1 rounded-xl py-3"
         >
           Back
         </button>
         <button
-          onClick={khiTiepTuc}
-          disabled={!gioDaChon}
+          onClick={onContinue}
+          disabled={!selectedTime}
           className="btn-primary flex-1 rounded-xl py-3"
         >
           Continue

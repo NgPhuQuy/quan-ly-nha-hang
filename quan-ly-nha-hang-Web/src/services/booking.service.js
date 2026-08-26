@@ -3,15 +3,15 @@ import apis, { endpoints } from "./apis";
 // Chuẩn hoá field trả về từ backend — tên field thật có thể khác tuỳ module,
 // nên fallback qua nhiều khả năng thay vì assume cứng 1 tên duy nhất.
 const normalizeBooking = (data) => ({
-  maDatLich: duLieu.maDatLich ?? duLieu.maDatBan ?? "",
-  tenChiNhanh: duLieu.tenChiNhanh ?? duLieu.chiNhanh?.tenChiNhanh ?? "Đang cập nhật",
-  ngay: duLieu.ngay ?? duLieu.ngayDat ?? "",
-  gio: duLieu.gio ?? duLieu.gioDat ?? "",
-  soKhach: duLieu.soKhach ?? duLieu.soLuongKhach ?? "",
-  hoTen: duLieu.hoTen ?? duLieu.tenKhachHang ?? "",
-  soDienThoai: duLieu.soDienThoai ?? "",
-  trangThai: duLieu.trangThai ?? "Đã xác nhận",
-  ghiChu: duLieu.ghiChu ?? "",
+  maDatLich: data.maDatLich ?? data.maDatBan ?? "",
+  tenChiNhanh: data.tenChiNhanh ?? data.chiNhanh?.tenChiNhanh ?? "Updating",
+  ngay: data.ngay ?? data.ngayDat ?? "",
+  gio: data.gio ?? data.gioDat ?? "",
+  soKhach: data.soKhach ?? data.soLuongKhach ?? "",
+  hoTen: data.hoTen ?? data.tenKhachHang ?? "",
+  soDienThoai: data.soDienThoai ?? "",
+  trangThai: data.trangThai ?? "Confirmed",
+  ghiChu: data.ghiChu ?? "",
 });
 
 export const createBooking = async (data) => {

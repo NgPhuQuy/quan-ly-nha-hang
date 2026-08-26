@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CHI_NHANH_MAU } from "../../data/chiNhanh";
 import { fetchBranches } from "../../services/branch.service";
-import { nenThe, kem, kemMo, vienVangNhat } from "../../themes";
+import { cardBackground, cream, mutedCream, subtleGoldBorder } from "../../themes";
 import GoldDivider from "../common/GoldDivider";
 
 function BranchSection({ onBookTable }) {
@@ -31,7 +31,7 @@ function BranchSection({ onBookTable }) {
             style={{
               fontFamily: "var(--font-serif)",
               fontSize: "clamp(1.65rem,4vw,2.5rem)",
-              color: kem,
+              color: cream,
             }}
           >
             Find your table
@@ -44,8 +44,8 @@ function BranchSection({ onBookTable }) {
               key={chiNhanh.id}
               className="branch-card overflow-hidden rounded-2xl"
               style={{
-                background: nenThe,
-                border: `1px solid ${vienVangNhat}`,
+                background: cardBackground,
+                border: `1px solid ${subtleGoldBorder}`,
               }}
             >
               <div className="h-[175px] overflow-hidden">
@@ -56,10 +56,10 @@ function BranchSection({ onBookTable }) {
                 />
               </div>
               <div className="p-4">
-                <h3 className="font-serif" style={{ color: kem }}>
+                <h3 className="font-serif" style={{ color: cream }}>
                   {chiNhanh.ten}
                 </h3>
-                <p className="mt-1 text-xs" style={{ color: kemMo }}>
+                <p className="mt-1 text-xs" style={{ color: mutedCream }}>
                   {chiNhanh.diaChi}
                 </p>
                 <p

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { kemMo, vienVangNhat } from "../../themes";
+import { mutedCream, subtleGoldBorder } from "../../themes";
 
 function NavigationBar({ onBookTable, onLookupBooking }) {
   const [moMenu, setMoMenu] = useState(false);
@@ -51,7 +51,7 @@ function NavigationBar({ onBookTable, onLookupBooking }) {
         </a>
         <div
           className="hidden items-center gap-7 text-sm md:flex"
-          style={{ color: kemMo }}
+          style={{ color: mutedCream }}
         >
           <a href="#menu" className="transition-colors hover:text-amber-300">
             Menu
@@ -109,7 +109,7 @@ function NavigationBar({ onBookTable, onLookupBooking }) {
         className={`overflow-hidden transition-all md:hidden ${moMenu ? "max-h-56" : "max-h-0"}`}
         style={{
           background: "rgba(12,9,5,.97)",
-          borderTop: moMenu ? `1px solid ${vienVangNhat}` : "none",
+          borderTop: moMenu ? `1px solid ${subtleGoldBorder}` : "none",
         }}
       >
         <div className="space-y-3 px-5 py-4">
@@ -117,7 +117,7 @@ function NavigationBar({ onBookTable, onLookupBooking }) {
             href="#menu"
             onClick={dongMenu}
             className="block text-sm"
-            style={{ color: kemMo }}
+            style={{ color: mutedCream }}
           >
             Menu
           </a>
@@ -125,7 +125,7 @@ function NavigationBar({ onBookTable, onLookupBooking }) {
             href="#branches"
             onClick={dongMenu}
             className="block text-sm"
-            style={{ color: kemMo }}
+            style={{ color: mutedCream }}
           >
             Branches
           </a>
@@ -133,7 +133,7 @@ function NavigationBar({ onBookTable, onLookupBooking }) {
             href="#about"
             onClick={dongMenu}
             className="block text-sm"
-            style={{ color: kemMo }}
+            style={{ color: mutedCream }}
           >
             About us
           </a>
@@ -141,14 +141,14 @@ function NavigationBar({ onBookTable, onLookupBooking }) {
             href="#contact"
             onClick={dongMenu}
             className="block text-sm"
-            style={{ color: kemMo }}
+            style={{ color: mutedCream }}
           >
             Contact
           </a>
           <button
             onClick={traCuu}
             className="block w-full text-left text-sm"
-            style={{ color: kemMo }}
+            style={{ color: mutedCream }}
           >
             Find my booking
           </button>

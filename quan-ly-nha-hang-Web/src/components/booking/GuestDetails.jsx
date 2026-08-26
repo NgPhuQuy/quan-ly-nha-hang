@@ -2,32 +2,32 @@ import { useState } from "react";
 import { DIP_DAT_BAN } from "../../data/datBan";
 
 function GuestDetails({
-  danhSachDichVu,
-  thongTin,
-  setThongTin,
-  dichVuBoSung,
-  setDichVuBoSung,
-  khiXacNhan,
-  khiQuayLai,
+  additionalServices,
+  guestDetails,
+  setGuestDetails,
+  selectedServices,
+  setSelectedServices,
+  onConfirm,
+  onBack,
 }) {
   const [loi, setLoi] = useState({});
   const capNhat = (tenTruong, giaTri) => {
-    setThongTin((duLieu) => ({ ...duLieu, [tenTruong]: giaTri }));
+    setGuestDetails((data) => ({ ...data, [tenTruong]: giaTri }));
     setLoi((duLieu) => ({ ...duLieu, [tenTruong]: "" }));
   };
   const doiDichVu = (id) =>
-    setDichVuBoSung((danhSach) =>
-      danhSach.includes(id)
-        ? danhSach.filter((giaTri) => giaTri !== id)
-        : [...danhSach, id],
+    setSelectedServices((services) =>
+      services.includes(id)
+        ? services.filter((serviceId) => serviceId !== id)
+        : [...services, id],
     );
   const xacThuc = () => {
     const loiMoi = {};
-    if (!thongTin.hoTen.trim()) loiMoi.hoTen = "Please enter your full name";
-    if (!/^((0|\+84)[0-9]{8,10})$/.test(thongTin.soDienThoai.trim()))
+    if (!guestDetails.hoTen.trim()) loiMoi.hoTen = "Please enter your full name";
+    if (!/^((0|\+84)[0-9]{8,10})$/.test(guestDetails.soDienThoai.trim()))
       loiMoi.soDienThoai = "Please enter a valid phone number";
     setLoi(loiMoi);
-    if (!Object.keys(loiMoi).length) khiXacNhan();
+    if (!Object.keys(loiMoi).length) onConfirm();
   };
   return (
     <div className="card-warm rounded-2xl p-5 sm:p-7">
@@ -48,7 +48,7 @@ function GuestDetails({
           <label className="mb-2 block text-sm">Full name</label>
           <input
             className="input-warm px-4 py-3"
-            value={thongTin.hoTen}
+            value={guestDetails.hoTen}
             onChange={(event) => capNhat("hoTen", event.target.value)}
           />
           {loi.hoTen && (
@@ -59,7 +59,7 @@ function GuestDetails({
           <label className="mb-2 block text-sm">Phone number</label>
           <input
             className="input-warm px-4 py-3"
-            value={thongTin.soDienThoai}
+            value={guestDetails.soDienThoai}
             onChange={(event) => capNhat("soDienThoai", event.target.value)}
             placeholder="0912345678"
           />
@@ -72,7 +72,7 @@ function GuestDetails({
           <input
             type="email"
             className="input-warm px-4 py-3"
-            value={thongTin.email}
+            value={guestDetails.email}
             onChange={(event) => capNhat("email", event.target.value)}
             placeholder="ban@example.com"
           />
@@ -81,7 +81,7 @@ function GuestDetails({
           <label className="mb-2 block text-sm">Occasion</label>
           <select
             className="select-warm px-4 py-3"
-            value={thongTin.dip}
+            value={guestDetails.dip}
             onChange={(event) => capNhat("dip", event.target.value)}
           >
             {DIP_DAT_BAN.map((dip) => (
@@ -95,7 +95,7 @@ function GuestDetails({
           <label className="mb-2 block text-sm">Notes</label>
           <input
             className="input-warm px-4 py-3"
-            value={thongTin.ghiChu}
+            value={guestDetails.ghiChu}
             onChange={(event) => capNhat("ghiChu", event.target.value)}
             placeholder="A table by the window..."
           />
@@ -104,28 +104,28 @@ function GuestDetails({
       <div className="mt-8">
         <p className="mb-3 text-sm">Enhance your experience</p>
         <div className="grid gap-3 sm:grid-cols-2">
-          {danhSachDichVu.map((dichVu) => {
-            const dangChon = dichVuBoSung.includes(dichVu.id);
+          {additionalServices.map((service) => {
+            const isSelected = selectedServices.includes(service.id);
             return (
               <button
-                key={dichVu.id}
-                onClick={() => doiDichVu(dichVu.id)}
+                key={service.id}
+                onClick={() => doiDichVu(service.id)}
                 className="rounded-xl p-3 text-left"
                 style={{
-                  background: dangChon
+                  background: isSelected
                     ? "rgba(200,136,42,.11)"
                     : "rgba(200,136,42,.035)",
-                  border: `1px solid ${dangChon ? "rgba(200,136,42,.5)" : "rgba(200,136,42,.1)"}`,
+                  border: `1px solid ${isSelected ? "rgba(200,136,42,.5)" : "rgba(200,136,42,.1)"}`,
                 }}
               >
                 <span className="text-sm">
-                  {dichVu.bieuTuong} {dichVu.ten}
+                  {service.bieuTuong} {service.ten}
                 </span>
                 <span
                   className="float-right text-xs"
                   style={{ color: "rgba(232,184,75,.8)" }}
                 >
-                  {dichVu.gia.toLocaleString("vi-VN")}₫
+                  {service.gia.toLocaleString("vi-VN")}₫
                 </span>
               </button>
             );
@@ -134,7 +134,7 @@ function GuestDetails({
       </div>
       <div className="mt-8 flex gap-3">
         <button
-          onClick={khiQuayLai}
+          onClick={onBack}
           className="btn-ghost flex-1 rounded-xl py-3"
         >
           Back

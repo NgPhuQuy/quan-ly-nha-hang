@@ -4,13 +4,13 @@ import { fetchBranches } from "../../services/branch.service";
 import DatePicker from "../common/DatePicker";
 
 function BranchSelection({
-  chiNhanh,
-  setChiNhanh,
-  ngay,
-  setNgay,
-  soKhach,
-  setSoKhach,
-  khiTiepTuc,
+  branchId,
+  setBranchId,
+  date,
+  setDate,
+  guestCount,
+  setGuestCount,
+  onContinue,
 }) {
   const [chiNhanhs, setChiNhanhs] = useState(CHI_NHANH_MAU);
   const [hienLich, setHienLich] = useState(false);
@@ -22,8 +22,8 @@ function BranchSelection({
       .catch(() => {});
   }, []);
 
-  const ngayHienThi = ngay
-    ? new Date(ngay + "T00:00").toLocaleDateString("en-US", {
+  const displayedDate = date
+    ? new Date(date + "T00:00").toLocaleDateString("en-US", {
         weekday: "short",
         day: "numeric",
         month: "short",
@@ -49,8 +49,8 @@ function BranchSelection({
         <div>
           <label className="mb-2 block text-sm">Branch</label>
           <select
-            value={chiNhanh}
-            onChange={(event) => setChiNhanh(event.target.value)}
+            value={branchId}
+            onChange={(event) => setBranchId(event.target.value)}
             className="select-warm px-4 py-3"
           >
             <option value="">Select a branch</option>
@@ -69,14 +69,14 @@ function BranchSelection({
               onClick={() => setHienLich((v) => !v)}
               className="select-warm px-4 py-3 text-left"
             >
-              {ngayHienThi}
+              {displayedDate}
             </button>
             {hienLich && (
               <div className="absolute z-20 mt-2 w-full min-w-[280px]">
                 <DatePicker
-                  value={ngay}
+                  value={date}
                   onChange={(giaTri) => {
-                    setNgay(giaTri);
+                    setDate(giaTri);
                     setHienLich(false);
                   }}
                 />
@@ -89,15 +89,15 @@ function BranchSelection({
               type="number"
               min="1"
               max="20"
-              value={soKhach}
-              onChange={(event) => setSoKhach(Number(event.target.value))}
+              value={guestCount}
+              onChange={(event) => setGuestCount(Number(event.target.value))}
               className="input-warm px-4 py-3"
             />
           </div>
         </div>
         <button
-          onClick={khiTiepTuc}
-          disabled={!chiNhanh || !ngay}
+          onClick={onContinue}
+          disabled={!branchId || !date}
           className="btn-primary w-full rounded-xl py-3"
         >
           Continue to time selection
