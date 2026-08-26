@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { CHI_NHANH_MAU } from "../../data/chiNhanh";
 import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
+import LichChonNgay from "../chung/LichChonNgay";
 
 function BuocChon({
   chiNhanh,
@@ -12,6 +13,7 @@ function BuocChon({
   khiTiepTuc,
 }) {
   const [chiNhanhs, setChiNhanhs] = useState(CHI_NHANH_MAU);
+  const [hienLich, setHienLich] = useState(false);
   useEffect(() => {
     layDanhSachChiNhanh()
       .then((duLieu) => {
@@ -19,7 +21,16 @@ function BuocChon({
       })
       .catch(() => {});
   }, []);
-  const ngayMin = new Date().toISOString().slice(0, 10);
+
+  const ngayHienThi = ngay
+    ? new Date(ngay + "T00:00").toLocaleDateString("vi-VN", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+    : "Chọn ngày";
+
   return (
     <div className="card-warm rounded-2xl p-5 sm:p-7">
       <p
@@ -51,15 +62,26 @@ function BuocChon({
           </select>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          <div>
+          <div className="relative">
             <label className="mb-2 block text-sm">Ngày</label>
-            <input
-              type="date"
-              min={ngayMin}
-              value={ngay}
-              onChange={(event) => setNgay(event.target.value)}
-              className="input-warm px-4 py-3"
-            />
+            <button
+              type="button"
+              onClick={() => setHienLich((v) => !v)}
+              className="select-warm px-4 py-3 text-left"
+            >
+              {ngayHienThi}
+            </button>
+            {hienLich && (
+              <div className="absolute z-20 mt-2 w-full min-w-[280px]">
+                <LichChonNgay
+                  value={ngay}
+                  onChange={(giaTri) => {
+                    setNgay(giaTri);
+                    setHienLich(false);
+                  }}
+                />
+              </div>
+            )}
           </div>
           <div>
             <label className="mb-2 block text-sm">Số khách</label>

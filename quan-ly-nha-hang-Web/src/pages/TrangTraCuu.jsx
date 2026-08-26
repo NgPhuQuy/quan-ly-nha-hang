@@ -1,11 +1,28 @@
 import { useState } from "react";
+import { apiTraCuuDatLich } from "../services/datLich.service";
 
 function TrangTraCuu({ khiQuayLai }) {
   const [maDatBan, setMaDatBan] = useState("");
-  const [hienKetQua, setHienKetQua] = useState(false);
-  const traCuu = () => {
-    if (maDatBan.trim()) setHienKetQua(true);
+  const [dangTai, setDangTai] = useState(false);
+  const [ketQua, setKetQua] = useState(null);
+  const [khongTimThay, setKhongTimThay] = useState(false);
+
+  const traCuu = async () => {
+    if (!maDatBan.trim()) return;
+    setDangTai(true);
+    setKetQua(null);
+    setKhongTimThay(false);
+    try {
+      const duLieu = await apiTraCuuDatLich(maDatBan.trim());
+      setKetQua(duLieu);
+    } catch (error) {
+      console.error("Không tra cứu được đặt bàn:", error);
+      setKhongTimThay(true);
+    } finally {
+      setDangTai(false);
+    }
   };
+
   return (
     <div className="min-h-screen bg-[var(--color-warm-black)]">
       <header className="border-b border-[rgba(200,136,42,.18)] bg-[rgba(10,7,4,.96)] px-4 py-4">
@@ -45,20 +62,77 @@ function TrangTraCuu({ khiQuayLai }) {
             onKeyDown={(event) => event.key === "Enter" && traCuu()}
             placeholder="Ví dụ: 5S-2026-1234"
           />
-          <button onClick={traCuu} className="btn-primary rounded-xl px-5">
-            Tìm
+          <button
+            onClick={traCuu}
+            disabled={dangTai || !maDatBan.trim()}
+            className="btn-primary rounded-xl px-5 disabled:opacity-50"
+          >
+            {dangTai ? "..." : "Tìm"}
           </button>
         </div>
-        {hienKetQua && (
+
+        {khongTimThay && (
+          <div
+            className="mt-6 rounded-2xl p-5 text-center text-sm"
+            style={{
+              background: "rgba(160,55,55,.1)",
+              border: "1px solid rgba(160,55,55,.35)",
+              color: "rgba(240,180,180,.85)",
+            }}
+          >
+            Không tìm thấy đặt bàn với mã này. Kiểm tra lại mã hoặc liên hệ nhà
+            hàng.
+          </div>
+        )}
+
+        {ketQua && (
           <div className="card-warm mt-6 rounded-2xl p-5">
             <div className="flex justify-between">
               <span className="opacity-50">Mã đặt bàn</span>
-              <span>{maDatBan}</span>
+              <span>{ketQua.maDatLich || maDatBan}</span>
             </div>
             <div className="mt-3 flex justify-between">
               <span className="opacity-50">Trạng thái</span>
-              <span style={{ color: "#7ecb96" }}>Đã xác nhận</span>
+              <span style={{ color: "#7ecb96" }}>{ketQua.trangThai}</span>
             </div>
+            {ketQua.tenChiNhanh && (
+              <div className="mt-3 flex justify-between">
+                <span className="opacity-50">Chi nhánh</span>
+                <span>{ketQua.tenChiNhanh}</span>
+              </div>
+            )}
+            {ketQua.ngay && (
+              <div className="mt-3 flex justify-between">
+                <span className="opacity-50">Ngày</span>
+                <span>{ketQua.ngay}</span>
+              </div>
+            )}
+            {ketQua.gio && (
+              <div className="mt-3 flex justify-between">
+                <span className="opacity-50">Giờ</span>
+                <span>{ketQua.gio}</span>
+              </div>
+            )}
+            {ketQua.soKhach !== "" && (
+              <div className="mt-3 flex justify-between">
+                <span className="opacity-50">Số khách</span>
+                <span>{ketQua.soKhach} người</span>
+              </div>
+            )}
+            {ketQua.hoTen && (
+              <div className="mt-3 flex justify-between">
+                <span className="opacity-50">Người đặt</span>
+                <span>{ketQua.hoTen}</span>
+              </div>
+            )}
+            {ketQua.ghiChu && (
+              <div
+                className="mt-4 border-t pt-4 text-xs opacity-60"
+                style={{ borderColor: "rgba(200,136,42,.1)" }}
+              >
+                Ghi chú: {ketQua.ghiChu}
+              </div>
+            )}
           </div>
         )}
       </main>

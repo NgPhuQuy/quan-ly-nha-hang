@@ -66,7 +66,8 @@ function TrangDatBan({ khiQuayLai }) {
     try {
       const ketQua = await apiDatLich(duLieu);
       setMaDatBan(
-        ketQua.maDatBan ||
+        ketQua.maDatLich ||
+          ketQua.maDatBan ||
           `5S-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
       );
       setBuoc(5);
@@ -179,7 +180,7 @@ function TrangDatBan({ khiQuayLai }) {
               )}
             </div>
             <TomTatDatBan
-              chiNhanh={chiNhanh}
+              thongTinChiNhanh={thongTinChiNhanh}
               ngay={ngay}
               gio={gioDaChon}
               soKhach={soKhach}

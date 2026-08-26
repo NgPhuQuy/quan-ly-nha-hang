@@ -1,8 +1,10 @@
-import { CHI_NHANH_MAU } from "../../data/chiNhanh";
 import { DICH_VU_BO_SUNG, MON_AN } from "../../data/datBan";
 
-function TomTatDatBan({ chiNhanh, ngay, gio, soKhach, monAn, dichVuBoSung }) {
-  const thongTinChiNhanh = CHI_NHANH_MAU.find((mau) => mau.id === chiNhanh);
+// Nhận `thongTinChiNhanh` (object) trực tiếp từ trang cha — nơi đã tra đúng
+// trong danh sách chi nhánh THẬT (từ API), thay vì tự tra lại trong mock data
+// tĩnh ở đây (trước đây gây bug: hiện "Chưa chọn" dù đã chọn, vì mock và API
+// có thể khác định dạng id).
+function TomTatDatBan({ thongTinChiNhanh, ngay, gio, soKhach, monAn, dichVuBoSung }) {
   const tongTien =
     monAn.reduce(
       (tong, mon) =>
