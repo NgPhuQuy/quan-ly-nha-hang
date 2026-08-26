@@ -52,7 +52,7 @@ public class MatHangService {
                 .findByChiNhanh_MaChiNhanhAndTrangThaiMatHang(maChiNhanh, TrangThaiMatHang.DANG_BAN)
                 .stream()
                 .map(item -> chuyenSangDto(item.getMatHang()))
-                .filter(this::laMonAn)
+                .filter(this::laThucUong)
                 .toList();
     }
 
@@ -61,7 +61,7 @@ public class MatHangService {
                 .findByChiNhanh_MaChiNhanhAndTrangThaiMatHang(maChiNhanh, TrangThaiMatHang.DANG_BAN)
                 .stream()
                 .map(item -> chuyenSangDto(item.getMatHang()))
-                .filter(this::laMonAn)
+                .filter(this::laDichVu)
                 .toList();
     }
 
