@@ -1,7 +1,7 @@
 // Nhận `danhSachMonAn`/`danhSachDichVu` (data thật đã fetch ở trang cha) thay
 // vì tự import mock tĩnh ở đây — cùng lý do đã sửa bug với chi nhánh trước đó:
 // mock và API có thể khác id, tự tra mock sẽ tính sai giá.
-function TomTatDatBan({
+function BookingSummary({
   thongTinChiNhanh,
   ngay,
   gio,
@@ -29,7 +29,7 @@ function TomTatDatBan({
         className="mb-4 text-xs uppercase tracking-[.15em]"
         style={{ color: "rgba(200,136,42,.55)" }}
       >
-        Tóm tắt đặt bàn
+        Booking summary
       </p>
       <div className="space-y-3 text-sm">
         <div>
@@ -37,36 +37,36 @@ function TomTatDatBan({
             className="block text-xs"
             style={{ color: "rgba(240,216,144,.35)" }}
           >
-            Chi nhánh
+            Branch
           </span>
-          {thongTinChiNhanh?.ten || "Chưa chọn"}
+          {thongTinChiNhanh?.ten || "Not selected"}
         </div>
         <div>
           <span
             className="block text-xs"
             style={{ color: "rgba(240,216,144,.35)" }}
           >
-            Ngày
+            Date
           </span>
-          {ngay || "Chưa chọn"}
+          {ngay || "Not selected"}
         </div>
         <div>
           <span
             className="block text-xs"
             style={{ color: "rgba(240,216,144,.35)" }}
           >
-            Giờ
+            Time
           </span>
-          {gio || "Chưa chọn"}
+          {gio || "Not selected"}
         </div>
         <div>
           <span
             className="block text-xs"
             style={{ color: "rgba(240,216,144,.35)" }}
           >
-            Số khách
+            Guests
           </span>
-          {soKhach} người
+          {soKhach}
         </div>
       </div>
       {tongTien > 0 && (
@@ -75,7 +75,7 @@ function TomTatDatBan({
           style={{ borderColor: "rgba(200,136,42,.1)" }}
         >
           <span className="text-xs" style={{ color: "rgba(240,216,144,.45)" }}>
-            Món và dịch vụ:{" "}
+            Food and services:{" "}
           </span>
           <span className="text-sm">{tongTien.toLocaleString("vi-VN")}₫</span>
         </div>
@@ -83,4 +83,4 @@ function TomTatDatBan({
     </aside>
   );
 }
-export default TomTatDatBan;
+export default BookingSummary;

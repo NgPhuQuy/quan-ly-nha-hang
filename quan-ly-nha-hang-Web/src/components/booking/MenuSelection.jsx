@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-function BuocMonAn({ danhSachMonAn, monAn, setMonAn, khiTiepTuc, khiQuayLai }) {
-  const [nhom, setNhom] = useState("Tất cả");
-  const cacNhom = ["Tất cả", "Khai vị", "Món chính", "Tráng miệng", "Đồ uống"];
+function MenuSelection({ danhSachMonAn, monAn, setMonAn, khiTiepTuc, khiQuayLai }) {
+  const [nhom, setNhom] = useState("All");
+  const cacNhom = ["All", "Starters", "Main courses", "Desserts", "Drinks"];
   const danhSach =
-    nhom === "Tất cả"
+    nhom === "All"
       ? danhSachMonAn
       : danhSachMonAn.filter((mon) => mon.nhom === nhom);
   const laySoLuong = (id) =>
@@ -35,19 +35,19 @@ function BuocMonAn({ danhSachMonAn, monAn, setMonAn, khiTiepTuc, khiQuayLai }) {
         className="text-xs uppercase tracking-[.2em]"
         style={{ color: "rgba(200,136,42,.6)" }}
       >
-        Bước 3
+        Step 3
       </p>
       <h1
         className="mt-2 font-serif text-2xl"
         style={{ color: "rgba(240,216,144,.9)" }}
       >
-        Chọn món ăn trước
+        Pre-order your dishes
       </h1>
       <p
         className="mb-7 mt-2 text-sm"
         style={{ color: "rgba(240,216,144,.42)" }}
       >
-        Có thể bỏ qua và gọi món tại nhà hàng.
+        You can skip this step and order at the restaurant.
       </p>
       <div className="mb-6 flex gap-2 overflow-x-auto">
         {cacNhom.map((tenNhom) => (
@@ -63,7 +63,7 @@ function BuocMonAn({ danhSachMonAn, monAn, setMonAn, khiTiepTuc, khiQuayLai }) {
       <div className="space-y-3">
         {danhSach.length === 0 && (
           <p className="py-8 text-center text-sm opacity-40">
-            Đang tải thực đơn...
+            Loading menu...
           </p>
         )}
         {danhSach.map((mon) => (
@@ -121,16 +121,16 @@ function BuocMonAn({ danhSachMonAn, monAn, setMonAn, khiTiepTuc, khiQuayLai }) {
           onClick={khiQuayLai}
           className="btn-ghost flex-1 rounded-xl py-3"
         >
-          Quay lại
+          Back
         </button>
         <button
           onClick={khiTiepTuc}
           className="btn-primary flex-1 rounded-xl py-3"
         >
-          Tiếp tục
+          Continue
         </button>
       </div>
     </div>
   );
 }
-export default BuocMonAn;
+export default MenuSelection;

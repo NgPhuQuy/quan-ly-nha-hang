@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CAM_NHAN_KHACH_HANG } from "../../data/camNhanKhachHang";
 
-function CamNhanKhachHang() {
+function CustomerTestimonials() {
   const [viTri, setViTri] = useState(0);
   useEffect(() => {
     const boDem = setInterval(
@@ -21,7 +21,7 @@ function CamNhanKhachHang() {
           className="mb-8 text-xs uppercase tracking-widest"
           style={{ color: "rgba(200,136,42,.6)" }}
         >
-          Câu chuyện của khách
+          Guest stories
         </p>
         <div className="min-h-[150px]">
           <p
@@ -67,4 +67,4 @@ function CamNhanKhachHang() {
     </section>
   );
 }
-export default CamNhanKhachHang;
+export default CustomerTestimonials;

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { CHI_NHANH_MAU } from "../../data/chiNhanh";
-import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
+import { fetchBranches } from "../../services/branch.service";
 import { nenThe, kem, kemMo, vienVangNhat } from "../../themes";
-import ChiaCatVang from "../chung/ChiaCatVang";
+import GoldDivider from "../common/GoldDivider";
 
-function KhuVucChiNhanh({ khiDatBan }) {
+function BranchSection({ onBookTable }) {
   const [chiNhanhs, setChiNhanhs] = useState(CHI_NHANH_MAU);
   useEffect(() => {
-    layDanhSachChiNhanh()
+    fetchBranches()
       .then((duLieu) => {
         if (duLieu.length) setChiNhanhs(duLieu);
       })
@@ -25,7 +25,7 @@ function KhuVucChiNhanh({ khiDatBan }) {
             className="mb-3 text-xs uppercase tracking-widest"
             style={{ color: "rgba(200,136,42,.6)" }}
           >
-            Hệ thống chi nhánh
+            Our locations
           </p>
           <h2
             style={{
@@ -34,9 +34,9 @@ function KhuVucChiNhanh({ khiDatBan }) {
               color: kem,
             }}
           >
-            Gặp nhau tại không gian của bạn
+            Find your table
           </h2>
-          <ChiaCatVang />
+          <GoldDivider />
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
           {chiNhanhs.map((chiNhanh) => (
@@ -70,16 +70,16 @@ function KhuVucChiNhanh({ khiDatBan }) {
                 </p>
                 <div className="mt-3 flex items-center justify-between">
                   <button
-                    onClick={khiDatBan}
+                    onClick={onBookTable}
                     className="btn-primary rounded-full px-4 py-1.5 text-xs"
                   >
-                    Đặt bàn
+                    Book a table
                   </button>
                   <span
                     className="text-xs"
                     style={{ color: "rgba(240,216,144,.26)" }}
                   >
-                    {chiNhanh.soCho} chỗ
+                    {chiNhanh.soCho} seats
                   </span>
                 </div>
               </div>
@@ -90,4 +90,4 @@ function KhuVucChiNhanh({ khiDatBan }) {
     </section>
   );
 }
-export default KhuVucChiNhanh;
+export default BranchSection;

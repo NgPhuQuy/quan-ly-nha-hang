@@ -1,4 +1,4 @@
-function ChiaCatVang() {
+function GoldDivider() {
   return (
     <div className="my-2 flex items-center gap-3">
       <div
@@ -22,4 +22,4 @@ function ChiaCatVang() {
     </div>
   );
 }
-export default ChiaCatVang;
+export default GoldDivider;

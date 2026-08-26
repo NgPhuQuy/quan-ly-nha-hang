@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DIP_DAT_BAN } from "../../data/datBan";
 
-function BuocThongTin({
+function GuestDetails({
   danhSachDichVu,
   thongTin,
   setThongTin,
@@ -23,9 +23,9 @@ function BuocThongTin({
     );
   const xacThuc = () => {
     const loiMoi = {};
-    if (!thongTin.hoTen.trim()) loiMoi.hoTen = "Vui lòng nhập họ tên";
+    if (!thongTin.hoTen.trim()) loiMoi.hoTen = "Please enter your full name";
     if (!/^((0|\+84)[0-9]{8,10})$/.test(thongTin.soDienThoai.trim()))
-      loiMoi.soDienThoai = "Số điện thoại không hợp lệ";
+      loiMoi.soDienThoai = "Please enter a valid phone number";
     setLoi(loiMoi);
     if (!Object.keys(loiMoi).length) khiXacNhan();
   };
@@ -35,17 +35,17 @@ function BuocThongTin({
         className="text-xs uppercase tracking-[.2em]"
         style={{ color: "rgba(200,136,42,.6)" }}
       >
-        Bước 4
+        Step 4
       </p>
       <h1
         className="mb-8 mt-2 font-serif text-2xl"
         style={{ color: "rgba(240,216,144,.9)" }}
       >
-        Thông tin người đặt
+        Your details
       </h1>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
-          <label className="mb-2 block text-sm">Họ và tên</label>
+          <label className="mb-2 block text-sm">Full name</label>
           <input
             className="input-warm px-4 py-3"
             value={thongTin.hoTen}
@@ -56,7 +56,7 @@ function BuocThongTin({
           )}
         </div>
         <div>
-          <label className="mb-2 block text-sm">Số điện thoại</label>
+          <label className="mb-2 block text-sm">Phone number</label>
           <input
             className="input-warm px-4 py-3"
             value={thongTin.soDienThoai}
@@ -78,7 +78,7 @@ function BuocThongTin({
           />
         </div>
         <div>
-          <label className="mb-2 block text-sm">Dịp</label>
+          <label className="mb-2 block text-sm">Occasion</label>
           <select
             className="select-warm px-4 py-3"
             value={thongTin.dip}
@@ -92,17 +92,17 @@ function BuocThongTin({
           </select>
         </div>
         <div>
-          <label className="mb-2 block text-sm">Ghi chú</label>
+          <label className="mb-2 block text-sm">Notes</label>
           <input
             className="input-warm px-4 py-3"
             value={thongTin.ghiChu}
             onChange={(event) => capNhat("ghiChu", event.target.value)}
-            placeholder="Bàn gần cửa sổ..."
+            placeholder="A table by the window..."
           />
         </div>
       </div>
       <div className="mt-8">
-        <p className="mb-3 text-sm">Dịch vụ bổ sung</p>
+        <p className="mb-3 text-sm">Enhance your experience</p>
         <div className="grid gap-3 sm:grid-cols-2">
           {danhSachDichVu.map((dichVu) => {
             const dangChon = dichVuBoSung.includes(dichVu.id);
@@ -137,16 +137,16 @@ function BuocThongTin({
           onClick={khiQuayLai}
           className="btn-ghost flex-1 rounded-xl py-3"
         >
-          Quay lại
+          Back
         </button>
         <button
           onClick={xacThuc}
           className="btn-primary flex-1 rounded-xl py-3"
         >
-          Xác nhận
+          Confirm booking
         </button>
       </div>
     </div>
   );
 }
-export default BuocThongTin;
+export default GuestDetails;

@@ -1,4 +1,4 @@
-function ChanTrang() {
+function Footer() {
   return (
     <footer
       id="contact"
@@ -17,8 +17,8 @@ function ChanTrang() {
             className="mt-3 text-xs leading-relaxed"
             style={{ color: "rgba(240,216,144,.28)" }}
           >
-            Chuỗi nhà hàng cao cấp với hơn 15 năm kinh nghiệm phục vụ những
-            khoảnh khắc đáng nhớ.
+            A premium restaurant group with more than 15 years of creating
+            memorable moments.
           </p>
         </div>
         <div>
@@ -26,18 +26,18 @@ function ChanTrang() {
             className="mb-3 text-xs uppercase tracking-wider"
             style={{ color: "rgba(200,136,42,.52)" }}
           >
-            Chi nhánh
+            Locations
           </h4>
-          <p className="text-xs text-[rgba(240,216,144,.3)]">Hoàn Kiếm</p>
-          <p className="mt-2 text-xs text-[rgba(240,216,144,.3)]">Tây Hồ</p>
-          <p className="mt-2 text-xs text-[rgba(240,216,144,.3)]">Ba Đình</p>
+          <p className="text-xs text-[rgba(240,216,144,.3)]">Hoan Kiem</p>
+          <p className="mt-2 text-xs text-[rgba(240,216,144,.3)]">Tay Ho</p>
+          <p className="mt-2 text-xs text-[rgba(240,216,144,.3)]">Ba Dinh</p>
         </div>
         <div>
           <h4
             className="mb-3 text-xs uppercase tracking-wider"
             style={{ color: "rgba(200,136,42,.52)" }}
           >
-            Giờ mở cửa
+            Opening hours
           </h4>
           <p className="text-xs text-[rgba(240,216,144,.3)]">
             T2–T5: 11:00–22:00
@@ -54,18 +54,18 @@ function ChanTrang() {
             className="mb-3 text-xs uppercase tracking-wider"
             style={{ color: "rgba(200,136,42,.52)" }}
           >
-            Liên hệ
+            Contact
           </h4>
           <p className="text-xs text-[rgba(240,216,144,.3)]">1800 5678</p>
           <p className="mt-2 text-xs text-[rgba(240,216,144,.3)]">
             hello@5sdining.vn
           </p>
           <p className="mt-2 text-xs text-[rgba(240,216,144,.3)]">
-            Hà Nội, Việt Nam
+            Hanoi, Vietnam
           </p>
         </div>
       </div>
     </footer>
   );
 }
-export default ChanTrang;
+export default Footer;

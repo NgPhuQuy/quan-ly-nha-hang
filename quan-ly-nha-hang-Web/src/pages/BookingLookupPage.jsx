@@ -1,34 +1,21 @@
-import { useState } from "react";
-import { traCuuDatLich } from "../services/datLich.service";
+import { useBookingLookup } from "../hooks/useBookingLookup";
 
-function TrangTraCuu({ khiQuayLai }) {
-  const [maDatBan, setMaDatBan] = useState("");
-  const [dangTai, setDangTai] = useState(false);
-  const [ketQua, setKetQua] = useState(null);
-  const [khongTimThay, setKhongTimThay] = useState(false);
-
-  const traCuu = async () => {
-    if (!maDatBan.trim()) return;
-    setDangTai(true);
-    setKetQua(null);
-    setKhongTimThay(false);
-    try {
-      const duLieu = await traCuuDatLich(maDatBan.trim());
-      setKetQua(duLieu);
-    } catch (error) {
-      console.error("Không tra cứu được đặt bàn:", error);
-      setKhongTimThay(true);
-    } finally {
-      setDangTai(false);
-    }
-  };
+function BookingLookupPage({ onBack }) {
+  const {
+    bookingCode: maDatBan,
+    setBookingCode: setMaDatBan,
+    loading: dangTai,
+    booking: ketQua,
+    notFound: khongTimThay,
+    searchBooking: traCuu,
+  } = useBookingLookup();
 
   return (
     <div className="min-h-screen bg-[var(--color-warm-black)]">
       <header className="border-b border-[rgba(200,136,42,.18)] bg-[rgba(10,7,4,.96)] px-4 py-4">
         <div className="mx-auto flex max-w-4xl justify-between">
           <button
-            onClick={khiQuayLai}
+            onClick={onBack}
             style={{ color: "rgba(200,136,42,.65)" }}
           >
             ← 5S Dining
@@ -37,7 +24,7 @@ function TrangTraCuu({ khiQuayLai }) {
             className="font-serif"
             style={{ color: "rgba(240,216,144,.62)" }}
           >
-            Tra cứu đặt bàn
+            Find my booking
           </span>
         </div>
       </header>
@@ -46,13 +33,13 @@ function TrangTraCuu({ khiQuayLai }) {
           className="text-center font-serif text-3xl"
           style={{ color: "rgba(240,216,144,.88)" }}
         >
-          Tra cứu đặt bàn
+          Find my booking
         </h1>
         <p
           className="mt-2 text-center text-sm"
           style={{ color: "rgba(240,216,144,.42)" }}
         >
-          Nhập mã đặt bàn để xem trạng thái.
+          Enter your booking reference to check its status.
         </p>
         <div className="mt-8 flex gap-2">
           <input
@@ -60,14 +47,14 @@ function TrangTraCuu({ khiQuayLai }) {
             value={maDatBan}
             onChange={(event) => setMaDatBan(event.target.value)}
             onKeyDown={(event) => event.key === "Enter" && traCuu()}
-            placeholder="Ví dụ: 5S-2026-1234"
+            placeholder="Example: 5S-2026-1234"
           />
           <button
             onClick={traCuu}
             disabled={dangTai || !maDatBan.trim()}
             className="btn-primary rounded-xl px-5 disabled:opacity-50"
           >
-            {dangTai ? "..." : "Tìm"}
+            {dangTai ? "..." : "Search"}
           </button>
         </div>
 
@@ -80,48 +67,48 @@ function TrangTraCuu({ khiQuayLai }) {
               color: "rgba(240,180,180,.85)",
             }}
           >
-            Không tìm thấy đặt bàn với mã này. Kiểm tra lại mã hoặc liên hệ nhà
-            hàng.
+            No booking was found with this reference. Check the code or contact
+            the restaurant.
           </div>
         )}
 
         {ketQua && (
           <div className="card-warm mt-6 rounded-2xl p-5">
             <div className="flex justify-between">
-              <span className="opacity-50">Mã đặt bàn</span>
+              <span className="opacity-50">Booking reference</span>
               <span>{ketQua.maDatLich || maDatBan}</span>
             </div>
             <div className="mt-3 flex justify-between">
-              <span className="opacity-50">Trạng thái</span>
+              <span className="opacity-50">Status</span>
               <span style={{ color: "#7ecb96" }}>{ketQua.trangThai}</span>
             </div>
             {ketQua.tenChiNhanh && (
               <div className="mt-3 flex justify-between">
-                <span className="opacity-50">Chi nhánh</span>
+                <span className="opacity-50">Branch</span>
                 <span>{ketQua.tenChiNhanh}</span>
               </div>
             )}
             {ketQua.ngay && (
               <div className="mt-3 flex justify-between">
-                <span className="opacity-50">Ngày</span>
+                <span className="opacity-50">Date</span>
                 <span>{ketQua.ngay}</span>
               </div>
             )}
             {ketQua.gio && (
               <div className="mt-3 flex justify-between">
-                <span className="opacity-50">Giờ</span>
+                <span className="opacity-50">Time</span>
                 <span>{ketQua.gio}</span>
               </div>
             )}
             {ketQua.soKhach !== "" && (
               <div className="mt-3 flex justify-between">
-                <span className="opacity-50">Số khách</span>
-                <span>{ketQua.soKhach} người</span>
+                <span className="opacity-50">Guests</span>
+                <span>{ketQua.soKhach}</span>
               </div>
             )}
             {ketQua.hoTen && (
               <div className="mt-3 flex justify-between">
-                <span className="opacity-50">Người đặt</span>
+                <span className="opacity-50">Booked by</span>
                 <span>{ketQua.hoTen}</span>
               </div>
             )}
@@ -130,7 +117,7 @@ function TrangTraCuu({ khiQuayLai }) {
                 className="mt-4 border-t pt-4 text-xs opacity-60"
                 style={{ borderColor: "rgba(200,136,42,.1)" }}
               >
-                Ghi chú: {ketQua.ghiChu}
+                Notes: {ketQua.ghiChu}
               </div>
             )}
           </div>
@@ -139,4 +126,4 @@ function TrangTraCuu({ khiQuayLai }) {
     </div>
   );
 }
-export default TrangTraCuu;
+export default BookingLookupPage;

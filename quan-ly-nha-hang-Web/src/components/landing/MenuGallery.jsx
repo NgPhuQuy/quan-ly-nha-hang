@@ -1,8 +1,8 @@
 import { ANH } from "../../assets/anh";
-import { kem } from "../../themes";
-import ChiaCatVang from "../chung/ChiaCatVang";
+import { cream } from "../../themes";
+import GoldDivider from "../common/GoldDivider";
 
-function BoSuuTapMonAn() {
+function MenuGallery() {
   return (
     <section
       id="menu"
@@ -15,18 +15,18 @@ function BoSuuTapMonAn() {
             className="mb-3 text-xs uppercase tracking-widest"
             style={{ color: "rgba(200,136,42,.6)" }}
           >
-            Tinh hoa ẩm thực
+            Culinary highlights
           </p>
           <h2
             style={{
               fontFamily: "var(--font-serif)",
               fontSize: "clamp(1.65rem,4vw,2.5rem)",
-              color: kem,
+              color: cream,
             }}
           >
-            Từng món, một tác phẩm
+            Every dish, a signature
           </h2>
-          <ChiaCatVang />
+          <GoldDivider />
         </div>
         <div
           className="grid grid-cols-2 gap-2.5 md:grid-cols-4"
@@ -35,28 +35,28 @@ function BoSuuTapMonAn() {
           <div className="food-card relative row-span-2 overflow-hidden rounded-xl md:col-span-2">
             <img
               src={ANH.monAn1}
-              alt="Tôm hùm nướng phô mai"
+              alt="Cheese-baked lobster"
               className="h-full w-full object-cover"
             />
           </div>
           <div className="food-card overflow-hidden rounded-xl">
             <img
               src={ANH.monAn2}
-              alt="Bò Wagyu A5"
+              alt="A5 Wagyu beef"
               className="h-full w-full object-cover"
             />
           </div>
           <div className="food-card overflow-hidden rounded-xl">
             <img
               src={ANH.monAn3}
-              alt="Thố lẩu thập cẩm"
+              alt="Mixed hot pot"
               className="h-full w-full object-cover"
             />
           </div>
           <div className="food-card overflow-hidden rounded-xl">
             <img
               src={ANH.monAn4}
-              alt="Hải sản nướng"
+              alt="Grilled seafood"
               className="h-full w-full object-cover"
             />
           </div>
@@ -72,4 +72,4 @@ function BoSuuTapMonAn() {
     </section>
   );
 }
-export default BoSuuTapMonAn;
+export default MenuGallery;

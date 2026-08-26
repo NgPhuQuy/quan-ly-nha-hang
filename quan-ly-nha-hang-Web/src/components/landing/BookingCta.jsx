@@ -1,4 +1,4 @@
-function KeuGoiDatBan({ khiDatBan, khiTraCuu }) {
+function BookingCta({ onBookTable, onLookupBooking }) {
   return (
     <section
       className="px-4 py-20 text-center"
@@ -9,28 +9,27 @@ function KeuGoiDatBan({ khiDatBan, khiTraCuu }) {
           className="mb-4 font-serif text-3xl"
           style={{ color: "rgba(240,216,144,.85)" }}
         >
-          Sẵn sàng cho buổi tối đặc biệt?
+          Ready for a special evening?
         </h2>
         <p className="mb-8" style={{ color: "rgba(240,216,144,.42)" }}>
-          Đặt bàn ngay hôm nay — chỗ luôn có nhưng thời điểm đẹp thì không chờ
-          ai.
+          Reserve today. The best tables, like the best moments, do not wait.
         </p>
         <div className="flex flex-col justify-center gap-3 sm:flex-row">
           <button
-            onClick={khiDatBan}
+            onClick={onBookTable}
             className="btn-primary rounded-full px-8 py-3.5"
           >
-            Chọn bàn của tôi
+            Choose my table
           </button>
           <button
-            onClick={khiTraCuu}
+            onClick={onLookupBooking}
             className="btn-ghost rounded-full px-7 py-3.5"
           >
-            Tra cứu đặt bàn
+            Find my booking
           </button>
         </div>
       </div>
     </section>
   );
 }
-export default KeuGoiDatBan;
+export default BookingCta;

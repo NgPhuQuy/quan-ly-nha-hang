@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { CHI_NHANH_MAU } from "../../data/chiNhanh";
-import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
-import LichChonNgay from "../chung/LichChonNgay";
+import { fetchBranches } from "../../services/branch.service";
+import DatePicker from "../common/DatePicker";
 
-function BuocChon({
+function BranchSelection({
   chiNhanh,
   setChiNhanh,
   ngay,
@@ -15,7 +15,7 @@ function BuocChon({
   const [chiNhanhs, setChiNhanhs] = useState(CHI_NHANH_MAU);
   const [hienLich, setHienLich] = useState(false);
   useEffect(() => {
-    layDanhSachChiNhanh()
+    fetchBranches()
       .then((duLieu) => {
         if (duLieu.length) setChiNhanhs(duLieu);
       })
@@ -23,13 +23,13 @@ function BuocChon({
   }, []);
 
   const ngayHienThi = ngay
-    ? new Date(ngay + "T00:00").toLocaleDateString("vi-VN", {
+    ? new Date(ngay + "T00:00").toLocaleDateString("en-US", {
         weekday: "short",
         day: "numeric",
         month: "short",
         year: "numeric",
       })
-    : "Chọn ngày";
+    : "Select a date";
 
   return (
     <div className="card-warm rounded-2xl p-5 sm:p-7">
@@ -37,23 +37,23 @@ function BuocChon({
         className="text-xs uppercase tracking-[.2em]"
         style={{ color: "rgba(200,136,42,.6)" }}
       >
-        Bước 1
+        Step 1
       </p>
       <h1
         className="mb-8 mt-2 font-serif text-2xl"
         style={{ color: "rgba(240,216,144,.9)" }}
       >
-        Chọn chi nhánh và thời gian
+        Choose a branch and date
       </h1>
       <div className="space-y-5">
         <div>
-          <label className="mb-2 block text-sm">Chi nhánh</label>
+          <label className="mb-2 block text-sm">Branch</label>
           <select
             value={chiNhanh}
             onChange={(event) => setChiNhanh(event.target.value)}
             className="select-warm px-4 py-3"
           >
-            <option value="">Chọn chi nhánh</option>
+            <option value="">Select a branch</option>
             {chiNhanhs.map((mau) => (
               <option key={mau.id} value={mau.id}>
                 {mau.ten}
@@ -63,7 +63,7 @@ function BuocChon({
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="relative">
-            <label className="mb-2 block text-sm">Ngày</label>
+            <label className="mb-2 block text-sm">Date</label>
             <button
               type="button"
               onClick={() => setHienLich((v) => !v)}
@@ -73,7 +73,7 @@ function BuocChon({
             </button>
             {hienLich && (
               <div className="absolute z-20 mt-2 w-full min-w-[280px]">
-                <LichChonNgay
+                <DatePicker
                   value={ngay}
                   onChange={(giaTri) => {
                     setNgay(giaTri);
@@ -84,7 +84,7 @@ function BuocChon({
             )}
           </div>
           <div>
-            <label className="mb-2 block text-sm">Số khách</label>
+            <label className="mb-2 block text-sm">Guests</label>
             <input
               type="number"
               min="1"
@@ -100,10 +100,10 @@ function BuocChon({
           disabled={!chiNhanh || !ngay}
           className="btn-primary w-full rounded-xl py-3"
         >
-          Tiếp tục chọn giờ
+          Continue to time selection
         </button>
       </div>
     </div>
   );
 }
-export default BuocChon;
+export default BranchSelection;

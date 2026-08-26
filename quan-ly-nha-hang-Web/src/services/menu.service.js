@@ -46,11 +46,11 @@ const chuanHoaDichVu = (duLieu, viTri) => {
   };
 };
 
-export const layDanhSachMonAn = async (maChiNhanh) => {
+export const fetchMenuItems = async (branchId) => {
   try {
     const [monAnRes, thucUongRes] = await Promise.all([
-      apis.get(endpoints.mon_an(maChiNhanh)),
-      apis.get(endpoints.thuc_uong(maChiNhanh)),
+      apis.get(endpoints.mon_an(branchId)),
+      apis.get(endpoints.thuc_uong(branchId)),
     ]);
     const monAn = (monAnRes.data || []).map((mon, i) =>
       chuanHoaMonAn(mon, i, "Món chính"),
@@ -66,9 +66,9 @@ export const layDanhSachMonAn = async (maChiNhanh) => {
   }
 };
 
-export const layDanhSachDichVu = async (maChiNhanh) => {
+export const fetchAdditionalServices = async (branchId) => {
   try {
-    const res = await apis.get(endpoints.dich_vu(maChiNhanh));
+    const res = await apis.get(endpoints.dich_vu(branchId));
     const ketQua = (res.data || []).map((dv, i) => chuanHoaDichVu(dv, i));
     return ketQua.length ? ketQua : DICH_VU_BO_SUNG;
   } catch (error) {

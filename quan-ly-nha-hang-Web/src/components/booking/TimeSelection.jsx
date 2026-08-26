@@ -1,11 +1,11 @@
 import { KHUNG_GIO } from "../../data/datBan";
-import { kemMo } from "../../themes";
+import { mutedCream } from "../../themes";
 
 function NhomGio({ nhan, danhSach, gioDaChon, setGioDaChon }) {
   if (!danhSach.length) return null;
   return (
     <div className="mb-5">
-      <p className="mb-2.5 text-xs" style={{ color: kemMo }}>
+      <p className="mb-2.5 text-xs" style={{ color: mutedCream }}>
         {nhan}
       </p>
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
@@ -22,7 +22,7 @@ function NhomGio({ nhan, danhSach, gioDaChon, setGioDaChon }) {
             >
               {mocGio.gio}
               {mocGio.trangThai === "it" && (
-                <span className="mt-1 block text-[10px]">Còn ít bàn</span>
+                <span className="mt-1 block text-[10px]">Few tables left</span>
               )}
             </button>
           ),
@@ -32,7 +32,7 @@ function NhomGio({ nhan, danhSach, gioDaChon, setGioDaChon }) {
   );
 }
 
-function BuocChonGio({ gioDaChon, setGioDaChon, khiTiepTuc, khiQuayLai }) {
+function TimeSelection({ gioDaChon, setGioDaChon, khiTiepTuc, khiQuayLai }) {
   const buoiTrua = KHUNG_GIO.filter((m) => m.gio < "15:00");
   const buoiToi = KHUNG_GIO.filter((m) => m.gio >= "15:00");
 
@@ -42,22 +42,22 @@ function BuocChonGio({ gioDaChon, setGioDaChon, khiTiepTuc, khiQuayLai }) {
         className="text-xs uppercase tracking-[.2em]"
         style={{ color: "rgba(200,136,42,.6)" }}
       >
-        Bước 2
+        Step 2
       </p>
       <h1
         className="mb-8 mt-2 font-serif text-2xl"
         style={{ color: "rgba(240,216,144,.9)" }}
       >
-        Chọn giờ đến
+        Choose an arrival time
       </h1>
       <NhomGio
-        nhan="Buổi trưa"
+        nhan="Lunch"
         danhSach={buoiTrua}
         gioDaChon={gioDaChon}
         setGioDaChon={setGioDaChon}
       />
       <NhomGio
-        nhan="Buổi tối"
+        nhan="Dinner"
         danhSach={buoiToi}
         gioDaChon={gioDaChon}
         setGioDaChon={setGioDaChon}
@@ -67,17 +67,17 @@ function BuocChonGio({ gioDaChon, setGioDaChon, khiTiepTuc, khiQuayLai }) {
           onClick={khiQuayLai}
           className="btn-ghost flex-1 rounded-xl py-3"
         >
-          Quay lại
+          Back
         </button>
         <button
           onClick={khiTiepTuc}
           disabled={!gioDaChon}
           className="btn-primary flex-1 rounded-xl py-3"
         >
-          Tiếp tục
+          Continue
         </button>
       </div>
     </div>
   );
 }
-export default BuocChonGio;
+export default TimeSelection;

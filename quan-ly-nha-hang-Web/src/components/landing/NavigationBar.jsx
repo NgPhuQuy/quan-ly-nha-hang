@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { kemMo, vienVangNhat } from "../../themes";
 
-function ThanhDieuHuong({ khiDatBan, khiTraCuu }) {
+function NavigationBar({ onBookTable, onLookupBooking }) {
   const [moMenu, setMoMenu] = useState(false);
   const dongMenu = () => setMoMenu(false);
   const datBan = () => {
     dongMenu();
-    khiDatBan();
+    onBookTable();
   };
   const traCuu = () => {
     dongMenu();
-    khiTraCuu();
+    onLookupBooking();
   };
 
   return (
@@ -60,22 +60,22 @@ function ThanhDieuHuong({ khiDatBan, khiTraCuu }) {
             href="#branches"
             className="transition-colors hover:text-amber-300"
           >
-            Chi nhánh
+            Branches
           </a>
           <a href="#about" className="transition-colors hover:text-amber-300">
-            Về chúng tôi
+            About us
           </a>
           <a
             href="#contact"
             className="transition-colors hover:text-amber-300"
           >
-            Liên hệ
+            Contact
           </a>
           <button
             onClick={traCuu}
             className="transition-colors hover:text-amber-300"
           >
-            Tra cứu
+            Find my booking
           </button>
         </div>
         <div className="flex items-center gap-3">
@@ -83,7 +83,7 @@ function ThanhDieuHuong({ khiDatBan, khiTraCuu }) {
             onClick={datBan}
             className="btn-primary rounded-full px-4 py-2 text-sm sm:px-5"
           >
-            Đặt bàn
+            Book a table
           </button>
           <button
             onClick={() => setMoMenu((giaTri) => !giaTri)}
@@ -127,7 +127,7 @@ function ThanhDieuHuong({ khiDatBan, khiTraCuu }) {
             className="block text-sm"
             style={{ color: kemMo }}
           >
-            Chi nhánh
+            Branches
           </a>
           <a
             href="#about"
@@ -135,7 +135,7 @@ function ThanhDieuHuong({ khiDatBan, khiTraCuu }) {
             className="block text-sm"
             style={{ color: kemMo }}
           >
-            Về chúng tôi
+            About us
           </a>
           <a
             href="#contact"
@@ -143,18 +143,18 @@ function ThanhDieuHuong({ khiDatBan, khiTraCuu }) {
             className="block text-sm"
             style={{ color: kemMo }}
           >
-            Liên hệ
+            Contact
           </a>
           <button
             onClick={traCuu}
             className="block w-full text-left text-sm"
             style={{ color: kemMo }}
           >
-            Tra cứu đặt bàn
+            Find my booking
           </button>
         </div>
       </div>
     </nav>
   );
 }
-export default ThanhDieuHuong;
+export default NavigationBar;

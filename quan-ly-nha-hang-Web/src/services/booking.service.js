@@ -2,7 +2,7 @@ import apis, { endpoints } from "./apis";
 
 // Chuẩn hoá field trả về từ backend — tên field thật có thể khác tuỳ module,
 // nên fallback qua nhiều khả năng thay vì assume cứng 1 tên duy nhất.
-const chuanHoaKetQuaTraCuu = (duLieu) => ({
+const normalizeBooking = (data) => ({
   maDatLich: duLieu.maDatLich ?? duLieu.maDatBan ?? "",
   tenChiNhanh: duLieu.tenChiNhanh ?? duLieu.chiNhanh?.tenChiNhanh ?? "Đang cập nhật",
   ngay: duLieu.ngay ?? duLieu.ngayDat ?? "",
@@ -14,12 +14,12 @@ const chuanHoaKetQuaTraCuu = (duLieu) => ({
   ghiChu: duLieu.ghiChu ?? "",
 });
 
-export const datLich = async (duLieu) => {
-  const res = await apis.post(endpoints.dat_lich, duLieu);
+export const createBooking = async (data) => {
+  const res = await apis.post(endpoints.dat_lich, data);
   return res.data;
 };
 
-export const traCuuDatLich = async (maDatLich) => {
-  const res = await apis.get(endpoints.chi_tiet_dat_lich(maDatLich));
-  return chuanHoaKetQuaTraCuu(res.data);
+export const fetchBookingByCode = async (bookingCode) => {
+  const res = await apis.get(endpoints.chi_tiet_dat_lich(bookingCode));
+  return normalizeBooking(res.data);
 };
