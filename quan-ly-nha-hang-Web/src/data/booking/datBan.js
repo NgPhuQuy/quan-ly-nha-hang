@@ -1,4 +1,4 @@
-import { ANH } from "../assets/anh";
+import { ANH } from "../../assets/anh";
 
 export const DICH_VU_BO_SUNG = [
   { id: "hoa", ten: "Fresh floral decoration", gia: 150000, bieuTuong: "🌷" },

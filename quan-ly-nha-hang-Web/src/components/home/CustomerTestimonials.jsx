@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CAM_NHAN_KHACH_HANG } from "../../data/camNhanKhachHang";
+import { CAM_NHAN_KHACH_HANG } from "../../data/home/camNhanKhachHang";
 
 function CustomerTestimonials() {
   const [activeIndex, setActiveIndex] = useState(0);

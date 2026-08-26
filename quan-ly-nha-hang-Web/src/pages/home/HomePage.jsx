@@ -1,10 +1,10 @@
-import NavigationBar from "../components/landing/NavigationBar";
-import HeroIntro from "../components/landing/HeroIntro";
-import BranchSection from "../components/landing/BranchSection";
-import MenuGallery from "../components/landing/MenuGallery";
-import CustomerTestimonials from "../components/landing/CustomerTestimonials";
-import BookingCta from "../components/landing/BookingCta";
-import Footer from "../components/landing/Footer";
+import NavigationBar from "../../components/home/NavigationBar";
+import HeroIntro from "../../components/home/HeroIntro";
+import BranchSection from "../../components/home/BranchSection";
+import MenuGallery from "../../components/home/MenuGallery";
+import CustomerTestimonials from "../../components/home/CustomerTestimonials";
+import BookingCta from "../../components/home/BookingCta";
+import Footer from "../../components/home/Footer";
 
 function HomePage({ onBookTable, onLookupBooking }) {
   return (

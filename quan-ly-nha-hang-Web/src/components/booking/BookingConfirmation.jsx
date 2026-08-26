@@ -1,4 +1,4 @@
-import { DIP_DAT_BAN } from "../../data/datBan";
+import { DIP_DAT_BAN } from "../../data/booking/datBan";
 
 function BookingConfirmation({
   bookingCode,

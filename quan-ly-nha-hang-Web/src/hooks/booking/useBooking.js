@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { fetchBranches } from "../services/branch.service";
-import { fetchAdditionalServices, fetchMenuItems, fetchTimeSlots } from "../services/menu.service";
-import { createBooking } from "../services/booking.service";
+import { fetchBranches } from "../../services/branch.service";
+import { fetchAdditionalServices, fetchMenuItems, fetchTimeSlots } from "../../services/menu.service";
+import { createBooking } from "../../services/booking.service";
 
 export function useBooking() {
   const [step, setStep] = useState(1);

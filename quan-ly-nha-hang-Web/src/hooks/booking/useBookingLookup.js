@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchBookingByCode } from "../services/booking.service";
+import { fetchBookingByCode } from "../../services/booking.service";
 
 export function useBookingLookup() {
   const [bookingCode, setBookingCode] = useState("");

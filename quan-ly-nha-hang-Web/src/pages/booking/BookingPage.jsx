@@ -1,11 +1,11 @@
-import { useBooking } from "../hooks/useBooking";
-import BranchSelection from "../components/booking/BranchSelection";
-import TimeSelection from "../components/booking/TimeSelection";
-import MenuSelection from "../components/booking/MenuSelection";
-import GuestDetails from "../components/booking/GuestDetails";
-import BookingProgress from "../components/booking/BookingProgress";
-import BookingSummary from "../components/booking/BookingSummary";
-import BookingConfirmation from "../components/booking/BookingConfirmation";
+import { useBooking } from "../../hooks/booking/useBooking";
+import BranchSelection from "../../components/booking/BranchSelection";
+import TimeSelection from "../../components/booking/TimeSelection";
+import MenuSelection from "../../components/booking/MenuSelection";
+import GuestDetails from "../../components/booking/GuestDetails";
+import BookingProgress from "../../components/booking/BookingProgress";
+import BookingSummary from "../../components/booking/BookingSummary";
+import BookingConfirmation from "../../components/booking/BookingConfirmation";
 
 function BookingPage({ onBack }) {
   const booking = useBooking();

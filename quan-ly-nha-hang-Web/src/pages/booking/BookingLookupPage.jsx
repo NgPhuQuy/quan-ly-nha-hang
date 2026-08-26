@@ -1,4 +1,4 @@
-import { useBookingLookup } from "../hooks/useBookingLookup";
+import { useBookingLookup } from "../../hooks/booking/useBookingLookup";
 
 function BookingLookupPage({ onBack }) {
   const {

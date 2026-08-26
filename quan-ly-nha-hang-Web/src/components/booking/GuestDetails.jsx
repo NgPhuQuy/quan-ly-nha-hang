@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DIP_DAT_BAN } from "../../data/datBan";
+import { DIP_DAT_BAN } from "../../data/booking/datBan";
 
 function GuestDetails({ additionalServices, guestDetails, setGuestDetails, selectedServices, setSelectedServices, onConfirm, onBack }) {
   const [errors, setErrors] = useState({});
