@@ -1,4 +1,4 @@
-import { ANH } from "../assets/anh";
+import { ANH } from "../../assets/anh";
 
 export const CHI_NHANH_MAU = [
   {

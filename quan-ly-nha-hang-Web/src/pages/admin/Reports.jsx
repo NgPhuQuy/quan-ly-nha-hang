@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
   Legend
 } from "recharts";
-import { Card } from "../../components/admin/ui";
+import { Card } from "../../components/admin";
 import { revenueByMonth, revenueByBranch, branches } from "../../data/admin/mockData";
 function fmt(n) {
   if (n >= 1e6) return (n / 1e6).toFixed(0) + " tr";

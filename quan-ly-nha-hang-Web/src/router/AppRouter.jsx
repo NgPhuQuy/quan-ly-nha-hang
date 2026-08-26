@@ -2,10 +2,8 @@ import { useEffect, useState } from "react";
 import HomePage from "../pages/home/HomePage";
 import BookingPage from "../pages/booking/BookingPage";
 import BookingLookupPage from "../pages/booking/BookingLookupPage";
-import AdminApp from "./admin/AdminApp";
-import PosApp from "./pos/PosApp";
-import "./admin/index.css";
-import "./pos/index.css";
+import AdminApp from "../pages/admin/AdminApp";
+import PosApp from "../pages/pos/PosApp";
 
 const getRoute = () => window.location.pathname.replace(/^\/+|\/+$/g, "") || "home";
 
@@ -26,12 +24,12 @@ function AppRouter() {
 
   if (screen.startsWith("admin")) {
     const page = screen.split("/")[1] || "dashboard";
-    return <AdminApp key={screen} initialPage={page} onNavigate={(nextPage) => navigateTo(`admin/${nextPage}`)} />;
+    return <AdminApp initialPage={page} onNavigate={(nextPage) => navigateTo(`admin/${nextPage}`)} />;
   }
 
   if (screen.startsWith("pos")) {
     const page = screen.split("/")[1] || "dashboard";
-    return <PosApp key={screen} initialPage={page} onNavigate={(nextPage) => navigateTo(`pos/${nextPage}`)} />;
+    return <PosApp initialPage={page} onNavigate={(nextPage) => navigateTo(`pos/${nextPage}`)} />;
   }
 
   if (screen === "booking") {

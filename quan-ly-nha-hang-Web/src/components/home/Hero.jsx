@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { ANH } from "../../assets/anh";
 import { heroOverlay } from "../../themes";
 
-function HeroIntro({ onBookTable }) {
+function Hero({ onBookTable }) {
   const heroRef = useRef(null);
   const imageRef = useRef(null);
 
@@ -96,4 +96,4 @@ function HeroIntro({ onBookTable }) {
     </section>
   );
 }
-export default HeroIntro;
+export default Hero;

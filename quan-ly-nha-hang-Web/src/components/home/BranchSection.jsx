@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchBranches } from "../../services/branch.service";
 import { cardBackground, cream, mutedCream, subtleGoldBorder } from "../../themes";
-import GoldDivider from "../common/GoldDivider";
+import GoldDivider from "./GoldDivider";
 
 function BranchSection({ onBookTable }) {
   const [branches, setBranches] = useState([]);

@@ -1,5 +1,5 @@
 import NavigationBar from "../../components/home/NavigationBar";
-import HeroIntro from "../../components/home/HeroIntro";
+import Hero from "../../components/home/Hero";
 import BranchSection from "../../components/home/BranchSection";
 import MenuGallery from "../../components/home/MenuGallery";
 import CustomerTestimonials from "../../components/home/CustomerTestimonials";
@@ -10,7 +10,7 @@ function HomePage({ onBookTable, onLookupBooking }) {
   return (
     <div>
       <NavigationBar onBookTable={onBookTable} onLookupBooking={onLookupBooking} />
-      <HeroIntro onBookTable={onBookTable} />
+      <Hero onBookTable={onBookTable} />
       <BranchSection onBookTable={onBookTable} />
       <MenuGallery />
       <CustomerTestimonials />

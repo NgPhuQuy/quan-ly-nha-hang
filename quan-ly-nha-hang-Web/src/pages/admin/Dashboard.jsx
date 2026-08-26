@@ -13,7 +13,7 @@ import {
   Legend,
   ResponsiveContainer
 } from "recharts";
-import { Card, Badge } from "../../components/admin/ui";
+import { Card, Badge } from "../../components/admin";
 import { revenueByMonth, revenueByBranch, revenueBySource, invoices, branches } from "../../data/admin/mockData";
 function fmt(n) {
   if (n >= 1e9) return (n / 1e9).toFixed(1) + " t\u1EF7";

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchBranches } from "../../services/branch.service";
-import DatePicker from "../common/DatePicker";
+import DatePicker from "./DatePicker";
 
 function BranchSelection({ branchId, setBranchId, date, setDate, guestCount, setGuestCount, onContinue }) {
   const [branches, setBranches] = useState([]);
