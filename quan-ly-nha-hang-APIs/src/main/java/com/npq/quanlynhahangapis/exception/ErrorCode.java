@@ -20,7 +20,9 @@ public enum ErrorCode {
     BRANCH_NOT_FOUND(404, "Không tìm thấy chi nhánh"),
     CLOSED_DAY(400, "Chi nhánh không hoạt động vào ngày này"),
     CAPACITY_EXCEEDED(400, "Chi nhánh không đủ chỗ cho khung giờ này"),
-    INVALID_BOOKING_TIME(400, "Thời gian đặt lịch hoặc kết thúc vượt quá giờ hoạt động");
+    INVALID_BOOKING_TIME(400, "Thời gian đặt lịch hoặc kết thúc vượt quá giờ hoạt động"),
+    FILE_MUST_BE_IMAGE(400, "File tải lên phải là hình ảnh"),
+    FAIL_TO_UPLOAD(400, "Tải ảnh lên thất bại");
 
     private final int status;
     private final String message;

@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 public class MatHangController {
     private final MatHangService matHangService;
 
-    @PostMapping("/mat-hang")
-    ResponseEntity<?> taoMatHang(@RequestBody MatHangRequest request) {
+    @PostMapping(path = "/mat-hang", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<?> taoMatHang(@ModelAttribute MatHangRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(matHangService.taoMatHang(request));
     }
 

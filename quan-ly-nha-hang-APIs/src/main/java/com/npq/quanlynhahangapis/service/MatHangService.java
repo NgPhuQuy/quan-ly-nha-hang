@@ -21,16 +21,17 @@ import java.util.List;
 public class MatHangService {
     private final TrangThaiMatHangChiNhanhRepository trangThaiMatHangChiNhanhRepository;
     private final TrangThaiMatHangChiNhanhService trangThaiMatHangChiNhanhService;
+    private final CloudinaryService cloudinaryService;
     private final MatHangRepository matHangRepository;
 
     public MatHangResponse taoMatHang(MatHangRequest request) {
-        //xu li upload anh len cloudinary
-        // ...
+        String url = cloudinaryService.taiAnhLenCloudinary(request.anhMinhHoa());
 
         MatHang matHang = MatHang.builder()
                 .tenMatHang(request.tenMatHang())
                 .giaMatHang(request.giaMatHang())
                 .loaiMatHang(request.loaiMatHang())
+                .anhMinhHoa(url)
                 .build();
 
         trangThaiMatHangChiNhanhService.sinhMonAnChiNhanhMacDinh(matHang);
