@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { Card } from "../../components/admin";
+import { Card } from "../../components/admin/Card";
 import {
   revenueByMonth,
   revenueByBranch,

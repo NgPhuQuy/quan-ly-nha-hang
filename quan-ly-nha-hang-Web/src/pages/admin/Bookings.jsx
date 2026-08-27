@@ -1,33 +1,16 @@
 import { useState } from "react";
 import { bookings as initialBookings } from "../../data/admin/mockData";
-import {
-  Badge,
-  Button,
-  Card,
-  ConfirmDialog,
-  EmptyState,
-  PageHeader,
-  Pagination,
-  Select,
-  Table,
-  Td,
-  Tr,
-} from "../../components/admin";
-function TrashIcon() {
-  return (
-    <svg
-      width="13"
-      height="13"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <polyline points="3 6 5 6 21 6" />
-      <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2" />
-    </svg>
-  );
-}
+import PageHeader from "../../components/admin/PageHeader";
+import Card from "../../components/admin/Card";
+import Select from "../../components/admin/Select";
+import Table, { Tr, Td } from "../../components/admin/Table";
+import Badge from "../../components/admin/Badge";
+import Button from "../../components/admin/Button";
+import Pagination from "../../components/admin/Pagination";
+import ConfirmDialog from "../../components/admin/ConfirmDialog";
+import EmptyState from "../../components/admin/EmptyState";
+import { TrashIcon } from "../../components/admin/TrashIcon";
+
 const PAGE_SIZE = 6;
 export default function Bookings() {
   const [items, setItems] = useState(initialBookings);

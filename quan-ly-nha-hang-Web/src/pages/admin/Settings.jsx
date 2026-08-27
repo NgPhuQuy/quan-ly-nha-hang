@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { Card, Button, Input, PageHeader } from "../../components/admin";
+import PageHeader from "../../components/admin/PageHeader";
+import Card from "../../components/admin/Card";
+import Input from "../../components/admin/Input";
+import Button from "../../components/admin/Button";
+
 export default function Settings() {
   const [systemName, setSystemName] = useState("Restaurant Chain Admin");
   const [email, setEmail] = useState("admin@restaurant.vn");

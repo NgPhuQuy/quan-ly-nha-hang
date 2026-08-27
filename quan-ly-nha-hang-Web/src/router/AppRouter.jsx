@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import HomePage from "../pages/home/HomePage";
 import BookingPage from "../pages/booking/BookingPage";
 import BookingLookupPage from "../pages/booking/BookingLookupPage";
-import AdminApp from "../pages/admin/AdminApp";
+import AdminApp from "../pages/admin/AdminPage";
 import PosApp from "../pages/pos/PosApp";
 
 const getRoute = () =>

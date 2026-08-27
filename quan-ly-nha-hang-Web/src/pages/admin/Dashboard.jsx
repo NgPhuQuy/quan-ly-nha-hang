@@ -13,7 +13,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Card, Badge } from "../../components/admin";
+import Badge from "../../components/admin/Badge";
+import Card from "../../components/admin/Card";
 import {
   revenueByMonth,
   revenueByBranch,
@@ -21,55 +22,11 @@ import {
   invoices,
   branches,
 } from "../../data/admin/mockData";
+import KpiCard from "../../components/admin/KpiCard";
 function fmt(n) {
   if (n >= 1e9) return (n / 1e9).toFixed(1) + " t\u1EF7";
   if (n >= 1e6) return (n / 1e6).toFixed(0) + " tr";
   return n.toLocaleString("vi-VN");
-}
-function KpiCard({ label, value, sub, trend, accent }) {
-  return (
-    <Card style={{ padding: "18px 20px" }}>
-      <div
-        style={{
-          fontSize: 12,
-          fontWeight: 600,
-          color: "#7a6248",
-          letterSpacing: "0.04em",
-          textTransform: "uppercase",
-          marginBottom: 8,
-        }}
-      >
-        {label}
-      </div>
-      <div
-        style={{
-          fontSize: 24,
-          fontWeight: 700,
-          color: accent ? "#c9922a" : "#2c1a0e",
-          lineHeight: 1.1,
-        }}
-      >
-        {value}
-      </div>
-      {sub && (
-        <div style={{ fontSize: 12.5, color: "#7a6248", marginTop: 4 }}>
-          {sub}
-        </div>
-      )}
-      {trend && (
-        <div
-          style={{
-            fontSize: 12,
-            color: "#15803d",
-            marginTop: 6,
-            fontWeight: 600,
-          }}
-        >
-          ↑ {trend} so với tháng trước
-        </div>
-      )}
-    </Card>
-  );
 }
 const branchPerf = branches.map((b, i) => ({
   name: b.name.replace("Chi nh\xE1nh ", "CN "),

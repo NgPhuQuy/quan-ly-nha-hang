@@ -1,35 +1,17 @@
 import { useState } from "react";
 import { invoices as initialInvoices } from "../../data/admin/mockData";
-import {
-  Badge,
-  Button,
-  Card,
-  EmptyState,
-  Input,
-  Modal,
-  PageHeader,
-  Pagination,
-  Select,
-  Table,
-  Td,
-  Tr,
-} from "../../components/admin";
-function SearchIcon() {
-  return (
-    <svg
-      width="15"
-      height="15"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    >
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  );
-}
+import PageHeader from "../../components/admin/PageHeader";
+import Card from "../../components/admin/Card";
+import Table, { Tr, Td } from "../../components/admin/Table";
+import Badge from "../../components/admin/Badge";
+import Button from "../../components/admin/Button";
+import Pagination from "../../components/admin/Pagination";
+import Modal from "../../components/admin/Modal";
+import Input from "../../components/admin/Input";
+import Select from "../../components/admin/Select";
+import EmptyState from "../../components/admin/EmptyState";
+import SearchIcon from "../../components/admin/SearchIcon";
+
 function EyeIcon() {
   return (
     <svg
