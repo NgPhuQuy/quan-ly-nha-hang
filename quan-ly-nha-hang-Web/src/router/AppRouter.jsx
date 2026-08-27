@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import HomePage from "../pages/home/HomePage";
-import BookingPage from "../pages/booking/BookingPage";
-import BookingLookupPage from "../pages/booking/BookingLookupPage";
-import AdminApp from "../pages/admin/AdminPage";
-import PosApp from "../pages/pos/PosApp";
+import TrangChu from "../pages/landing/TrangChu";
+import TrangDatBan from "../pages/landing/TrangDatBan";
+import TrangTraCuu from "../pages/landing/TrangTraCuu";
+import QuanTri from "../pages/admin/QuanTri";
+import BanHang from "../pages/pos/BanHang";
 
 const getRoute = () =>
   window.location.pathname.replace(/^\/+|\/+$/g, "") || "home";
@@ -30,7 +30,7 @@ function AppRouter() {
   if (screen.startsWith("admin")) {
     const page = screen.split("/")[1] || "dashboard";
     return (
-      <AdminApp
+      <QuanTri
         initialPage={page}
         onNavigate={(nextPage) => navigateTo(`admin/${nextPage}`)}
       />
@@ -40,7 +40,7 @@ function AppRouter() {
   if (screen.startsWith("pos")) {
     const page = screen.split("/")[1] || "dashboard";
     return (
-      <PosApp
+      <BanHang
         initialPage={page}
         onNavigate={(nextPage) => navigateTo(`pos/${nextPage}`)}
       />
@@ -48,15 +48,15 @@ function AppRouter() {
   }
 
   if (screen === "booking") {
-    return <BookingPage onBack={() => navigateTo("home")} />;
+    return <TrangDatBan onBack={() => navigateTo("home")} />;
   }
 
   if (screen === "lookup") {
-    return <BookingLookupPage onBack={() => navigateTo("home")} />;
+    return <TrangTraCuu onBack={() => navigateTo("home")} />;
   }
 
   return (
-    <HomePage
+    <TrangChu
       onBookTable={() => navigateTo("booking")}
       onLookupBooking={() => navigateTo("lookup")}
     />

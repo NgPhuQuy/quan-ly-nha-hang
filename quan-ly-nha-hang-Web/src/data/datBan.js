@@ -1,0 +1,131 @@
+import { ANH } from "../assets/anh";
+
+export const DICH_VU_BO_SUNG = [
+  { id: "hoa", ten: "Fresh floral decoration", gia: 150000, bieuTuong: "🌷" },
+  { id: "banh", ten: "Custom celebration cake", gia: 350000, bieuTuong: "🎂" },
+  { id: "ruou", ten: "Welcome wine", gia: 480000, bieuTuong: "🍷" },
+  { id: "anh", ten: "Keepsake photography", gia: 200000, bieuTuong: "📸" },
+];
+
+export const MON_AN = [
+  {
+    id: "m1",
+    ten: "Fresh shrimp and pork rolls",
+    moTa: "Tiger shrimp, pork belly, rice noodles, and herbs",
+    gia: 95000,
+    anh: ANH.monMenu4,
+    nhom: "Starters",
+  },
+  {
+    id: "m2",
+    ten: "Crispy seafood spring rolls",
+    moTa: "Shrimp, squid, and crab in a crisp wrapper",
+    gia: 115000,
+    anh: ANH.monMenu2,
+    nhom: "Starters",
+  },
+  {
+    id: "m3",
+    ten: "Abalone and fish maw soup",
+    moTa: "Fresh abalone, fish maw, and shiitake mushrooms",
+    gia: 185000,
+    anh: ANH.monMenu3,
+    nhom: "Starters",
+  },
+  {
+    id: "m4",
+    ten: "Lava-grilled A5 Wagyu",
+    moTa: "Japanese A5 Wagyu with truffle mushroom sauce",
+    gia: 890000,
+    anh: ANH.monAn2,
+    nhom: "Main courses",
+  },
+  {
+    id: "m5",
+    ten: "Cheese-baked lobster",
+    moTa: "600g lobster, French cheese, and garlic butter",
+    gia: 750000,
+    anh: ANH.monAn1,
+    nhom: "Main courses",
+  },
+  {
+    id: "m6",
+    ten: "5S mixed hot pot",
+    moTa: "Seafood, American beef, and fresh mushrooms",
+    gia: 680000,
+    anh: ANH.monAn3,
+    nhom: "Main courses",
+  },
+  {
+    id: "m7",
+    ten: "Hong Kong-style steamed sea bass",
+    moTa: "Fresh sea bass with ginger soy sauce",
+    gia: 420000,
+    anh: ANH.monMenu1,
+    nhom: "Main courses",
+  },
+  {
+    id: "m8",
+    ten: "Special seafood fried rice",
+    moTa: "Shrimp, squid, crab, and salted egg",
+    gia: 195000,
+    anh: ANH.monMenu3,
+    nhom: "Main courses",
+  },
+  {
+    id: "m9",
+    ten: "Coffee caramel flan",
+    moTa: "Silky milk flan with coffee caramel",
+    gia: 75000,
+    anh: ANH.monMenu2,
+    nhom: "Desserts",
+  },
+  {
+    id: "m10",
+    ten: "Premium Vietnamese sweet soup",
+    moTa: "Durian, lotus seeds, and coconut milk",
+    gia: 85000,
+    anh: ANH.monMenu4,
+    nhom: "Desserts",
+  },
+  {
+    id: "m11",
+    ten: "French red wine",
+    moTa: "Bordeaux AOP, năm 2020",
+    gia: 185000,
+    anh: ANH.monMenu6,
+    nhom: "Drinks",
+  },
+  {
+    id: "m12",
+    ten: "Fresh fruit juice",
+    moTa: "Orange, pineapple, watermelon, or mango",
+    gia: 65000,
+    anh: ANH.monMenu5,
+    nhom: "Drinks",
+  },
+];
+
+export const DIP_DAT_BAN = [
+  { id: "khong", ten: "No special occasion" },
+  { id: "sinhNhat", ten: "Birthday" },
+  { id: "kyNiem", ten: "Anniversary" },
+  { id: "cauHon", ten: "Proposal" },
+  { id: "tiepKhach", ten: "Business dinner" },
+  { id: "giaDinh", ten: "Family gathering" },
+];
+
+export const KHUNG_GIO = [
+  { gio: "11:00", trangThai: "con" },
+  { gio: "11:30", trangThai: "con" },
+  { gio: "12:00", trangThai: "it" },
+  { gio: "12:30", trangThai: "het" },
+  { gio: "17:30", trangThai: "con" },
+  { gio: "18:00", trangThai: "con" },
+  { gio: "18:30", trangThai: "it" },
+  { gio: "19:00", trangThai: "con" },
+  { gio: "19:30", trangThai: "het" },
+  { gio: "20:00", trangThai: "con" },
+  { gio: "20:30", trangThai: "it" },
+  { gio: "21:00", trangThai: "con" },
+];
