@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class NguoiDungController {
     }
 
     @GetMapping("/users")
-//    @PreAuthorize("ADMIN")
+    @PreAuthorize("hasAuthority('ADMIN')")
     ResponseEntity<List<NguoiDungResponse>> layDSNguoiDung() {
         return ResponseEntity.ok(nguoiDungService.layDSNguoiDung());
     }
@@ -39,8 +40,9 @@ public class NguoiDungController {
     ResponseEntity<?> chiTietNguoiDung(@PathVariable Integer maNguoiDung) {
         return ResponseEntity.ok(nguoiDungService.layNguoiDungTheoId(maNguoiDung));
     }
-//    @PutMapping("/users/{maNguoiDung}")
-//    ResponseEntity<?> capNhatThongTinNguoiDung(@PathVariable Integer maNguoiDung) {
-//        return ResponseEntity.ok(nguoiDungService.layNguoiDungTheoId(maNguoiDung));
-//    }
+
+    @PutMapping("/users/{maNguoiDung}")
+    ResponseEntity<?> capNhatNguoiDung(@RequestBody NguoiDungRequest request) {
+        return ResponseEntity.ok(nguoiDungService.capNhatNguoiDung(request));
+    }
 }

@@ -77,14 +77,14 @@ function BranchSection({ onBookTable }) {
 
                 <div className="min-h-[40px]">
                   <p className="mt-1 text-xs" style={{ color: mutedCream }}>
-                    {branch.diaChi || "\u00A0"}
+                    {branch.diaChi || " "}
                   </p>
 
                   <p
                     className="mt-1 text-xs"
                     style={{ color: "rgba(200,136,42,.5)" }}
                   >
-                    {branch.soDienThoai || "\u00A0"}
+                    {branch.soDienThoai || " "}
                   </p>
                 </div>
 
