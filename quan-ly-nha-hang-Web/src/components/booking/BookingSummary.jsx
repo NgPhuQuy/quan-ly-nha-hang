@@ -13,11 +13,15 @@ function BookingSummary({
   const totalAmount =
     selectedItems.reduce(
       (total, item) =>
-        total + (menuItems.find((menuItem) => menuItem.id === item.monAnId)?.gia || 0) * item.soLuong,
+        total +
+        (menuItems.find((menuItem) => menuItem.id === item.monAnId)?.gia || 0) *
+          item.soLuong,
       0,
     ) +
     selectedServices.reduce(
-      (total, id) => total + (additionalServices.find((service) => service.id === id)?.gia || 0),
+      (total, id) =>
+        total +
+        (additionalServices.find((service) => service.id === id)?.gia || 0),
       0,
     );
   return (
@@ -74,7 +78,9 @@ function BookingSummary({
           <span className="text-xs" style={{ color: "rgba(240,216,144,.45)" }}>
             Pre-orders and extras:{" "}
           </span>
-          <span className="text-sm">{totalAmount.toLocaleString("vi-VN")}₫</span>
+          <span className="text-sm">
+            {totalAmount.toLocaleString("vi-VN")}₫
+          </span>
         </div>
       )}
     </aside>

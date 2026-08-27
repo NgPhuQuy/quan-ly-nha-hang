@@ -15,6 +15,26 @@ const badgeStyles = {
 };
 
 export default function Badge({ status }) {
-  const style = badgeStyles[status] ?? { bg: "#f1f5f9", color: "#64748b", label: status };
-  return <span style={{ display: "inline-flex", alignItems: "center", padding: "2px 9px", borderRadius: 20, fontSize: 12, fontWeight: 600, background: style.bg, color: style.color, whiteSpace: "nowrap" }}>{style.label}</span>;
+  const style = badgeStyles[status] ?? {
+    bg: "#f1f5f9",
+    color: "#64748b",
+    label: status,
+  };
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        padding: "2px 9px",
+        borderRadius: 20,
+        fontSize: 12,
+        fontWeight: 600,
+        background: style.bg,
+        color: style.color,
+        whiteSpace: "nowrap",
+      }}
+    >
+      {style.label}
+    </span>
+  );
 }

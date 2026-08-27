@@ -1,12 +1,22 @@
 import { useState } from "react";
 
-function MenuSelection({ menuItems, selectedItems, setSelectedItems, onContinue, onBack }) {
+function MenuSelection({
+  menuItems,
+  selectedItems,
+  setSelectedItems,
+  onContinue,
+  onBack,
+}) {
   const [nhom, setNhom] = useState("All");
-  const menuCategories = ["All", "Starters", "Main courses", "Desserts", "Drinks"];
+  const menuCategories = [
+    "All",
+    "Starters",
+    "Main courses",
+    "Desserts",
+    "Drinks",
+  ];
   const filteredItems =
-    nhom === "All"
-      ? menuItems
-      : menuItems.filter((mon) => mon.nhom === nhom);
+    nhom === "All" ? menuItems : menuItems.filter((mon) => mon.nhom === nhom);
   const getQuantity = (id) =>
     selectedItems.find((item) => item.monAnId === id)?.soLuong || 0;
   const increaseQuantity = (mon) =>
@@ -14,7 +24,9 @@ function MenuSelection({ menuItems, selectedItems, setSelectedItems, onContinue,
       const daCo = items.find((item) => item.monAnId === mon.id);
       return daCo
         ? items.map((item) =>
-            item.monAnId === mon.id ? { ...item, soLuong: item.soLuong + 1 } : item,
+            item.monAnId === mon.id
+              ? { ...item, soLuong: item.soLuong + 1 }
+              : item,
           )
         : [...items, { monAnId: mon.id, soLuong: 1 }];
     });
@@ -62,9 +74,7 @@ function MenuSelection({ menuItems, selectedItems, setSelectedItems, onContinue,
       </div>
       <div className="space-y-3">
         {filteredItems.length === 0 && (
-          <p className="py-8 text-center text-sm opacity-40">
-            Loading menu...
-          </p>
+          <p className="py-8 text-center text-sm opacity-40">Loading menu...</p>
         )}
         {filteredItems.map((mon) => (
           <div
@@ -117,10 +127,7 @@ function MenuSelection({ menuItems, selectedItems, setSelectedItems, onContinue,
         ))}
       </div>
       <div className="mt-8 flex gap-3">
-        <button
-          onClick={onBack}
-          className="btn-ghost flex-1 rounded-xl py-3"
-        >
+        <button onClick={onBack} className="btn-ghost flex-1 rounded-xl py-3">
           Back
         </button>
         <button

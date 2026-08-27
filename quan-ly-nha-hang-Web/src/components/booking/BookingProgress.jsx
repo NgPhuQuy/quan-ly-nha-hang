@@ -17,7 +17,9 @@ function BookingProgress({ currentStep }) {
             <div
               className="flex h-8 w-8 items-center justify-center rounded-full text-xs"
               style={{
-                background: isActive ? "rgba(200,136,42,.9)" : "rgba(200,136,42,.08)",
+                background: isActive
+                  ? "rgba(200,136,42,.9)"
+                  : "rgba(200,136,42,.08)",
                 color: isActive ? "#1a120a" : "rgba(240,216,144,.4)",
               }}
             >

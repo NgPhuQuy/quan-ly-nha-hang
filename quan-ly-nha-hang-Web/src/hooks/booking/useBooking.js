@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { fetchBranches } from "../../services/branch.service";
-import { fetchAdditionalServices, fetchMenuItems, fetchTimeSlots } from "../../services/menu.service";
+import {
+  fetchAdditionalServices,
+  fetchMenuItems,
+  fetchTimeSlots,
+} from "../../services/menu.service";
 import { createBooking } from "../../services/booking.service";
 
 export function useBooking() {
@@ -61,7 +65,8 @@ export function useBooking() {
     selectedServices.reduce(
       (total, serviceId) =>
         total +
-        (additionalServices.find((service) => service.id === serviceId)?.gia || 0),
+        (additionalServices.find((service) => service.id === serviceId)?.gia ||
+          0),
       0,
     );
 
@@ -99,7 +104,13 @@ export function useBooking() {
     setGuestCount(2);
     setSelectedTime("");
     setSelectedItems([]);
-    setGuestDetails({ hoTen: "", soDienThoai: "", email: "", ghiChu: "", dip: "khong" });
+    setGuestDetails({
+      hoTen: "",
+      soDienThoai: "",
+      email: "",
+      ghiChu: "",
+      dip: "khong",
+    });
     setSelectedServices([]);
     setBookingCode("");
   };

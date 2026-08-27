@@ -1,6 +1,6 @@
 import { ANH } from "../../assets/anh";
 import { cream } from "../../themes";
-import GoldDivider from "./GoldDivider";
+import GoldDivider from "./GoldDivider.jsx";
 
 function MenuGallery() {
   return (

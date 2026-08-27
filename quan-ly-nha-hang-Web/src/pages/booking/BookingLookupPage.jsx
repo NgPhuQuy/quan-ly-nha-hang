@@ -14,10 +14,7 @@ function BookingLookupPage({ onBack }) {
     <div className="min-h-screen bg-[var(--color-warm-black)]">
       <header className="border-b border-[rgba(200,136,42,.18)] bg-[rgba(10,7,4,.96)] px-4 py-4">
         <div className="mx-auto flex max-w-4xl justify-between">
-          <button
-            onClick={onBack}
-            style={{ color: "rgba(200,136,42,.65)" }}
-          >
+          <button onClick={onBack} style={{ color: "rgba(200,136,42,.65)" }}>
             ← 5S Dining
           </button>
           <span

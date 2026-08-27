@@ -62,8 +62,8 @@ function Hero({ onBookTable }) {
           className="fade-in-up delay-3 mx-auto mb-9 max-w-lg"
           style={{ color: "rgba(240,216,144,.58)", lineHeight: 1.78 }}
         >
-          Every meal at 5S becomes a memory. Reserve ahead and let us prepare
-          an evening made for you.
+          Every meal at 5S becomes a memory. Reserve ahead and let us prepare an
+          evening made for you.
         </p>
         <div className="fade-in-up delay-4 flex flex-col justify-center gap-3 sm:flex-row">
           <button
@@ -84,7 +84,9 @@ function Hero({ onBookTable }) {
         className="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2"
         style={{ color: "rgba(200,136,42,.35)" }}
       >
-        <span className="text-xs uppercase tracking-widest">Scroll to explore</span>
+        <span className="text-xs uppercase tracking-widest">
+          Scroll to explore
+        </span>
         <div
           className="h-7 w-px"
           style={{

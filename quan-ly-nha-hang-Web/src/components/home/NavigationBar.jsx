@@ -65,10 +65,7 @@ function NavigationBar({ onBookTable, onLookupBooking }) {
           <a href="#about" className="transition-colors hover:text-amber-300">
             About us
           </a>
-          <a
-            href="#contact"
-            className="transition-colors hover:text-amber-300"
-          >
+          <a href="#contact" className="transition-colors hover:text-amber-300">
             Contact
           </a>
           <button

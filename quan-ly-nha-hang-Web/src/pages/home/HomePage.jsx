@@ -9,7 +9,10 @@ import Footer from "../../components/home/Footer";
 function HomePage({ onBookTable, onLookupBooking }) {
   return (
     <div>
-      <NavigationBar onBookTable={onBookTable} onLookupBooking={onLookupBooking} />
+      <NavigationBar
+        onBookTable={onBookTable}
+        onLookupBooking={onLookupBooking}
+      />
       <Hero onBookTable={onBookTable} />
       <BranchSection onBookTable={onBookTable} />
       <MenuGallery />

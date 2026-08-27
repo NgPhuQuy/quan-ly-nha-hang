@@ -17,7 +17,10 @@ function BookingPage({ onBack }) {
           <button onClick={onBack} style={{ color: "rgba(200,136,42,.65)" }}>
             ← 5S Dining
           </button>
-          <span className="font-serif" style={{ color: "rgba(240,216,144,.62)" }}>
+          <span
+            className="font-serif"
+            style={{ color: "rgba(240,216,144,.62)" }}
+          >
             Table reservation
           </span>
         </div>

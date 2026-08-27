@@ -31,7 +31,13 @@ function TimeGroup({ label, slots, selectedTime, setSelectedTime }) {
   );
 }
 
-function TimeSelection({ timeSlots, selectedTime, setSelectedTime, onContinue, onBack }) {
+function TimeSelection({
+  timeSlots,
+  selectedTime,
+  setSelectedTime,
+  onContinue,
+  onBack,
+}) {
   const lunchSlots = timeSlots.filter((slot) => slot.gio < "15:00");
   const dinnerSlots = timeSlots.filter((slot) => slot.gio >= "15:00");
 
@@ -62,10 +68,7 @@ function TimeSelection({ timeSlots, selectedTime, setSelectedTime, onContinue, o
         setSelectedTime={setSelectedTime}
       />
       <div className="mt-8 flex gap-3">
-        <button
-          onClick={onBack}
-          className="btn-ghost flex-1 rounded-xl py-3"
-        >
+        <button onClick={onBack} className="btn-ghost flex-1 rounded-xl py-3">
           Back
         </button>
         <button

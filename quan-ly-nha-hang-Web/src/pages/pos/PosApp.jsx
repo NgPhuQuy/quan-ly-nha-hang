@@ -15,7 +15,7 @@ const pageTitles = {
   "invoice-detail": "Chi ti\u1EBFt h\xF3a \u0111\u01A1n",
   food: "M\xF3n \u0103n",
   "income-expense": "Thu chi",
-  reports: "B\xE1o c\xE1o"
+  reports: "B\xE1o c\xE1o",
 };
 export default function App({ initialPage = "dashboard", onNavigate }) {
   const [page, setPage] = useState(initialPage);
@@ -25,22 +25,27 @@ export default function App({ initialPage = "dashboard", onNavigate }) {
     onNavigate?.(nextPage);
   };
   const showHeader = page !== "create-invoice";
-  const Page = {
-    dashboard: Dashboard,
-    invoices: Invoices,
-    "create-invoice": CreateInvoice,
-    "invoice-detail": InvoiceDetail,
-    food: FoodMenu,
-    "income-expense": IncomeExpense,
-    reports: Reports,
-  }[page] ?? Dashboard;
+  const Page =
+    {
+      dashboard: Dashboard,
+      invoices: Invoices,
+      "create-invoice": CreateInvoice,
+      "invoice-detail": InvoiceDetail,
+      food: FoodMenu,
+      "income-expense": IncomeExpense,
+      reports: Reports,
+    }[page] ?? Dashboard;
 
   const pageProps = {
     onNavigate: handleNavigate,
     ...(page === "invoice-detail" ? { invoiceId: selectedInvoiceId } : {}),
     ...(page === "invoices" ? { onSelectInvoice: setSelectedInvoiceId } : {}),
   };
-  return <div className="flex h-screen overflow-hidden" style={{ background: "var(--background)" }}>
+  return (
+    <div
+      className="flex h-screen overflow-hidden"
+      style={{ background: "var(--background)" }}
+    >
       <Sidebar activePage={page} onNavigate={handleNavigate} />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {showHeader && <Header title={pageTitles[page]} />}
@@ -48,5 +53,6 @@ export default function App({ initialPage = "dashboard", onNavigate }) {
           <Page {...pageProps} />
         </main>
       </div>
-    </div>;
+    </div>
+  );
 }
