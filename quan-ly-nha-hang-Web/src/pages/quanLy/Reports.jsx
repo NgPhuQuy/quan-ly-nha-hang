@@ -63,7 +63,7 @@ function Reports({ role }) {
       color: "#D4962B",
     },
     {
-      label: "Tá»•ng hóa Ä‘Æ¡n",
+      label: "Tá»•ng hóa đơn",
       value: `${totalInvoices}`,
       icon: FileText,
       color: "#7C3AED",
@@ -378,7 +378,7 @@ function Reports({ role }) {
             color: "var(--foreground)",
           }}
         >
-          Thu â€“ Chi theo ngày
+          Thu – Chi theo ngày
         </div>
         <div
           className="text-xs mb-3"
@@ -473,7 +473,7 @@ function Reports({ role }) {
               color: "var(--foreground)",
             }}
           >
-            Tóm tắt hóa Ä‘Æ¡n
+            Tóm tắt hóa đơn
           </div>
         </div>
         <table className="w-full text-sm">
@@ -484,11 +484,11 @@ function Reports({ role }) {
           >
             <tr>
               {[
-                "Mã hóa Ä‘Æ¡n",
+                "Mã hóa đơn",
                 "Thời gian",
                 ...(isAdmin ? ["Chi nhánh"] : []),
-                "Nguá»“n",
-                "Tá»•ng tiền",
+                "Nguồn",
+                "Tổng tiền",
                 "Trạng thái",
               ].map((h) => (
                 <th

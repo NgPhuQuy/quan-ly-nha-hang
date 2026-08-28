@@ -12,7 +12,7 @@ import { dinhDangTien } from "../../utils/dinhDang";
 const statusIcon = {
   "Hoàn thành": <CheckCircle size={14} color="#16A34A" />,
   "Chờ xử lý": <AlertCircle size={14} color="#D97706" />,
-  "ã hủy": <XCircle size={14} color="#DC2626" />,
+  "Đã hủy": <XCircle size={14} color="#DC2626" />,
 };
 const statusStyle = {
   "Hoàn thành": {
@@ -23,7 +23,7 @@ const statusStyle = {
     bg: "#FFFBEB",
     text: "#D97706",
   },
-  "ã hủy": {
+  "Đã hủy": {
     bg: "#FEF2F2",
     text: "#DC2626",
   },
@@ -38,7 +38,7 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
           color: "var(--muted-foreground)",
         }}
       >
-        Không tìm thấy hóa Ä‘Æ¡n.
+        Không tìm thấy hóa đơn.
       </div>
     );
   return (
@@ -73,7 +73,7 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
                   color: "var(--muted-foreground)",
                 }}
               >
-                Mã hóa Ä‘Æ¡n
+                Mã hóa đơn
               </div>
               <div
                 className="text-xl font-800"
@@ -125,7 +125,7 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
                   color: "var(--foreground)",
                 }}
               >
-                NhàHàng Vá»‹ Viá»‡t â€“ Q1
+                Nhà Hàng Vị Việt – Q1
               </div>
             </div>
           </div>
@@ -171,7 +171,7 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
                   color: "var(--muted-foreground)",
                 }}
               >
-                Nguá»“n
+                Nguồn
               </div>
               <span
                 className="text-sm px-2 py-0.5 rounded font-500 inline-flex"
@@ -202,7 +202,7 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
                   borderBottom: "1px solid var(--border)",
                 }}
               >
-                {["Món", "Æ¡n giá", "Sá»‘ lượng", "Thành tiền"].map((h) => (
+                {["Món", "Đơn giá", "Số lượng", "Thành tiền"].map((h) => (
                   <th
                     className="pb-2 text-left text-xs font-600"
                     style={{
@@ -244,7 +244,7 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
                       color: "var(--foreground)",
                     }}
                   >
-                    Ă—{item.quantity}
+                    ×{item.quantity}
                   </td>
                   <td
                     className="py-3 text-sm font-600"
@@ -271,7 +271,7 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
                   color: "var(--foreground)",
                 }}
               >
-                Tá»•ng tiền
+                Tổng tiền
               </span>
               <span
                 className="text-xl font-800"

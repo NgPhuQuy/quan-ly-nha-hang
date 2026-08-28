@@ -30,6 +30,7 @@ import {
   expenseByCategory,
 } from "../../data/quanLyMock";
 import { dinhDangTien, dinhDangTienRutGon } from "../../utils/dinhDang";
+import DashboardKpiCard from "../../components/quanLy/DashboardKpiCard";
 const PIE_COLORS = ["#D4962B", "#EEC97A"];
 const tooltipStyle = {
   background: "#fff",
@@ -37,58 +38,6 @@ const tooltipStyle = {
   borderRadius: 8,
   fontSize: 12,
 };
-function KpiCard({ label, value, sub, icon: Icon, color }) {
-  return (
-    <div
-      className="bg-white rounded-xl p-4 border flex items-start gap-3"
-      style={{
-        borderColor: "var(--border)",
-      }}
-    >
-      <div
-        className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-        style={{
-          background: `${color}18`,
-        }}
-      >
-        <Icon
-          size={16}
-          style={{
-            color,
-          }}
-        />
-      </div>
-      <div className="min-w-0">
-        <div
-          className="text-xs mb-0.5 truncate"
-          style={{
-            color: "var(--muted-foreground)",
-          }}
-        >
-          {label}
-        </div>
-        <div
-          className="text-lg font-700 leading-tight"
-          style={{
-            color: "var(--foreground)",
-          }}
-        >
-          {value}
-        </div>
-        {sub && (
-          <div
-            className="text-xs mt-0.5"
-            style={{
-              color: "var(--muted-foreground)",
-            }}
-          >
-            {sub}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 const statusBadge = {
   "Hoàn thành": "var(--success)",
   "Chờ xử lý": "var(--warning)",
@@ -128,47 +77,47 @@ function Dashboard({ role, onNavigate }) {
       </div>
       {isAdmin ? (
         <div className="grid grid-cols-4 gap-3">
-          <KpiCard
+          <DashboardKpiCard
             label="Tá»•ng doanh thu"
             value={dinhDangTienRutGon(totalRevenue)}
             sub="Toàn chuá»—i"
             icon={TrendingUp}
             color="#D4962B"
           />
-          <KpiCard
+          <DashboardKpiCard
             label="Chi nhánh hoạt Ä‘á»™ng"
             value="2 / 3"
             sub="1 tạm Ä‘óng"
             icon={Building2}
             color="#7C3AED"
           />
-          <KpiCard
-            label="Tá»•ng hóa Ä‘Æ¡n"
+          <DashboardKpiCard
+            label="Tá»•ng hóa đơn"
             value={`${totalInvoices}`}
-            sub="Toàn há»‡ thá»‘ng"
+            sub="Toàn hệ thá»‘ng"
             icon={FileText}
             color="#2563EB"
           />
-          <KpiCard
+          <DashboardKpiCard
             label="Khách hàng"
             value="612"
             sub="+24 tháng này"
             icon={UserCircle}
             color="#0891B2"
           />
-          <KpiCard
+          <DashboardKpiCard
             label="Tá»•ng thu"
             value={dinhDangTienRutGon(totalIncome)}
             icon={DollarSign}
             color="#059669"
           />
-          <KpiCard
+          <DashboardKpiCard
             label="Tá»•ng chi"
             value={dinhDangTienRutGon(totalExpense)}
             icon={Wallet}
             color="#DC2626"
           />
-          <KpiCard
+          <DashboardKpiCard
             label="Lợi nhuận"
             value={dinhDangTienRutGon(profit)}
             sub={profit >= 0 ? "â–² DÆ°Æ¡ng" : "â–¼ Ă‚m"}
@@ -178,33 +127,33 @@ function Dashboard({ role, onNavigate }) {
         </div>
       ) : (
         <div className="grid grid-cols-5 gap-3">
-          <KpiCard
+          <DashboardKpiCard
             label="Tá»•ng doanh thu"
             value={dinhDangTienRutGon(totalRevenue)}
             sub="Tháng 1/2025"
             icon={TrendingUp}
             color="#D4962B"
           />
-          <KpiCard
-            label="Tá»•ng hóa Ä‘Æ¡n"
+          <DashboardKpiCard
+            label="Tá»•ng hóa đơn"
             value={`${totalInvoices}`}
             sub="Đã xử lý"
             icon={FileText}
             color="#7C3AED"
           />
-          <KpiCard
+          <DashboardKpiCard
             label="Tá»•ng thu"
             value={dinhDangTienRutGon(totalIncome)}
             icon={DollarSign}
             color="#059669"
           />
-          <KpiCard
+          <DashboardKpiCard
             label="Tá»•ng chi"
             value={dinhDangTienRutGon(totalExpense)}
             icon={Wallet}
             color="#DC2626"
           />
-          <KpiCard
+          <DashboardKpiCard
             label="Lợi nhuận"
             value={dinhDangTienRutGon(profit)}
             sub={profit >= 0 ? "â–² DÆ°Æ¡ng" : "â–¼ Ă‚m"}
@@ -229,7 +178,7 @@ function Dashboard({ role, onNavigate }) {
                 }}
               >
                 {isAdmin
-                  ? "Doanh thu toàn há»‡ thá»‘ng"
+                  ? "Doanh thu toàn hệ thá»‘ng"
                   : "Doanh thu theo ngày"}
               </div>
               <div
@@ -490,8 +439,8 @@ function Dashboard({ role, onNavigate }) {
                 {[
                   "Mã HĐ",
                   "Thời gian",
-                  isAdmin ? "Chi nhánh" : "Nguá»“n",
-                  "Tá»•ng tiền",
+                  isAdmin ? "Chi nhánh" : "Nguồn",
+                  "Tổng tiền",
                   "Trạng thái",
                 ].map((h) => (
                   <th
