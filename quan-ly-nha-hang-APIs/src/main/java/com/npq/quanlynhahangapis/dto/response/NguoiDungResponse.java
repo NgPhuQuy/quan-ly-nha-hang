@@ -13,7 +13,7 @@ public record NguoiDungResponse(
         String avatar,
         String ho,
         String ten,
-        String hoTen,
+        String hoTen, //todo bo?
         String email,
         String soDienThoai,
         String vaiTro,

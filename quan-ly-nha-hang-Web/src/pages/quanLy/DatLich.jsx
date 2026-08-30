@@ -14,7 +14,6 @@ import {
   User,
   Phone,
 } from "lucide-react";
-import { BRANCH_OPTIONS } from "../../data/quanLyMock";
 import {
   layDanhSachDatLich,
   capNhatTrangThaiDatLich,

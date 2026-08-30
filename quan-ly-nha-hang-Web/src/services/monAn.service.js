@@ -10,27 +10,54 @@ const DEFAULT_MENU_IMAGES = [
   ANH.monMenu6,
 ];
 
-const normalizeMenuItem = (data, index, defaultCategory) => ({
-  id: data.maMonAn ?? data.maMatHang ?? data.id ?? `item-${index}`,
-  ten: data.tenMonAn ?? data.ten ?? data.tenMatHang ?? "Món ăn",
-  moTa: data.moTa ?? "",
-  gia: data.gia ?? data.donGia ?? data.giaMatHang ?? 0,
-  anh:
-    data.anh ??
-    data.hinhAnh ??
-    data.anhMinhHoa ??
-    DEFAULT_MENU_IMAGES[index % DEFAULT_MENU_IMAGES.length],
-  nhom:
-    data.nhom ??
-    data.loaiMon ??
-    data.loaiMatHang ??
-    data.danhMuc ??
-    defaultCategory,
-  trangThai: data.trangThai ?? "Đang bán",
-});
+const normalizeMenuItem = (data, index, defaultCategory = "Món chính") => {
+  const rawId = data.maMatHang ?? data.maMonAn ?? data.id ?? `item-${index}`;
+  const rawTen =
+    data.tenMatHang ?? data.tenMonAn ?? data.ten ?? data.name ?? "Món ăn";
+  const rawGia = Number(
+    data.giaMatHang ?? data.gia ?? data.donGia ?? data.price ?? 0,
+  );
+  const rawNhom =
+    data.danhMuc ||
+    data.nhom ||
+    data.category ||
+    (data.loaiMatHang === "THUC_UONG"
+      ? "Đồ uống"
+      : data.loaiMatHang === "DICH_VU"
+        ? "Dịch vụ"
+        : defaultCategory);
+
+  const rawAnh =
+    data.anhMinhHoa ||
+    data.anh ||
+    data.hinhAnh ||
+    data.image ||
+    DEFAULT_MENU_IMAGES[index % DEFAULT_MENU_IMAGES.length];
+
+  return {
+    id: rawId,
+    maMatHang: rawId,
+    ten: rawTen,
+    name: rawTen,
+    tenMatHang: rawTen,
+    moTa: data.moTa ?? data.description ?? "",
+    gia: rawGia,
+    price: rawGia,
+    giaMatHang: rawGia,
+    anh: rawAnh,
+    image: rawAnh,
+    anhMinhHoa: rawAnh,
+    nhom: rawNhom,
+    category: rawNhom,
+    danhMuc: rawNhom,
+    trangThai: data.trangThai ?? data.status ?? "Đang bán",
+    status: data.trangThai ?? data.status ?? "Đang bán",
+    branch: "Quận 1",
+  };
+};
 
 const guessServiceIcon = (name) => {
-  const normalizedName = name.toLowerCase();
+  const normalizedName = (name || "").toLowerCase();
   if (normalizedName.includes("hoa")) return "🌷";
   if (normalizedName.includes("bánh")) return "🎂";
   if (normalizedName.includes("rượu") || normalizedName.includes("vang"))
@@ -41,11 +68,14 @@ const guessServiceIcon = (name) => {
 };
 
 const normalizeService = (data, index) => {
-  const name = data.tenDichVu ?? data.ten ?? "Dịch vụ";
+  const name = data.tenDichVu ?? data.tenMatHang ?? data.ten ?? "Dịch vụ";
+  const rawGia = Number(
+    data.gia ?? data.donGia ?? data.giaMatHang ?? data.price ?? 0,
+  );
   return {
     id: data.maDichVu ?? data.maMatHang ?? data.id ?? `service-${index}`,
     ten: name,
-    gia: data.gia ?? data.donGia ?? data.giaMatHang ?? 0,
+    gia: rawGia,
     bieuTuong: data.bieuTuong ?? guessServiceIcon(name),
   };
 };
@@ -53,17 +83,9 @@ const normalizeService = (data, index) => {
 export const layTatCaMonAn = async () => {
   try {
     const res = await apis.get(endpoints.foods);
-    return (res.data || []).map((item, index) => ({
-      id: item.maMatHang,
-      name: item.tenMatHang,
-      category: item.danhMuc || "Món chính",
-      price: item.giaMatHang,
-      status: item.trangThai || "Đang bán",
-      image:
-        item.anhMinhHoa ||
-        DEFAULT_MENU_IMAGES[index % DEFAULT_MENU_IMAGES.length],
-      branch: "Quận 1",
-    }));
+    return (res.data || []).map((item, index) =>
+      normalizeMenuItem(item, index, "Món chính"),
+    );
   } catch (error) {
     console.warn("Could not fetch foods from API:", error);
     return [];

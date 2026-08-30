@@ -33,22 +33,23 @@ public class BanService {
                 .toList();
     }
 
-    public List<BanResponse> layDSBanTheoTrangThai(Integer maChiNhanh, String trangThai) {
-        if (maChiNhanh != null && trangThai != null && !trangThai.isBlank()) {
-            return banRepository.findByChiNhanh_MaChiNhanhAndTrangThai(maChiNhanh, trangThai)
-                    .stream()
-                    .map(this::chuyenSangDto)
-                    .toList();
-        } else if (maChiNhanh != null) {
-            return layDSBan(maChiNhanh);
-        } else if (trangThai != null && !trangThai.isBlank()) {
-            return banRepository.findByTrangThai(trangThai)
-                    .stream()
-                    .map(this::chuyenSangDto)
-                    .toList();
-        }
-        return layDSBan(null);
-    }
+//    public List<BanResponse> layDSBanTheoTrangThai(Integer maChiNhanh) {
+//
+//        if (maChiNhanh != null ) {
+//            return banRepository.findByChiNhanh_MaChiNhanhAndTrangThai(maChiNhanh, trangThai)
+//                    .stream()
+//                    .map(this::chuyenSangDto)
+//                    .toList();
+//        } else if (maChiNhanh != null) {
+//            return layDSBan(maChiNhanh);
+//        } else if (trangThai != null && !trangThai.isBlank()) {
+//            return banRepository.findByTrangThai(trangThai)
+//                    .stream()
+//                    .map(this::chuyenSangDto)
+//                    .toList();
+//        }
+//        return layDSBan(null);
+//    }
 
     public BanResponse layBanTheoId(Integer maBan) {
         Ban ban = banRepository.findById(maBan)

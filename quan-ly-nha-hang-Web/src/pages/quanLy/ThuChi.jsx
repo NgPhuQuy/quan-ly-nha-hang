@@ -1,17 +1,20 @@
 import { useState, useEffect } from "react";
 import { Plus, TrendingUp, TrendingDown } from "lucide-react";
-import { mockTransactions } from "../../data/quanLyMock";
 import {
   layDanhSachThuChi,
   taoThuChi,
   xoaThuChi,
 } from "../../services/thuChi.service";
-import { dinhDangTien } from "../../utils/dinhDang";
-const MONTHS = ["Tháng 1/2025", "Tháng 12/2024", "Tháng 11/2024"];
+import {
+  dinhDangTien,
+  taoDanhSachThangGanNhat,
+  layThangHienTai,
+} from "../../utils/dinhDang";
+const MONTHS = taoDanhSachThangGanNhat(6);
 function IncomeExpense() {
   const [tab, setTab] = useState("Tất cả");
-  const [month, setMonth] = useState("Tháng 1/2025");
-  const [transactions, setTransactions] = useState(mockTransactions);
+  const [month, setMonth] = useState(layThangHienTai());
+  const [transactions, setTransactions] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({
     type: "Thu",

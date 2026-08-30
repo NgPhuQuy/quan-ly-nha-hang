@@ -128,14 +128,17 @@ public class NguoiDungService {
     }
 
     private NguoiDungResponse chuyenSangDto(NguoiDung nguoiDung) {
+
+        // todo check
         String vaiTro = "KHACHHANG";
         try {
             vaiTro = layVaiTro(nguoiDung.getMaNguoiDung());
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         String vaiTroHienThi = "ADMIN".equals(vaiTro) ? "Admin"
                 : "QUANLY".equals(vaiTro) ? "Quản lý"
-                : "NHANVIEN".equals(vaiTro) ? "Nhân viên" : "Khách hàng";
+                  : "NHANVIEN".equals(vaiTro) ? "Nhân viên" : "Khách hàng";
 
         String chiNhanh = "Quận 1";
         if ("QUANLY".equals(vaiTro)) {

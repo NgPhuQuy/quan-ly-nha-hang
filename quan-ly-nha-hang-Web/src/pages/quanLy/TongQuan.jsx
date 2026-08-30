@@ -24,19 +24,18 @@ import {
   Bar,
 } from "recharts";
 import {
-  revenueByDay as mockRevenueByDay,
-  revenueBySource as mockRevenueBySource,
-  revenueByBranch as mockRevenueByBranch,
-  mockInvoices,
-  expenseByCategory,
-} from "../../data/quanLyMock";
-import {
   layDashboardOverview,
   layDoanhThuTheoNgay,
   layDoanhThuTheoChiNhanh,
   layDoanhThuTheoNguon,
 } from "../../services/dashboard.service";
-import { dinhDangTien, dinhDangTienRutGon } from "../../utils/dinhDang";
+import { layDanhSachHoaDon } from "../../services/hoaDon.service";
+import { layDanhSachThuChi } from "../../services/thuChi.service";
+import {
+  dinhDangTien,
+  dinhDangTienRutGon,
+  layThangHienTai,
+} from "../../utils/dinhDang";
 
 function DashboardKpiCard({ label, value, sub, icon: Icon, color }) {
   return (
@@ -95,9 +94,11 @@ const statusBg = {
 };
 function Dashboard({ role, onNavigate }) {
   const isAdmin = role === "admin";
-  const [revenueByDay, setRevenueByDay] = useState(mockRevenueByDay);
-  const [revenueBySource, setRevenueBySource] = useState(mockRevenueBySource);
-  const [revenueByBranch, setRevenueByBranch] = useState(mockRevenueByBranch);
+  const [revenueByDay, setRevenueByDay] = useState([]);
+  const [revenueBySource, setRevenueBySource] = useState([]);
+  const [revenueByBranch, setRevenueByBranch] = useState([]);
+  const [recentInvoices, setRecentInvoices] = useState([]);
+  const [expenseList, setExpenseList] = useState([]);
   const [overview, setOverview] = useState(null);
 
   useEffect(() => {
@@ -112,6 +113,29 @@ function Dashboard({ role, onNavigate }) {
     });
     layDoanhThuTheoNguon().then((data) => {
       if (data && data.length > 0) setRevenueBySource(data);
+    });
+    layDanhSachHoaDon().then((data) => {
+      if (data && data.length > 0) setRecentInvoices(data.slice(0, 5));
+    });
+    layDanhSachThuChi().then((data) => {
+      if (data && data.length > 0) {
+        const chiItems = data.filter(
+          (t) => t.type === "Chi" || t.loai === "Chi",
+        );
+        const totalChi =
+          chiItems.reduce((s, t) => s + (t.amount || t.soTien || 0), 0) || 1;
+        const catMap = {};
+        chiItems.forEach((t) => {
+          const cat = t.category || t.danhMuc || "Khác";
+          catMap[cat] = (catMap[cat] || 0) + (t.amount || t.soTien || 0);
+        });
+        const dynamicExpenses = Object.keys(catMap).map((cat) => ({
+          category: cat,
+          amount: catMap[cat],
+          pct: Math.round((catMap[cat] / totalChi) * 100),
+        }));
+        setExpenseList(dynamicExpenses);
+      }
     });
   }, []);
 
@@ -151,49 +175,53 @@ function Dashboard({ role, onNavigate }) {
             }}
           >
             {isAdmin
-              ? "Tá»•ng quan toàn chuá»—i · Tháng 1/2025"
-              : "Chi nhánh Quận 1 · Tháng 1/2025"}
+              ? `Tổng quan toàn chuỗi · ${layThangHienTai()}`
+              : `Chi nhánh Quận 1 · ${layThangHienTai()}`}
           </p>
         </div>
       </div>
       {isAdmin ? (
         <div className="grid grid-cols-4 gap-3">
           <DashboardKpiCard
-            label="Tá»•ng doanh thu"
+            label="Tổng doanh thu"
             value={dinhDangTienRutGon(totalRevenue)}
-            sub="Toàn chuá»—i"
+            sub="Toàn chuỗi"
             icon={TrendingUp}
             color="#D4962B"
           />
           <DashboardKpiCard
-            label="Chi nhánh hoạt Ä‘á»™ng"
-            value="2 / 3"
-            sub="1 tạm Ä‘óng"
+            label="Chi nhánh hoạt động"
+            value={
+              overview?.tongChiNhanh
+                ? `${overview.chiNhanhHoatDong || 0} / ${overview.tongChiNhanh}`
+                : "3 / 3"
+            }
+            sub="Hệ thống chi nhánh"
             icon={Building2}
             color="#7C3AED"
           />
           <DashboardKpiCard
-            label="Tá»•ng hóa đơn"
-            value={`${totalInvoices}`}
-            sub="Toàn hệ thá»‘ng"
+            label="Tổng hóa đơn"
+            value={`${overview?.tongHoaDon ?? totalInvoices}`}
+            sub="Toàn hệ thống"
             icon={FileText}
             color="#2563EB"
           />
           <DashboardKpiCard
             label="Khách hàng"
-            value="612"
-            sub="+24 tháng này"
+            value={`${overview?.tongKhachHang ?? 0}`}
+            sub="Thành viên đã đăng ký"
             icon={UserCircle}
             color="#0891B2"
           />
           <DashboardKpiCard
-            label="Tá»•ng thu"
+            label="Tổng thu"
             value={dinhDangTienRutGon(totalIncome)}
             icon={DollarSign}
             color="#059669"
           />
           <DashboardKpiCard
-            label="Tá»•ng chi"
+            label="Tổng chi"
             value={dinhDangTienRutGon(totalExpense)}
             icon={Wallet}
             color="#DC2626"
@@ -201,7 +229,7 @@ function Dashboard({ role, onNavigate }) {
           <DashboardKpiCard
             label="Lợi nhuận"
             value={dinhDangTienRutGon(profit)}
-            sub={profit >= 0 ? "â–² DÆ°Æ¡ng" : "â–¼ Ă‚m"}
+            sub={profit >= 0 ? "▲ Dương" : "▼ Âm"}
             icon={PiggyBank}
             color="#059669"
           />
@@ -209,27 +237,27 @@ function Dashboard({ role, onNavigate }) {
       ) : (
         <div className="grid grid-cols-5 gap-3">
           <DashboardKpiCard
-            label="Tá»•ng doanh thu"
+            label="Tổng doanh thu"
             value={dinhDangTienRutGon(totalRevenue)}
-            sub="Tháng 1/2025"
+            sub={layThangHienTai()}
             icon={TrendingUp}
             color="#D4962B"
           />
           <DashboardKpiCard
-            label="Tá»•ng hóa đơn"
+            label="Tổng hóa đơn"
             value={`${totalInvoices}`}
             sub="Đã xử lý"
             icon={FileText}
             color="#7C3AED"
           />
           <DashboardKpiCard
-            label="Tá»•ng thu"
+            label="Tổng thu"
             value={dinhDangTienRutGon(totalIncome)}
             icon={DollarSign}
             color="#059669"
           />
           <DashboardKpiCard
-            label="Tá»•ng chi"
+            label="Tổng chi"
             value={dinhDangTienRutGon(totalExpense)}
             icon={Wallet}
             color="#DC2626"
@@ -237,7 +265,7 @@ function Dashboard({ role, onNavigate }) {
           <DashboardKpiCard
             label="Lợi nhuận"
             value={dinhDangTienRutGon(profit)}
-            sub={profit >= 0 ? "â–² DÆ°Æ¡ng" : "â–¼ Ă‚m"}
+            sub={profit >= 0 ? "▲ Dương" : "▼ Âm"}
             icon={PiggyBank}
             color="#059669"
           />
@@ -258,7 +286,7 @@ function Dashboard({ role, onNavigate }) {
                   color: "var(--foreground)",
                 }}
               >
-                {isAdmin ? "Doanh thu toàn hệ thá»‘ng" : "Doanh thu theo ngày"}
+                {isAdmin ? "Doanh thu toàn hệ thống" : "Doanh thu theo ngày"}
               </div>
               <div
                 className="text-xs"
@@ -266,7 +294,7 @@ function Dashboard({ role, onNavigate }) {
                   color: "var(--muted-foreground)",
                 }}
               >
-                Tháng 1/2025
+                {layThangHienTai()}
               </div>
             </div>
           </div>
@@ -342,7 +370,7 @@ function Dashboard({ role, onNavigate }) {
                   color: "var(--muted-foreground)",
                 }}
               >
-                Tháng 1/2025
+                {layThangHienTai()}
               </div>
               <ResponsiveContainer width="100%" height={160}>
                 <BarChart
@@ -534,8 +562,9 @@ function Dashboard({ role, onNavigate }) {
               </tr>
             </thead>
             <tbody>
-              {mockInvoices.slice(0, 5).map((inv) => (
+              {recentInvoices.map((inv) => (
                 <tr
+                  key={inv.id}
                   className="border-b last:border-0"
                   style={{
                     borderColor: "var(--border)",
@@ -597,8 +626,8 @@ function Dashboard({ role, onNavigate }) {
                     <span
                       className="text-xs px-2 py-0.5 rounded font-500"
                       style={{
-                        background: statusBg[inv.status],
-                        color: statusBadge[inv.status],
+                        background: statusBg[inv.status] || "var(--muted)",
+                        color: statusBadge[inv.status] || "var(--foreground)",
                       }}
                     >
                       {inv.status}
@@ -624,8 +653,8 @@ function Dashboard({ role, onNavigate }) {
             Chi phí tháng này
           </div>
           <div className="flex flex-col gap-3">
-            {expenseByCategory.map((item) => (
-              <div>
+            {expenseList.map((item, idx) => (
+              <div key={idx}>
                 <div className="flex justify-between text-xs mb-1">
                   <span
                     style={{

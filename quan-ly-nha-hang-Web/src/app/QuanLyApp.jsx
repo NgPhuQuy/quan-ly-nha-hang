@@ -2,11 +2,7 @@ import { lazy, Suspense, useState } from "react";
 import Sidebar from "../components/quanLy/Sidebar";
 import Header from "../components/quanLy/Header";
 import DangNhap from "../pages/quanLy/DangNhap";
-import {
-  isDaDangNhap,
-  layNguoiDungHienTai,
-  dangXuat,
-} from "../services/xacThuc.service";
+import { useAuth } from "../contexts/AuthContext";
 
 const TongQuan = lazy(() => import("../pages/quanLy/TongQuan"));
 const DanhSachHoaDon = lazy(() => import("../pages/quanLy/DanhSachHoaDon"));
@@ -62,33 +58,25 @@ const pages = {
 
 export default function QuanLyApp({
   initialPage = "dashboard",
-  initialRole = "manager",
   onNavigate,
   onQuayVeTrangChu,
 }) {
-  const [daXacThuc, setDaXacThuc] = useState(isDaDangNhap);
-  const [nguoiDung, setNguoiDung] = useState(layNguoiDungHienTai);
+  const {
+    user: nguoiDung,
+    isAuth: daXacThuc,
+    isNhanVien,
+    isAdmin,
+    dangXuat: handleDangXuat,
+  } = useAuth();
   const [page, setPage] = useState(initialPage);
   const [selectedInvoiceId, setSelectedInvoiceId] = useState("");
 
-  const role = nguoiDung?.vaiTro
-    ? nguoiDung.vaiTro === "ADMIN"
-      ? "admin"
-      : "manager"
-    : initialRole;
+  const role = isAdmin ? "admin" : "manager";
   const Page = pages[page] || TongQuan;
   const noHeader = page === "create-invoice";
 
-  const handleDangNhapThanhCong = (user) => {
-    setDaXacThuc(true);
-    setNguoiDung(user);
+  const handleDangNhapThanhCong = () => {
     setPage("dashboard");
-  };
-
-  const handleDangXuat = () => {
-    dangXuat();
-    setDaXacThuc(false);
-    setNguoiDung(null);
   };
 
   const khiChuyenTrang = (trangMoi) => {
@@ -101,7 +89,7 @@ export default function QuanLyApp({
     onNavigate?.(trangMoi);
   };
 
-  if (!daXacThuc) {
+  if (!daXacThuc || !isNhanVien) {
     return (
       <DangNhap
         onDangNhapThanhCong={handleDangNhapThanhCong}

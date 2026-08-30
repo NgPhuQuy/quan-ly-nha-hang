@@ -15,6 +15,26 @@ const normalizeBooking = (data) => {
   const displayStatus = STATUS_LABELS[rawStatus] || rawStatus;
 
   return {
+    // Thuần Việt chuẩn BE DTO
+    maDatLich: data.maDatLich,
+    maDatLichCode: data.maDatLichCode ?? `BK-${data.maDatLich}`,
+    maChiNhanh: data.maChiNhanh,
+    tenChiNhanh: data.tenChiNhanh ?? data.chiNhanh?.tenChiNhanh ?? "Quận 1",
+    hoTen: data.hoTen ?? data.tenKhachHang ?? "Khách hàng",
+    soDienThoai: data.soDienThoai ?? "",
+    email: data.email ?? "",
+    dip: data.dip ?? "khong",
+    dichVuBoSung: data.dichVuBoSung ?? [],
+    ngay: data.ngay ?? data.ngayDat ?? "",
+    gio: data.gio ? String(data.gio).slice(0, 5) : "",
+    soKhach: data.soKhach ?? data.soLuongKhach ?? 2,
+    ghiChu: data.ghiChu ?? "",
+    trangThai: rawStatus,
+    maBan: data.maBan,
+    soBan: data.soBan ?? "—",
+    listDatTruoc: data.listDatTruoc ?? [],
+
+    // Aliases tương thích UI
     id: data.maDatLichCode ?? `BK-${data.maDatLich}`,
     maDatLichId: data.maDatLich,
     branch: data.tenChiNhanh ?? data.chiNhanh?.tenChiNhanh ?? "Quận 1",
@@ -23,9 +43,6 @@ const normalizeBooking = (data) => {
     guests: data.soKhach ?? data.soLuongKhach ?? 2,
     customer: data.hoTen ?? data.tenKhachHang ?? "Khách hàng",
     phone: data.soDienThoai ?? "",
-    email: data.email ?? "",
-    dip: data.dip ?? "khong",
-    dichVuBoSung: data.dichVuBoSung ?? [],
     status:
       displayStatus === "DA_XAC_NHAN" || displayStatus === "Xác nhận"
         ? "Xác nhận"
@@ -35,7 +52,6 @@ const normalizeBooking = (data) => {
     rawTrangThai: rawStatus,
     note: data.ghiChu ?? "",
     table: data.soBan ?? "—",
-    listDatTruoc: data.listDatTruoc ?? [],
   };
 };
 

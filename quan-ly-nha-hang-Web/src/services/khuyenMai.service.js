@@ -5,6 +5,21 @@ export const layDanhSachKhuyenMai = async (trangThai) => {
     const params = trangThai ? { trangThai } : {};
     const res = await apis.get(endpoints.promotions, { params });
     return (res.data || []).map((p) => ({
+      // Thuần Việt chuẩn BE DTO
+      maKhuyenMai: p.maKhuyenMai,
+      tenKhuyenMai: p.tenKhuyenMai,
+      loaiKhuyenMai: p.loaiKhuyenMai || "Giảm %",
+      giaTri: p.giaTri || "10%",
+      ngayBatDau: p.ngayBatDau
+        ? String(p.ngayBatDau).slice(0, 10)
+        : "2025-01-01",
+      ngayKetThuc: p.ngayKetThuc
+        ? String(p.ngayKetThuc).slice(0, 10)
+        : "2025-01-31",
+      trangThai: p.trangThai || "Đang chạy",
+      soLuotDung: p.soLuotDung || 0,
+
+      // Aliases tương thích UI
       id: `p${p.maKhuyenMai}`,
       maKhuyenMaiId: p.maKhuyenMai,
       name: p.tenKhuyenMai,

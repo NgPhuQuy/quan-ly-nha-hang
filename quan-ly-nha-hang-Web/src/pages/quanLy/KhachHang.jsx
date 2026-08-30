@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
-import { mockCustomers } from "../../data/quanLyMock";
 import { layDanhSachKhachHang } from "../../services/khachHang.service";
 import { dinhDangTien } from "../../utils/dinhDang";
 function Customers() {
-  const [customers, setCustomers] = useState(mockCustomers);
+  const [customers, setCustomers] = useState([]);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -39,7 +38,7 @@ function Customers() {
               color: "var(--muted-foreground)",
             }}
           >
-            {mockCustomers.length} khách hàng
+            {customers.length} khách hàng
           </p>
         </div>
       </div>

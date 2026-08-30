@@ -4,6 +4,21 @@ export const layDanhSachThuChi = async (params = {}) => {
   try {
     const res = await apis.get(endpoints.transactions, { params });
     return (res.data || []).map((t) => ({
+      // Thuần Việt chuẩn BE DTO
+      maGiaoDich: t.maGiaoDich,
+      maGiaoDichCode: t.maGiaoDichCode || `TC-${t.maGiaoDich}`,
+      ngayGiaoDich: t.ngayGiaoDich
+        ? String(t.ngayGiaoDich).slice(0, 10)
+        : "2025-01-15",
+      loai: t.loai || "Thu",
+      danhMuc: t.danhMuc || "Doanh thu bán hàng",
+      moTa: t.moTa || "",
+      soTien: Number(t.soTien || 0),
+      maChiNhanh: t.maChiNhanh,
+      tenChiNhanh: t.tenChiNhanh || "Quận 1",
+      ghiChu: t.ghiChu || "",
+
+      // Aliases tương thích UI
       id: t.maGiaoDichCode || `TC-${t.maGiaoDich}`,
       maGiaoDichId: t.maGiaoDich,
       date: t.ngayGiaoDich ? String(t.ngayGiaoDich).slice(0, 10) : "2025-01-15",

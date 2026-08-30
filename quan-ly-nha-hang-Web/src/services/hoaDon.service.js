@@ -4,6 +4,41 @@ export const layDanhSachHoaDon = async (params = {}) => {
   try {
     const res = await apis.get(endpoints.invoices, { params });
     return (res.data || []).map((h) => ({
+      // Thuần Việt chuẩn BE DTO
+      maHoaDon: h.maHoaDon,
+      maHoaDonCode: h.maHoaDonCode || `HD-${h.maHoaDon}`,
+      maChiNhanh: h.maChiNhanh,
+      tenChiNhanh: h.tenChiNhanh || "Quận 1",
+      maBan: h.maBan,
+      soBan: h.soBan || "—",
+      maKhachHang: h.maKhachHang,
+      tenKhachHang: h.tenKhachHang || "Khách vãng lai",
+      soDienThoai: h.soDienThoai || "",
+      maNhanVien: h.maNhanVien,
+      tenNhanVien: h.tenNhanVien || "Nhân viên",
+      nguon: h.nguon || "WALK_IN",
+      trangThai: h.trangThai || "Hoàn thành",
+      tongTien: Number(h.tongTien || 0),
+      ngayLapHoaDon: h.ngayLapHoaDon,
+      thoiGianDinhDang: h.thoiGianDinhDang || "2025-01-15 12:00",
+      items: (h.items || []).map((item) => ({
+        maChiTietHoaDon: item.maChiTietHoaDon,
+        maMatHang: item.maMatHang,
+        tenMatHang: item.tenMatHang,
+        anhMinhHoa: item.anhMinhHoa,
+        soLuong: item.soLuong || 1,
+        donGia: Number(item.donGia || 0),
+        thanhTien:
+          Number(item.thanhTien) ||
+          Number(item.donGia || 0) * (item.soLuong || 1),
+        // Aliases
+        foodId: item.maMatHang,
+        name: item.tenMatHang,
+        unitPrice: Number(item.donGia || 0),
+        quantity: item.soLuong || 1,
+      })),
+
+      // Aliases tương thích UI
       id: h.maHoaDonCode || `HD-${h.maHoaDon}`,
       maHoaDonId: h.maHoaDon,
       createdAt: h.thoiGianDinhDang || "2025-01-15 12:00",
@@ -14,12 +49,6 @@ export const layDanhSachHoaDon = async (params = {}) => {
       customer: h.tenKhachHang || "Khách vãng lai",
       phone: h.soDienThoai || "",
       total: Number(h.tongTien || 0),
-      items: (h.items || []).map((item) => ({
-        foodId: item.maMatHang,
-        name: item.tenMatHang,
-        unitPrice: Number(item.donGia || 0),
-        quantity: item.soLuong || 1,
-      })),
     }));
   } catch (error) {
     console.warn("Could not fetch invoices from API:", error);
@@ -33,6 +62,41 @@ export const layChiTietHoaDon = async (idOrCode) => {
     const h = res.data;
     if (!h) return null;
     return {
+      // Thuần Việt chuẩn BE DTO
+      maHoaDon: h.maHoaDon,
+      maHoaDonCode: h.maHoaDonCode || `HD-${h.maHoaDon}`,
+      maChiNhanh: h.maChiNhanh,
+      tenChiNhanh: h.tenChiNhanh || "Quận 1",
+      maBan: h.maBan,
+      soBan: h.soBan || "—",
+      maKhachHang: h.maKhachHang,
+      tenKhachHang: h.tenKhachHang || "Khách vãng lai",
+      soDienThoai: h.soDienThoai || "",
+      maNhanVien: h.maNhanVien,
+      tenNhanVien: h.tenNhanVien || "Nhân viên",
+      nguon: h.nguon || "WALK_IN",
+      trangThai: h.trangThai || "Hoàn thành",
+      tongTien: Number(h.tongTien || 0),
+      ngayLapHoaDon: h.ngayLapHoaDon,
+      thoiGianDinhDang: h.thoiGianDinhDang || "2025-01-15 12:00",
+      items: (h.items || []).map((item) => ({
+        maChiTietHoaDon: item.maChiTietHoaDon,
+        maMatHang: item.maMatHang,
+        tenMatHang: item.tenMatHang,
+        anhMinhHoa: item.anhMinhHoa,
+        soLuong: item.soLuong || 1,
+        donGia: Number(item.donGia || 0),
+        thanhTien:
+          Number(item.thanhTien) ||
+          Number(item.donGia || 0) * (item.soLuong || 1),
+        // Aliases
+        foodId: item.maMatHang,
+        name: item.tenMatHang,
+        unitPrice: Number(item.donGia || 0),
+        quantity: item.soLuong || 1,
+      })),
+
+      // Aliases tương thích UI
       id: h.maHoaDonCode || `HD-${h.maHoaDon}`,
       maHoaDonId: h.maHoaDon,
       createdAt: h.thoiGianDinhDang || "2025-01-15 12:00",
@@ -43,12 +107,6 @@ export const layChiTietHoaDon = async (idOrCode) => {
       customer: h.tenKhachHang || "Khách vãng lai",
       phone: h.soDienThoai || "",
       total: Number(h.tongTien || 0),
-      items: (h.items || []).map((item) => ({
-        foodId: item.maMatHang,
-        name: item.tenMatHang,
-        unitPrice: Number(item.donGia || 0),
-        quantity: item.soLuong || 1,
-      })),
     };
   } catch (error) {
     console.warn("Could not fetch invoice detail from API:", error);

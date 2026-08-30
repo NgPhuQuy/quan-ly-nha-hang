@@ -5,11 +5,21 @@ export const layDanhSachKhachHang = async (keyword) => {
     const params = keyword ? { keyword } : {};
     const res = await apis.get(endpoints.customers, { params });
     return (res.data || []).map((c) => ({
+      // Thuần Việt chuẩn BE DTO
+      maKhachHang: c.maKhachHang,
+      hoTen: c.hoTen || "Khách hàng",
+      soDienThoai: c.soDienThoai || "",
+      email: c.email || "",
+      diemTichLuy: c.diemTichLuy || 0,
+      soDon: c.soDon || 0,
+      tongChiTieu: Number(c.tongChiTieu || 0),
+      lanCuoiGhe: c.lanCuoiGhe || "—",
+
+      // Aliases tương thích UI
       id: `c${c.maKhachHang}`,
       maKhachHangId: c.maKhachHang,
       name: c.hoTen || "Khách hàng",
       phone: c.soDienThoai || "",
-      email: c.email || "",
       totalOrders: c.soDon || 0,
       totalSpent: Number(c.tongChiTieu || 0),
       lastVisit: c.lanCuoiGhe || "—",

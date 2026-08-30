@@ -9,13 +9,14 @@ import {
   Phone,
   Mail,
 } from "lucide-react";
-import { dangNhap, dangKy } from "../../services/xacThuc.service";
+import { useAuth } from "../../contexts/AuthContext";
 
 function TrangXacThuc({
   defaultTab = "login",
   onDangNhapThanhCong,
   onQuayVeTrangChu,
 }) {
+  const { dangNhap, dangKy } = useAuth();
   const [tab, setTab] = useState(defaultTab); // "login" | "register"
 
   // Login form state

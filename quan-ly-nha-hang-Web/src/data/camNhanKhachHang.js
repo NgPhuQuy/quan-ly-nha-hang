@@ -1,20 +1,20 @@
 export const CAM_NHAN_KHACH_HANG = [
   {
     noiDung:
-      "The atmosphere feels like our own private corner. We celebrated our tenth wedding anniversary here and will never forget it.",
+      "Không gian riêng tư và ấm cúng tuyệt đối. Chúng tôi đã có một kỷ niệm 10 năm ngày cưới vô cùng đáng nhớ tại 5S Dining.",
     ten: "Minh Anh & Tuấn Khoa",
-    vaiTro: "Wedding anniversary",
+    vaiTro: "Kỷ niệm ngày cưới",
   },
   {
     noiDung:
-      "Everything, from the lighting to every dish, is thoughtfully prepared. The team understands guests before they even have to ask.",
+      "Mọi chi tiết từ ánh sáng, âm nhạc đến từng món bò Wagyu đều được chăm chút hoàn hảo. Đội ngũ phục vụ tinh tế và chu đáo.",
     ten: "Nguyễn Phương Linh",
-    vaiTro: "Birthday celebration",
+    vaiTro: "Tiệc sinh nhật VIP",
   },
   {
     noiDung:
-      "Booking online was incredibly quick, and the restaurant confirmed by message right away. Our table was ready when we arrived.",
+      "Đặt bàn online rất nhanh và nhận mã xác nhận ngay tức thì. Bàn tiệc đã sẵn sàng chu đáo khi chúng tôi cùng đối tác tới.",
     ten: "Trần Đức Huy",
-    vaiTro: "Business dinner",
+    vaiTro: "Gặp gỡ đối tác",
   },
 ];

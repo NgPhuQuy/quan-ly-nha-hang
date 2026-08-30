@@ -22,6 +22,7 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class HoaDonService {
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final HoaDonRepository hoaDonRepository;
     private final ChiTietHoaDonRepository chiTietHoaDonRepository;
     private final MatHangRepository matHangRepository;
@@ -29,8 +30,6 @@ public class HoaDonService {
     private final ChiNhanhRepository chiNhanhRepository;
     private final KhachHangRepository khachHangRepository;
     private final NhanVienRepository nhanVienRepository;
-
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public List<HoaDonResponse> layDSHoaDon(Integer maChiNhanh, String nguon, String trangThai, String search) {
         List<HoaDon> list = hoaDonRepository.findAllOrderByNgayLapHoaDonDesc();

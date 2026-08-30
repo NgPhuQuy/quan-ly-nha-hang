@@ -1,8 +1,8 @@
 import { Bell, ChevronDown } from "lucide-react";
-import { layNguoiDungHienTai } from "../../services/xacThuc.service";
+import { useAuth } from "../../contexts/AuthContext";
 
 function Header({ title, role }) {
-  const nguoiDung = layNguoiDungHienTai();
+  const { user: nguoiDung } = useAuth();
   const now = new Date();
   const dateStr = now.toLocaleDateString("vi-VN", {
     weekday: "long",

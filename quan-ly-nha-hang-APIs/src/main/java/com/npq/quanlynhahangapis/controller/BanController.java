@@ -17,17 +17,14 @@ public class BanController {
     private final BanService banService;
 
     @GetMapping("/ban")
-    public ResponseEntity<?> danhSachTatCaBan(
-            @RequestParam(required = false) Integer maChiNhanh,
-            @RequestParam(required = false) String trangThai
-    ) {
-        return ResponseEntity.ok(banService.layDSBanTheoTrangThai(maChiNhanh, trangThai));
-    }
-
-    @GetMapping("/chi-nhanh/{maChiNhanh}/ban")
-    public ResponseEntity<?> danhSachBan(@PathVariable Integer maChiNhanh) {
+    public ResponseEntity<?> danhSachTatCaBan(@RequestParam Integer maChiNhanh) {
         return ResponseEntity.ok(banService.layDSBan(maChiNhanh));
     }
+
+//    @GetMapping("/chi-nhanh/{maChiNhanh}/ban")
+//    public ResponseEntity<?> danhSachBan(@PathVariable Integer maChiNhanh) {
+//        return ResponseEntity.ok(banService.layDSBan(maChiNhanh));
+//    }
 
     @GetMapping("/ban/{maBan}")
     public ResponseEntity<?> chiTietBan(@PathVariable Integer maBan) {

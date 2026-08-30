@@ -1,4 +1,13 @@
 import { useState } from "react";
+import {
+  Search,
+  Utensils,
+  ArrowLeft,
+  ChevronRight,
+  Plus,
+  Minus,
+  Info,
+} from "lucide-react";
 
 function MenuSelection({
   menuItems,
@@ -8,6 +17,7 @@ function MenuSelection({
   onQuayLai,
 }) {
   const [nhom, setNhom] = useState("Tất cả");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const kiemTraDanhMucKhop = (itemNhom, currentCategory) => {
     if (currentCategory === "Tất cả") return true;
@@ -40,9 +50,14 @@ function MenuSelection({
     return itemNhom === currentCategory;
   };
 
-  const filteredItems = menuItems.filter((mon) =>
-    kiemTraDanhMucKhop(mon.nhom || mon.danhMuc, nhom),
-  );
+  const filteredItems = menuItems.filter((mon) => {
+    const matchesCat = kiemTraDanhMucKhop(mon.nhom || mon.danhMuc, nhom);
+    const matchesSearch =
+      !searchQuery ||
+      mon.ten?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      mon.moTa?.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCat && matchesSearch;
+  });
 
   const getSoLuong = (id) =>
     selectedItems.find((item) => item.monAnId === id)?.soLuong || 0;
@@ -70,114 +85,158 @@ function MenuSelection({
       ),
     );
 
+  const categories = [
+    "Tất cả",
+    ...new Set(menuItems.map((m) => m.nhom || m.danhMuc).filter(Boolean)),
+  ];
+
+  const totalPreorderItems = selectedItems.reduce(
+    (sum, item) => sum + item.soLuong,
+    0,
+  );
+
   return (
-    <div className="card-warm rounded-2xl p-5 sm:p-7">
-      <p
-        className="text-xs uppercase tracking-[.2em]"
-        style={{ color: "rgba(200,136,42,.6)" }}
-      >
-        Bước 3
-      </p>
-      <h1
-        className="mt-2 font-serif text-2xl"
-        style={{ color: "rgba(240,216,144,.9)" }}
-      >
-        Đặt trước món ăn
-      </h1>
-      <p
-        className="mb-7 mt-2 text-sm"
-        style={{ color: "rgba(240,216,144,.42)" }}
-      >
-        Quý khách có thể bỏ qua bước này và gọi món trực tiếp tại bàn.
-      </p>
-
-      {/* Danh mục tự động đồng bộ từ Backend, không cần lưu const */}
-      <div className="mb-6 flex gap-2 overflow-x-auto">
-        {[
-          "Tất cả",
-          ...new Set(menuItems.map((m) => m.nhom || m.danhMuc).filter(Boolean)),
-        ].map((category) => (
-          <button
-            key={category}
-            onClick={() => setNhom(category)}
-            className={`whitespace-nowrap rounded-full px-4 py-2 text-xs ${nhom === category ? "btn-primary" : "btn-ghost"}`}
-          >
-            {category}
-          </button>
-        ))}
+    <div className="rounded-3xl p-5 sm:p-8 bg-black/40 border border-amber-500/20 backdrop-blur-md shadow-2xl space-y-6">
+      <div>
+        <div className="inline-block text-[11px] font-bold uppercase tracking-[0.2em] text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20 mb-2">
+          Bước 3 / 4
+        </div>
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-amber-100">
+          Đặt Trước Món Ăn (Tùy chọn)
+        </h1>
+        <div className="flex items-center gap-1.5 text-xs text-amber-200/60 mt-1">
+          <Info size={13} className="text-amber-400 shrink-0" />
+          <span>
+            Quý khách có thể chọn món trước để nhà hàng chuẩn bị sẵn, hoặc bỏ
+            qua để gọi món tại bàn.
+          </span>
+        </div>
       </div>
 
-      <div className="space-y-3 max-h-[480px] overflow-y-auto pr-1">
+      {/* Search & Category Filter */}
+      <div className="space-y-3 pt-1">
+        <div className="relative">
+          <Search
+            size={16}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-amber-400/60"
+          />
+          <input
+            type="text"
+            placeholder="Tìm kiếm món ăn, thức uống..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs sm:text-sm text-amber-100 placeholder:text-amber-200/30 outline-none focus:border-amber-400 transition-colors"
+          />
+        </div>
+
+        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+          {categories.map((category) => (
+            <button
+              key={category}
+              type="button"
+              onClick={() => setNhom(category)}
+              className={`whitespace-nowrap px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                nhom === category
+                  ? "bg-amber-400 text-black font-bold shadow-md shadow-amber-400/20"
+                  : "bg-white/5 text-amber-200/70 border border-white/10 hover:bg-white/10"
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Food items list */}
+      <div className="space-y-3 max-h-[460px] overflow-y-auto pr-1">
         {filteredItems.length === 0 && (
-          <p className="py-8 text-center text-sm opacity-40">
-            Đang tải thực đơn...
-          </p>
-        )}
-        {filteredItems.map((mon) => (
-          <div
-            key={mon.id}
-            className="flex gap-3 rounded-xl p-3"
-            style={{
-              background: "rgba(200,136,42,.035)",
-              border: "1px solid rgba(200,136,42,.08)",
-            }}
-          >
-            <img
-              src={mon.anh}
-              alt={mon.ten}
-              className="h-16 w-16 rounded-xl object-cover"
-            />
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">{mon.ten}</p>
-              <p
-                className="mt-1 text-xs line-clamp-1"
-                style={{ color: "rgba(240,216,144,.38)" }}
-              >
-                {mon.moTa}
-              </p>
-              <p
-                className="mt-2 text-xs font-semibold"
-                style={{ color: "rgba(232,184,75,.8)" }}
-              >
-                {Number(mon.gia || 0).toLocaleString("vi-VN")}₫
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => giamSoLuong(mon)}
-                disabled={!getSoLuong(mon.id)}
-                className="h-8 w-8 rounded-full border border-[rgba(200,136,42,.25)] disabled:opacity-30 flex items-center justify-center font-bold"
-              >
-                −
-              </button>
-              <span className="w-5 text-center text-sm">
-                {getSoLuong(mon.id)}
-              </span>
-              <button
-                onClick={() => tangSoLuong(mon)}
-                className="h-8 w-8 rounded-full border border-[rgba(200,136,42,.25)] flex items-center justify-center font-bold"
-              >
-                +
-              </button>
-            </div>
+          <div className="py-12 text-center text-xs text-amber-200/40">
+            Không tìm thấy món ăn phù hợp với từ khóa "{searchQuery}"
           </div>
-        ))}
+        )}
+
+        {filteredItems.map((mon) => {
+          const qty = getSoLuong(mon.id);
+          return (
+            <div
+              key={mon.id}
+              className={`flex items-center gap-3.5 p-3 rounded-2xl border transition-all duration-200 ${
+                qty > 0
+                  ? "bg-amber-500/10 border-amber-400/60"
+                  : "bg-white/5 border-white/10 hover:border-amber-500/30"
+              }`}
+            >
+              <img
+                src={mon.anh}
+                alt={mon.ten}
+                className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl object-cover shrink-0 bg-[#1a120a]"
+              />
+
+              <div className="min-w-0 flex-1">
+                <h4 className="font-serif text-sm sm:text-base font-bold text-amber-100 leading-snug">
+                  {mon.ten}
+                </h4>
+                <p className="text-[11px] sm:text-xs text-amber-200/50 line-clamp-1 mt-0.5">
+                  {mon.moTa ||
+                    "Món ngon tinh hoa chế biến từ nguyên liệu cao cấp."}
+                </p>
+                <div className="mt-1.5 font-serif text-xs sm:text-sm font-bold text-amber-300">
+                  {Number(mon.gia || 0).toLocaleString("vi-VN")}₫
+                </div>
+              </div>
+
+              {/* Stepper Buttons */}
+              <div className="flex items-center gap-2 shrink-0 bg-black/40 p-1.5 rounded-xl border border-white/10">
+                <button
+                  type="button"
+                  onClick={() => giamSoLuong(mon)}
+                  disabled={!qty}
+                  className="w-7 h-7 rounded-lg bg-white/5 hover:bg-amber-500/20 text-amber-300 disabled:opacity-20 flex items-center justify-center transition-colors"
+                >
+                  <Minus size={13} />
+                </button>
+                <span className="w-6 text-center font-bold text-xs sm:text-sm text-amber-100">
+                  {qty}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => tangSoLuong(mon)}
+                  className="w-7 h-7 rounded-lg bg-amber-400 text-black hover:bg-amber-300 flex items-center justify-center font-bold transition-colors"
+                >
+                  <Plus size={13} strokeWidth={3} />
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
-      <div className="mt-8 flex gap-3">
+
+      {/* Action Buttons */}
+      <div className="pt-4 border-t border-amber-500/20 flex items-center gap-3">
         <button
+          type="button"
           onClick={onQuayLai}
-          className="btn-ghost flex-1 rounded-xl py-3"
+          className="px-6 py-3.5 rounded-2xl border border-white/15 text-amber-200/80 hover:text-amber-100 hover:bg-white/5 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
         >
-          Quay lại
+          <ArrowLeft size={16} />
+          <span>Quay lại</span>
         </button>
+
         <button
+          type="button"
           onClick={onTiepTuc}
-          className="btn-primary flex-1 rounded-xl py-3"
+          className="flex-1 btn-primary rounded-2xl py-3.5 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-xl shadow-amber-900/40 hover:scale-[1.01] transition-transform"
         >
-          Tiếp tục
+          <span>
+            {totalPreorderItems > 0
+              ? `Tiếp tục (${totalPreorderItems} món đã chọn)`
+              : "Tiếp tục (Gọi món tại bàn)"}
+          </span>
+          <ChevronRight size={16} />
         </button>
       </div>
     </div>
   );
 }
+
 export default MenuSelection;

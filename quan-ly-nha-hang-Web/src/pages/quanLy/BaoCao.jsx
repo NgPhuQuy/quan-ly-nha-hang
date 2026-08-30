@@ -22,20 +22,18 @@ import {
   PiggyBank,
 } from "lucide-react";
 import {
-  revenueByDay as mockRevenueByDay,
-  revenueBySource as mockRevenueBySource,
-  revenueByBranch as mockRevenueByBranch,
-  mockInvoices,
-  BRANCHES,
-} from "../../data/quanLyMock";
-import {
   layDashboardOverview,
   layDoanhThuTheoNgay,
   layDoanhThuTheoChiNhanh,
   layDoanhThuTheoNguon,
 } from "../../services/dashboard.service";
-import { dinhDangTien, dinhDangTienRutGon } from "../../utils/dinhDang";
-const MONTHS = ["Tháng 1/2025", "Tháng 12/2024", "Tháng 11/2024"];
+import {
+  dinhDangTien,
+  dinhDangTienRutGon,
+  taoDanhSachThangGanNhat,
+  layThangHienTai,
+} from "../../utils/dinhDang";
+const MONTHS = taoDanhSachThangGanNhat(6);
 const PIE_COLORS = ["#D4962B", "#EEC97A"];
 const tooltipStyle = {
   background: "#fff",
@@ -44,12 +42,12 @@ const tooltipStyle = {
   fontSize: 12,
 };
 function Reports({ role }) {
-  const [month, setMonth] = useState("Tháng 1/2025");
+  const [month, setMonth] = useState(layThangHienTai());
   const [branchFilter, setBranchFilter] = useState("");
   const isAdmin = role === "admin";
-  const [revenueByDay, setRevenueByDay] = useState(mockRevenueByDay);
-  const [revenueBySource, setRevenueBySource] = useState(mockRevenueBySource);
-  const [revenueByBranch, setRevenueByBranch] = useState(mockRevenueByBranch);
+  const [revenueByDay, setRevenueByDay] = useState([]);
+  const [revenueBySource, setRevenueBySource] = useState([]);
+  const [revenueByBranch, setRevenueByBranch] = useState([]);
   const [overview, setOverview] = useState(null);
 
   useEffect(() => {

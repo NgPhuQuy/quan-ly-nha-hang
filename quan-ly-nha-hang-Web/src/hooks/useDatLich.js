@@ -6,8 +6,10 @@ import {
   layKhungGio,
 } from "../services/monAn.service";
 import { taoDatLich } from "../services/datLich.service";
+import { useAuth } from "../contexts/AuthContext";
 
 export function useDatLich() {
+  const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [branchId, setBranchId] = useState("");
   const [date, setDate] = useState("");
@@ -15,9 +17,9 @@ export function useDatLich() {
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [guestDetails, setGuestDetails] = useState({
-    hoTen: "",
-    soDienThoai: "",
-    email: "",
+    hoTen: user?.hoTen || "",
+    soDienThoai: user?.soDienThoai || "",
+    email: user?.email || "",
     ghiChu: "",
     dip: "khong",
   });
@@ -29,9 +31,25 @@ export function useDatLich() {
   const [timeSlots, setTimeSlots] = useState([]);
 
   useEffect(() => {
+    if (user) {
+      setGuestDetails((prev) => ({
+        ...prev,
+        hoTen: prev.hoTen || user.hoTen || "",
+        soDienThoai: prev.soDienThoai || user.soDienThoai || "",
+        email: prev.email || user.email || "",
+      }));
+    }
+  }, [user]);
+
+  useEffect(() => {
     layDanhSachChiNhanh()
       .then((data) => {
-        if (data && data.length) setBranches(data);
+        if (data && data.length) {
+          setBranches(data);
+          if (!branchId) {
+            setBranchId(data[0].maChiNhanh);
+          }
+        }
       })
       .catch(() => {});
   }, []);

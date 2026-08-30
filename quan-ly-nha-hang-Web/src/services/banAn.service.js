@@ -7,7 +7,23 @@ export const layDanhSachBan = async (maChiNhanh, trangThai) => {
     if (trangThai) params.trangThai = trangThai;
 
     const res = await apis.get(endpoints.tables, { params });
-    return res.data || [];
+    return (res.data || []).map((b) => ({
+      // Thuần Việt chuẩn BE DTO
+      maBan: b.maBan,
+      soBan: b.soBan,
+      sucChua: b.sucChua || 4,
+      maChiNhanh: b.maChiNhanh,
+      tenChiNhanh: b.tenChiNhanh,
+      trangThai: b.trangThai || "Trống",
+      currentInvoice: b.currentInvoice || null,
+
+      // Aliases tương thích UI
+      id: `tbl-${b.maBan}`,
+      maBanId: b.maBan,
+      number: b.soBan,
+      capacity: b.sucChua || 4,
+      status: b.trangThai || "Trống",
+    }));
   } catch (error) {
     console.warn("Could not fetch tables from API:", error);
     return [];

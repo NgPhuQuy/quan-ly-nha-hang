@@ -6,6 +6,8 @@ const TrangTraCuu = lazy(() => import("../pages/landing/TrangTraCuu"));
 const TrangXacThuc = lazy(() => import("../pages/landing/TrangXacThuc"));
 const QuanLyApp = lazy(() => import("./QuanLyApp"));
 
+import { useAuth } from "../contexts/AuthContext";
+
 const layDuongDan = () =>
   window.location.pathname.replace(/^\/+|\/+$/g, "") || "home";
 
@@ -15,8 +17,35 @@ function DangTai() {
 
 function Router() {
   const [manHinh, setManHinh] = useState(layDuongDan);
+  const [redirectSauDangNhap, setRedirectSauDangNhap] = useState("");
+
+  const { isAuth, isNhanVien } = useAuth();
 
   const dieuHuong = (manHinhMoi) => {
+    if (manHinhMoi === "booking" && !isAuth) {
+      setRedirectSauDangNhap("booking");
+      window.history.pushState({}, "", "/login");
+      setManHinh("login");
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (
+      (manHinhMoi.startsWith("admin") || manHinhMoi.startsWith("pos")) &&
+      !isNhanVien
+    ) {
+      if (!isAuth) {
+        setRedirectSauDangNhap(manHinhMoi);
+        window.history.pushState({}, "", "/login");
+        setManHinh("login");
+      } else {
+        window.history.pushState({}, "", "/");
+        setManHinh("home");
+      }
+      window.scrollTo(0, 0);
+      return;
+    }
+
     window.history.pushState(
       {},
       "",
@@ -27,10 +56,31 @@ function Router() {
   };
 
   useEffect(() => {
-    const khiThayDoiLichSu = () => setManHinh(layDuongDan());
+    const khiThayDoiLichSu = () => {
+      const duongDanMoi = layDuongDan();
+      if (duongDanMoi === "booking" && !isAuth) {
+        setRedirectSauDangNhap("booking");
+        window.history.pushState({}, "", "/login");
+        setManHinh("login");
+      } else if (
+        (duongDanMoi.startsWith("admin") || duongDanMoi.startsWith("pos")) &&
+        !isNhanVien
+      ) {
+        if (!isAuth) {
+          setRedirectSauDangNhap(duongDanMoi);
+          window.history.pushState({}, "", "/login");
+          setManHinh("login");
+        } else {
+          window.history.pushState({}, "", "/");
+          setManHinh("home");
+        }
+      } else {
+        setManHinh(duongDanMoi);
+      }
+    };
     window.addEventListener("popstate", khiThayDoiLichSu);
     return () => window.removeEventListener("popstate", khiThayDoiLichSu);
-  }, []);
+  }, [isNhanVien]);
 
   const laXacThuc =
     manHinh === "auth" ||
@@ -40,7 +90,6 @@ function Router() {
     manHinh === "dang-ky";
 
   const laQuanLy = manHinh.startsWith("admin") || manHinh.startsWith("pos");
-
   const khuVuc = manHinh.startsWith("admin") ? "admin" : "pos";
 
   const noiDung = laXacThuc ? (
@@ -48,15 +97,17 @@ function Router() {
       defaultTab={
         manHinh === "register" || manHinh === "dang-ky" ? "register" : "login"
       }
-      onDangNhapThanhCong={(user) => {
+      onDangNhapThanhCong={(u) => {
         if (
-          user?.vaiTro === "ADMIN" ||
-          user?.vaiTro === "QUANLY" ||
-          user?.vaiTro === "NHANVIEN"
+          u?.vaiTro === "ADMIN" ||
+          u?.vaiTro === "QUANLY" ||
+          u?.vaiTro === "NHANVIEN"
         ) {
-          dieuHuong("admin");
+          dieuHuong(redirectSauDangNhap || "admin");
         } else {
-          dieuHuong("home");
+          const target = redirectSauDangNhap || "booking";
+          setRedirectSauDangNhap("");
+          dieuHuong(target);
         }
       }}
       onQuayVeTrangChu={() => dieuHuong("home")}
@@ -64,7 +115,6 @@ function Router() {
   ) : laQuanLy ? (
     <QuanLyApp
       initialPage={manHinh.split("/")[1] || "dashboard"}
-      initialRole={khuVuc === "admin" ? "admin" : "manager"}
       onNavigate={(trangMoi) => dieuHuong(`${khuVuc}/${trangMoi}`)}
       onQuayVeTrangChu={() => dieuHuong("home")}
     />

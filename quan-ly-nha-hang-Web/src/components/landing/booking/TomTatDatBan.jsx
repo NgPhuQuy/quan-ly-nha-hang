@@ -1,3 +1,12 @@
+import {
+  MapPin,
+  Calendar,
+  Clock,
+  Users,
+  Sparkles,
+  Utensils,
+} from "lucide-react";
+
 function BookingSummary({
   branch,
   date,
@@ -8,89 +17,163 @@ function BookingSummary({
   menuItems,
   additionalServices,
 }) {
-  const totalAmount =
-    selectedItems.reduce(
-      (total, item) =>
-        total +
-        (menuItems.find((menuItem) => menuItem.id === item.monAnId)?.gia || 0) *
-          item.soLuong,
-      0,
-    ) +
-    selectedServices.reduce(
-      (total, id) =>
-        total +
-        (additionalServices.find((service) => service.id === id)?.gia || 0),
-      0,
-    );
+  const branchName =
+    branch?.tenChiNhanh || branch?.ten || "Chưa chọn chi nhánh";
+  const branchAddress = branch?.diaChi || "Hệ thống nhà hàng 5S Dining";
 
-  const branchName = branch?.tenChiNhanh || branch?.ten || "Chưa chọn";
+  const totalFoodAmount = selectedItems.reduce((total, item) => {
+    const dish = menuItems.find((m) => m.id === item.monAnId);
+    return total + (dish?.gia || 0) * item.soLuong;
+  }, 0);
+
+  const totalServiceAmount = selectedServices.reduce((total, id) => {
+    const s = additionalServices.find((service) => service.id === id);
+    return total + (s?.gia || 0);
+  }, 0);
+
+  const totalAmount = totalFoodAmount + totalServiceAmount;
 
   return (
-    <aside className="card-warm rounded-2xl p-4 lg:sticky lg:top-24">
-      <p
-        className="mb-4 text-xs uppercase tracking-[.15em]"
-        style={{ color: "rgba(200,136,42,.55)" }}
-      >
-        Tóm tắt đặt bàn
-      </p>
-      <div className="space-y-3 text-sm">
-        <div>
-          <span
-            className="block text-xs"
-            style={{ color: "rgba(240,216,144,.35)" }}
-          >
-            Chi nhánh
-          </span>
-          <span className="font-medium">{branchName}</span>
+    <aside className="rounded-3xl p-5 bg-gradient-to-b from-[#140e08] to-[#0c0905] border border-amber-500/30 backdrop-blur-md shadow-2xl lg:sticky lg:top-24 space-y-4">
+      <div className="flex items-center justify-between pb-3 border-b border-amber-500/20">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-300">
+          <Sparkles size={14} className="text-amber-400" />
+          <span>Tóm Tắt Đặt Bàn</span>
         </div>
-        <div>
-          <span
-            className="block text-xs"
-            style={{ color: "rgba(240,216,144,.35)" }}
-          >
-            Ngày đặt
-          </span>
-          <span>{date || "Chưa chọn"}</span>
+        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 font-semibold">
+          Live
+        </span>
+      </div>
+
+      {/* Booking specs */}
+      <div className="space-y-3 text-xs">
+        <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white/5 border border-white/5">
+          <MapPin size={15} className="text-amber-400 shrink-0 mt-0.5" />
+          <div className="min-w-0">
+            <span className="text-[10px] text-amber-200/50 block uppercase">
+              Chi nhánh
+            </span>
+            <span className="font-serif font-bold text-amber-100 block truncate">
+              {branchName}
+            </span>
+          </div>
         </div>
-        <div>
-          <span
-            className="block text-xs"
-            style={{ color: "rgba(240,216,144,.35)" }}
-          >
-            Khung giờ
-          </span>
-          <span>{time || "Chưa chọn"}</span>
+
+        <div className="grid grid-cols-2 gap-2">
+          <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2">
+            <Calendar size={14} className="text-amber-400 shrink-0" />
+            <div>
+              <span className="text-[10px] text-amber-200/50 block uppercase">
+                Ngày
+              </span>
+              <span className="font-semibold text-amber-100 font-mono">
+                {date || "Chưa chọn"}
+              </span>
+            </div>
+          </div>
+
+          <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2">
+            <Clock size={14} className="text-amber-400 shrink-0" />
+            <div>
+              <span className="text-[10px] text-amber-200/50 block uppercase">
+                Giờ đến
+              </span>
+              <span className="font-semibold text-amber-100 font-mono">
+                {time || "Chưa chọn"}
+              </span>
+            </div>
+          </div>
         </div>
-        <div>
-          <span
-            className="block text-xs"
-            style={{ color: "rgba(240,216,144,.35)" }}
-          >
-            Số lượng khách
-          </span>
-          <span>{guestCount} khách</span>
+
+        <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2">
+          <Users size={14} className="text-amber-400 shrink-0" />
+          <div>
+            <span className="text-[10px] text-amber-200/50 block uppercase">
+              Số lượng khách
+            </span>
+            <span className="font-semibold text-amber-100">
+              {guestCount} người
+            </span>
+          </div>
         </div>
       </div>
-      {totalAmount > 0 && (
-        <div
-          className="mt-5 border-t pt-4"
-          style={{ borderColor: "rgba(200,136,42,.1)" }}
-        >
-          <span
-            className="text-xs block mb-1"
-            style={{ color: "rgba(240,216,144,.45)" }}
-          >
-            Món & dịch vụ đặt trước:
-          </span>
-          <span
-            className="text-base font-serif font-semibold"
-            style={{ color: "rgba(232,184,75,.95)" }}
-          >
-            {totalAmount.toLocaleString("vi-VN")}₫
-          </span>
+
+      {/* Selected Items Breakdown */}
+      {selectedItems.length > 0 && (
+        <div className="pt-3 border-t border-amber-500/15 space-y-2">
+          <div className="flex items-center justify-between text-[11px] text-amber-300 font-bold uppercase tracking-wider">
+            <span>Món đặt trước ({selectedItems.length})</span>
+            <span>Tạm tính</span>
+          </div>
+          <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+            {selectedItems.map((item) => {
+              const dish = menuItems.find((m) => m.id === item.monAnId);
+              if (!dish) return null;
+              return (
+                <div
+                  key={item.monAnId}
+                  className="flex items-center justify-between text-[11px] text-amber-200/80"
+                >
+                  <span className="truncate max-w-[140px]">
+                    {dish.ten}{" "}
+                    <strong className="text-amber-400">×{item.soLuong}</strong>
+                  </span>
+                  <span className="font-mono text-amber-200">
+                    {((dish.gia || 0) * item.soLuong).toLocaleString("vi-VN")}₫
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
+
+      {/* Selected VIP Services Breakdown */}
+      {selectedServices.length > 0 && (
+        <div className="pt-2 border-t border-amber-500/15 space-y-1.5">
+          <div className="text-[11px] text-amber-300 font-bold uppercase tracking-wider">
+            Dịch vụ bổ sung:
+          </div>
+          {selectedServices.map((sId) => {
+            const s = additionalServices.find((x) => x.id === sId);
+            if (!s) return null;
+            return (
+              <div
+                key={sId}
+                className="flex items-center justify-between text-[11px] text-amber-200/80"
+              >
+                <span>
+                  {s.bieuTuong} {s.ten}
+                </span>
+                <span className="font-mono text-amber-200">
+                  {Number(s.gia || 0).toLocaleString("vi-VN")}₫
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Total Amount Card */}
+      <div className="pt-3 border-t border-amber-500/20 flex items-center justify-between">
+        <div>
+          <span className="text-[10px] text-amber-200/60 block uppercase font-medium">
+            Chi phí ước tính
+          </span>
+          <span className="text-[10px] text-amber-400/80">
+            {totalAmount > 0 ? "Thanh toán tại bàn" : "Đặt cọc: 0₫"}
+          </span>
+        </div>
+        <div className="text-right">
+          <span className="font-serif text-lg font-bold text-amber-300">
+            {totalAmount > 0
+              ? `${totalAmount.toLocaleString("vi-VN")}₫`
+              : "Miễn phí đặt bàn"}
+          </span>
+        </div>
+      </div>
     </aside>
   );
 }
+
 export default BookingSummary;

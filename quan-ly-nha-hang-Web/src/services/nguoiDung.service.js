@@ -4,10 +4,22 @@ export const layDanhSachNguoiDung = async () => {
   try {
     const res = await apis.get(endpoints.users);
     return (res.data || []).map((u) => ({
+      // Thuần Việt chuẩn BE DTO
+      maNguoiDung: u.maNguoiDung,
+      taiKhoan: u.taiKhoan,
+      hoTen: u.hoTen || u.taiKhoan || "Người dùng",
+      email: u.email || "—",
+      soDienThoai: u.soDienThoai || "",
+      vaiTro: u.vaiTro || "NHANVIEN",
+      chiNhanh: u.chiNhanh || "Quận 1",
+      maChiNhanh: u.maChiNhanh,
+      trangThai: u.trangThai ?? true,
+      ngayTao: u.ngayTao ? String(u.ngayTao).slice(0, 10) : "2024-03-01",
+
+      // Aliases tương thích UI
       id: `u${u.maNguoiDung}`,
       maNguoiDungId: u.maNguoiDung,
       name: u.hoTen || u.taiKhoan || "Người dùng",
-      email: u.email || "—",
       role: u.vaiTro || "Nhân viên",
       branch: u.chiNhanh || "Quận 1",
       status: u.trangThai ? "Hoạt động" : "Vô hiệu",

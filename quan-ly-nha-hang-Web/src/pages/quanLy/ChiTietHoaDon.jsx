@@ -11,7 +11,6 @@ import {
   Ban,
   Printer,
 } from "lucide-react";
-import { mockInvoices } from "../../data/quanLyMock";
 import {
   layChiTietHoaDon,
   thanhToanHoaDon,
@@ -41,9 +40,7 @@ const statusStyle = {
 };
 
 function InvoiceDetail({ invoiceId, onNavigate }) {
-  const [invoice, setInvoice] = useState(
-    () => mockInvoices.find((inv) => inv.id === invoiceId) || null,
-  );
+  const [invoice, setInvoice] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
 
   const fetchDetail = () => {

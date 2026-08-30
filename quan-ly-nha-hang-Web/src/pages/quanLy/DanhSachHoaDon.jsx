@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
-import { mockInvoices, BRANCHES } from "../../data/quanLyMock";
 import { layDanhSachHoaDon } from "../../services/hoaDon.service";
 import { dinhDangTien } from "../../utils/dinhDang";
 const statusColor = {
@@ -19,7 +18,7 @@ const statusColor = {
 };
 const PAGE_SIZE = 10;
 function Invoices({ role, onNavigate, onSelectInvoice }) {
-  const [invoices, setInvoices] = useState(mockInvoices);
+  const [invoices, setInvoices] = useState([]);
   const [search, setSearch] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
