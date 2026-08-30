@@ -5,6 +5,11 @@ import lombok.Builder;
 @Builder
 public record BanResponse(
         Integer maBan,
-        String soBan
+        String soBan,
+        Integer sucChua,
+        Integer maChiNhanh,
+        String tenChiNhanh,
+        String trangThai,
+        String currentInvoice
 ) {
 }

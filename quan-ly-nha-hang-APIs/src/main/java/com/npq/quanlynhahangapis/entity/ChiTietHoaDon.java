@@ -1,9 +1,7 @@
 package com.npq.quanlynhahangapis.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -11,6 +9,8 @@ import java.math.BigDecimal;
 @Builder
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChiTietHoaDon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

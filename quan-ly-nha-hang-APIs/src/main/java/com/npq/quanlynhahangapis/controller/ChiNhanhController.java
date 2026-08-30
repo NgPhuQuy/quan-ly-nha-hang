@@ -15,31 +15,45 @@ public class ChiNhanhController {
 
     private final ChiNhanhService chiNhanhService;
 
-    @PostMapping(path = "/chi-nhanh", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<?> taoChiNhanh(@ModelAttribute ChiNhanhRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(chiNhanhService.taoChiNhanh(request));
+    @GetMapping({"/chi-nhanh", "/branches"})
+    public ResponseEntity<?> danhSachChiNhanh(@RequestParam(required = false, defaultValue = "false") boolean all) {
+        if (all) {
+            return ResponseEntity.ok(chiNhanhService.layTatCaChiNhanh());
+        }
+        return ResponseEntity.ok(chiNhanhService.layDSChiNhanh());
     }
 
-    //todo hoan chinh cai phan nay sau
-    //chinh sua chi nhanh PUT
-//    @PutMapping("/chi-nhanh/{maChiNhanh}")
-//    ResponseEntity<?> capNhat(@PathVariable Integer maChiNhanh, @RequestBody ChiNhanhRequest request) {
-//        request = new ChiNhanhRequest(maChiNhanh, request.tenChiNhanh(), request.trangThaiChiNhanh());
-//        return ResponseEntity.ok(chiNhanhService.capNhatChiNhanh(request));
-//    }
+    @GetMapping({"/chi-nhanh/all", "/branches/all"})
+    public ResponseEntity<?> danhSachTatCaChiNhanh() {
+        return ResponseEntity.ok(chiNhanhService.layTatCaChiNhanh());
+    }
 
-    @GetMapping("/chi-nhanh/{maChiNhanh}")
-    ResponseEntity<?> chiTietChiNhanh(@PathVariable Integer maChiNhanh) {
+    @GetMapping({"/chi-nhanh/{maChiNhanh}", "/branches/{maChiNhanh}"})
+    public ResponseEntity<?> chiTietChiNhanh(@PathVariable Integer maChiNhanh) {
         return ResponseEntity.ok(chiNhanhService.chiTietChiNhanh(maChiNhanh));
     }
 
-//    @PatchMapping("/chi-nhanh/{maChiNhanh}/trang-thai")
-//    ResponseEntity<?> doiTrangThai(@PathVariable Integer maChiNhanh){
+    @PostMapping(path = {"/chi-nhanh", "/branches"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> taoChiNhanh(@ModelAttribute ChiNhanhRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(chiNhanhService.taoChiNhanh(request));
+    }
 
-    /// /        return ResponseEntity.ok(chiNhanhService.doiTrangThaiChiNhanh(maChiNhanh));
-//    }
-    @GetMapping("/chi-nhanh")
-    ResponseEntity<?> danhSachChiNhanh() {
-        return ResponseEntity.ok(chiNhanhService.layDSChiNhanh());
+    @PutMapping(path = {"/chi-nhanh/{maChiNhanh}", "/branches/{maChiNhanh}"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> capNhatChiNhanh(
+            @PathVariable Integer maChiNhanh,
+            @ModelAttribute ChiNhanhRequest request
+    ) {
+        return ResponseEntity.ok(chiNhanhService.capNhatChiNhanh(maChiNhanh, request));
+    }
+
+    @PatchMapping({"/chi-nhanh/{maChiNhanh}/trang-thai", "/branches/{maChiNhanh}/status"})
+    public ResponseEntity<?> doiTrangThai(@PathVariable Integer maChiNhanh) {
+        return ResponseEntity.ok(chiNhanhService.doiTrangThaiChiNhanh(maChiNhanh));
+    }
+
+    @DeleteMapping({"/chi-nhanh/{maChiNhanh}", "/branches/{maChiNhanh}"})
+    public ResponseEntity<?> xoaChiNhanh(@PathVariable Integer maChiNhanh) {
+        chiNhanhService.xoaChiNhanh(maChiNhanh);
+        return ResponseEntity.noContent().build();
     }
 }

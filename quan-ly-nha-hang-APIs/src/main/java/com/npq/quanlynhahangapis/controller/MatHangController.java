@@ -14,23 +14,47 @@ import org.springframework.web.bind.annotation.*;
 public class MatHangController {
     private final MatHangService matHangService;
 
-    @PostMapping(path = "/mat-hang", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<?> taoMatHang(@ModelAttribute MatHangRequest request) {
+    @GetMapping({"/foods", "/mat-hang"})
+    public ResponseEntity<?> danhSachTatCaMatHang() {
+        return ResponseEntity.ok(matHangService.layTatCaMatHang());
+    }
+
+    @GetMapping({"/foods/{maMatHang}", "/mat-hang/{maMatHang}"})
+    public ResponseEntity<?> chiTietMatHang(@PathVariable Integer maMatHang) {
+        return ResponseEntity.ok(matHangService.layMatHangTheoId(maMatHang));
+    }
+
+    @PostMapping(path = {"/mat-hang", "/foods"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> taoMatHang(@ModelAttribute MatHangRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(matHangService.taoMatHang(request));
     }
 
+    @PutMapping(path = {"/mat-hang/{maMatHang}", "/foods/{maMatHang}"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> capNhatMatHang(
+            @PathVariable Integer maMatHang,
+            @ModelAttribute MatHangRequest request
+    ) {
+        return ResponseEntity.ok(matHangService.capNhatMatHang(maMatHang, request));
+    }
+
+    @DeleteMapping({"/mat-hang/{maMatHang}", "/foods/{maMatHang}"})
+    public ResponseEntity<?> xoaMatHang(@PathVariable Integer maMatHang) {
+        matHangService.xoaMatHang(maMatHang);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/chi-nhanh/{maChiNhanh}/mon-an")
-    ResponseEntity<?> listMonAn(@PathVariable Integer maChiNhanh) {
+    public ResponseEntity<?> listMonAn(@PathVariable Integer maChiNhanh) {
         return ResponseEntity.ok(matHangService.layDSMonAn(maChiNhanh));
     }
 
     @GetMapping("/chi-nhanh/{maChiNhanh}/thuc-uong")
-    ResponseEntity<?> listThucUong(@PathVariable Integer maChiNhanh) {
+    public ResponseEntity<?> listThucUong(@PathVariable Integer maChiNhanh) {
         return ResponseEntity.ok(matHangService.layDSThucUong(maChiNhanh));
     }
 
     @GetMapping("/chi-nhanh/{maChiNhanh}/dich-vu")
-    ResponseEntity<?> listDichVu(@PathVariable Integer maChiNhanh) {
+    public ResponseEntity<?> listDichVu(@PathVariable Integer maChiNhanh) {
         return ResponseEntity.ok(matHangService.layDSDichVu(maChiNhanh));
     }
 }

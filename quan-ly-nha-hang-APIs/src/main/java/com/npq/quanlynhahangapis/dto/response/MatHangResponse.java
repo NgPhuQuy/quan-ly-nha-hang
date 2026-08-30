@@ -11,6 +11,8 @@ public record MatHangResponse(
         String tenMatHang,
         String anhMinhHoa,
         BigDecimal giaMatHang,
-        LoaiMatHang loaiMatHang
+        LoaiMatHang loaiMatHang,
+        String trangThai,
+        String danhMuc
 ) {
 }

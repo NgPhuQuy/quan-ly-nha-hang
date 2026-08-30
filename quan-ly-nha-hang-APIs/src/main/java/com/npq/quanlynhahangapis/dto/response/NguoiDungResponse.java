@@ -13,8 +13,11 @@ public record NguoiDungResponse(
         String avatar,
         String ho,
         String ten,
+        String hoTen,
         String email,
         String soDienThoai,
+        String vaiTro,
+        String chiNhanh,
         LocalDateTime ngayTao,
         LocalDateTime ngayCapNhat,
         boolean trangThai

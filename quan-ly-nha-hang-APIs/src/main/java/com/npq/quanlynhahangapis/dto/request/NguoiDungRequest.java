@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 public record NguoiDungRequest(
         @NotBlank(message = "Tài khoản không được để trống!")
@@ -11,7 +12,7 @@ public record NguoiDungRequest(
         @NotBlank(message = "Mật khẩu không được để trống!")
         @Size(min = 8, message = "Mật khẩu tối thiểu 8 ký tự!")
         String matKhau,
-        String avatar,
+        MultipartFile avatar,
         String ho,
         String ten,
         @Email(message = "Email không hợp lệ!")

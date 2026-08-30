@@ -27,6 +27,7 @@ public class NguoiDungService {
     private final QuanLyRepository quanLyRepository;
     private final KhachHangRepository khachHangRepository;
     private final NhanVienRepository nhanVienRepository;
+    private final CloudinaryService cloudinaryService;
     private final JwtUtil jwtUtil;
 
     public List<NguoiDungResponse> layDSNguoiDung() {
@@ -60,12 +61,12 @@ public class NguoiDungService {
         if (nguoiDungRepository.existsBySoDienThoai(dto.soDienThoai()))
             throw new AppException(ErrorCode.PHONE_EXISTED);
 
-        //todo tai avatar len cloudinary
+        String avatarUrl = cloudinaryService.taiAnhLenCloudinary(dto.avatar());
 
         NguoiDung nguoiDung = NguoiDung.builder()
                 .taiKhoan(dto.taiKhoan())
                 .matKhau(passwordEncoder.encode(dto.matKhau()))
-                .avatar(dto.avatar())
+                .avatar(avatarUrl)
                 .ho(dto.ho())
                 .ten(dto.ten())
                 .email(dto.email())
@@ -112,17 +113,76 @@ public class NguoiDungService {
     }
 
     private NguoiDungResponse chuyenSangDto(NguoiDung nguoiDung) {
+        String vaiTro = "KHACHHANG";
+        try {
+            vaiTro = layVaiTro(nguoiDung.getMaNguoiDung());
+        } catch (Exception ignored) {}
+
+        String vaiTroHienThi = "ADMIN".equals(vaiTro) ? "Admin"
+                : "QUANLY".equals(vaiTro) ? "Quản lý"
+                : "NHANVIEN".equals(vaiTro) ? "Nhân viên" : "Khách hàng";
+
+        String chiNhanh = "Quận 1";
+        if ("QUANLY".equals(vaiTro)) {
+            var ql = quanLyRepository.findById(nguoiDung.getMaNguoiDung()).orElse(null);
+            if (ql != null && ql.getChiNhanh() != null) {
+                chiNhanh = ql.getChiNhanh().getTenChiNhanh();
+            }
+        } else if ("NHANVIEN".equals(vaiTro)) {
+            var nv = nhanVienRepository.findById(nguoiDung.getMaNguoiDung()).orElse(null);
+            if (nv != null && nv.getChiNhanh() != null) {
+                chiNhanh = nv.getChiNhanh().getTenChiNhanh();
+            }
+        }
+
+        String hoTen = ((nguoiDung.getHo() != null ? nguoiDung.getHo() + " " : "")
+                + (nguoiDung.getTen() != null ? nguoiDung.getTen() : "")).trim();
+        if (hoTen.isEmpty()) hoTen = nguoiDung.getTaiKhoan() != null ? nguoiDung.getTaiKhoan() : "Người dùng";
+
         return NguoiDungResponse.builder()
                 .maNguoiDung(nguoiDung.getMaNguoiDung())
                 .taiKhoan(nguoiDung.getTaiKhoan())
                 .avatar(nguoiDung.getAvatar())
                 .ho(nguoiDung.getHo())
                 .ten(nguoiDung.getTen())
+                .hoTen(hoTen)
                 .email(nguoiDung.getEmail())
                 .soDienThoai(nguoiDung.getSoDienThoai())
-                .trangThai(nguoiDung.getTrangThai())
+                .vaiTro(vaiTroHienThi)
+                .chiNhanh(chiNhanh)
+                .ngayTao(nguoiDung.getNgayTao())
+                .ngayCapNhat(nguoiDung.getNgayCapNhat())
+                .trangThai(nguoiDung.getTrangThai() != null && nguoiDung.getTrangThai())
                 .build();
-
     }
 
+    @Transactional
+    public NguoiDungResponse capNhatNguoiDung(Integer maNguoiDung, com.npq.quanlynhahangapis.dto.request.NguoiDungCapNhatRequest request) {
+        NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        if (request.ho() != null) nguoiDung.setHo(request.ho());
+        if (request.ten() != null) nguoiDung.setTen(request.ten());
+        if (request.email() != null) nguoiDung.setEmail(request.email());
+        if (request.soDienThoai() != null) nguoiDung.setSoDienThoai(request.soDienThoai());
+        if (request.trangThai() != null) nguoiDung.setTrangThai(request.trangThai());
+
+        return chuyenSangDto(nguoiDungRepository.save(nguoiDung));
+    }
+
+    @Transactional
+    public NguoiDungResponse doiTrangThaiNguoiDung(Integer maNguoiDung) {
+        NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        nguoiDung.setTrangThai(nguoiDung.getTrangThai() == null || !nguoiDung.getTrangThai());
+        return chuyenSangDto(nguoiDungRepository.save(nguoiDung));
+    }
+
+    @Transactional
+    public void xoaNguoiDung(Integer maNguoiDung) {
+        if (!nguoiDungRepository.existsById(maNguoiDung)) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
+        nguoiDungRepository.deleteById(maNguoiDung);
+    }
 }

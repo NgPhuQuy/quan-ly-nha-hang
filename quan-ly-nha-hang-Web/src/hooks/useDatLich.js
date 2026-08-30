@@ -31,26 +31,26 @@ export function useDatLich() {
   useEffect(() => {
     layDanhSachChiNhanh()
       .then((data) => {
-        setBranches(data);
+        if (data && data.length) setBranches(data);
       })
       .catch(() => {});
   }, []);
 
   useEffect(() => {
     if (!branchId) return;
-    const numericBranchId = Number(String(branchId).replace(/\D/g, ""));
+    const numericBranchId = Number(String(branchId).replace(/\D/g, "")) || 1;
     layDanhSachMonAn(numericBranchId).then(setMenuItems);
     layDanhSachDichVuBoSung(numericBranchId).then(setAdditionalServices);
   }, [branchId]);
 
   useEffect(() => {
     if (!branchId || !date || !guestCount) return;
-    const numericBranchId = Number(String(branchId).replace(/\D/g, ""));
+    const numericBranchId = Number(String(branchId).replace(/\D/g, "")) || 1;
     layKhungGio(numericBranchId, date, guestCount).then(setTimeSlots);
   }, [branchId, date, guestCount]);
 
   const selectedBranch = useMemo(
-    () => branches.find((branch) => String(branch.id) === String(branchId)),
+    () => branches.find((branch) => String(branch.maChiNhanh ?? branch.id) === String(branchId)),
     [branches, branchId],
   );
 
@@ -70,13 +70,18 @@ export function useDatLich() {
       0,
     );
 
-  const submitBooking = async () => {
+  const handleDatLich = async () => {
     const payload = {
-      maChiNhanh: Number(String(branchId).replace(/\D/g, "")),
+      maChiNhanh: Number(String(branchId).replace(/\D/g, "")) || 1,
       ngay: date,
       gio: selectedTime.length === 5 ? `${selectedTime}:00` : selectedTime,
       soKhach: guestCount,
       ghiChu: guestDetails.ghiChu,
+      hoTen: guestDetails.hoTen,
+      soDienThoai: guestDetails.soDienThoai,
+      email: guestDetails.email,
+      dip: guestDetails.dip,
+      dichVuBoSung: selectedServices,
       listDatTruoc: selectedItems.map((item) => ({
         maMatHang: Number(String(item.monAnId).replace(/\D/g, "")),
         soLuong: item.soLuong,
@@ -86,18 +91,19 @@ export function useDatLich() {
     try {
       const result = await taoDatLich(payload);
       setBookingCode(
-        result.maDatLich ||
+        result.maDatLichCode ||
+          result.maDatLich ||
           result.maDatBan ||
           `5S-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
       );
       setStep(5);
     } catch (error) {
-      console.error("Booking failed:", error);
-      window.alert("Booking failed. Please try again.");
+      console.error("Lỗi đặt bàn:", error);
+      window.alert("Đặt bàn chưa thành công. Vui lòng kiểm tra lại thông tin và thử lại!");
     }
   };
 
-  const resetBooking = () => {
+  const handleDatLai = () => {
     setStep(1);
     setBranchId("");
     setDate("");
@@ -139,7 +145,9 @@ export function useDatLich() {
     additionalServices,
     timeSlots,
     totalAmount,
-    submitBooking,
-    resetBooking,
+    handleDatLich,
+    handleDatLai,
+    submitBooking: handleDatLich,
+    resetBooking: handleDatLai,
   };
 }

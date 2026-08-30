@@ -1,27 +1,27 @@
 import { useTraCuuDatLich } from "../../hooks/useTraCuuDatLich";
 
-function TrangTraCuu({ onBack }) {
+function TrangTraCuu({ onQuayLai }) {
   const {
     bookingCode,
     setBookingCode,
     loading,
     booking,
     notFound,
-    searchBooking,
+    handleTraCuu,
   } = useTraCuuDatLich();
 
   return (
     <div className="min-h-screen bg-[var(--color-warm-black)]">
       <header className="border-b border-[rgba(200,136,42,.18)] bg-[rgba(10,7,4,.96)] px-4 py-4">
         <div className="mx-auto flex max-w-4xl justify-between">
-          <button onClick={onBack} style={{ color: "rgba(200,136,42,.65)" }}>
+          <button onClick={onQuayLai} style={{ color: "rgba(200,136,42,.65)" }} className="hover:text-amber-300 transition-colors">
             ← 5S Dining
           </button>
           <span
-            className="font-serif"
-            style={{ color: "rgba(240,216,144,.62)" }}
+            className="font-serif font-medium"
+            style={{ color: "rgba(240,216,144,.85)" }}
           >
-            Find my booking
+            Tra cứu đặt bàn
           </span>
         </div>
       </header>
@@ -30,28 +30,28 @@ function TrangTraCuu({ onBack }) {
           className="text-center font-serif text-3xl"
           style={{ color: "rgba(240,216,144,.88)" }}
         >
-          Find my booking
+          Tra cứu thông tin đặt chỗ
         </h1>
         <p
           className="mt-2 text-center text-sm"
           style={{ color: "rgba(240,216,144,.42)" }}
         >
-          Enter your booking reference to check its status.
+          Nhập mã đặt bàn của quý khách để kiểm tra trạng thái và thông tin bàn phục vụ.
         </p>
         <div className="mt-8 flex gap-2">
           <input
             className="input-warm px-4 py-3"
             value={bookingCode}
             onChange={(event) => setBookingCode(event.target.value)}
-            onKeyDown={(event) => event.key === "Enter" && searchBooking()}
-            placeholder="Example: 5S-2026-1234"
+            onKeyDown={(event) => event.key === "Enter" && handleTraCuu()}
+            placeholder="Ví dụ: 5S-2026-1234 hoặc HD-1234"
           />
           <button
-            onClick={searchBooking}
+            onClick={handleTraCuu}
             disabled={loading || !bookingCode.trim()}
             className="btn-primary rounded-xl px-5 disabled:opacity-50"
           >
-            {loading ? "..." : "Search"}
+            {loading ? "..." : "Tìm kiếm"}
           </button>
         </div>
 
@@ -64,49 +64,62 @@ function TrangTraCuu({ onBack }) {
               color: "rgba(240,180,180,.85)",
             }}
           >
-            No booking was found with this reference. Check the code or contact
-            the restaurant.
+            Không tìm thấy thông tin đặt chỗ với mã này. Quý khách vui lòng kiểm tra lại mã hoặc liên hệ hotline nhà hàng.
           </div>
         )}
 
         {booking && (
           <div className="card-warm mt-6 rounded-2xl p-5">
             <div className="flex justify-between">
-              <span className="opacity-50">Booking reference</span>
-              <span>{booking.maDatLich || bookingCode}</span>
+              <span className="opacity-50">Mã đặt chỗ</span>
+              <span className="font-semibold text-amber-300">{booking.maDatLich || bookingCode}</span>
             </div>
             <div className="mt-3 flex justify-between">
-              <span className="opacity-50">Status</span>
-              <span style={{ color: "#7ecb96" }}>{booking.trangThai}</span>
+              <span className="opacity-50">Trạng thái</span>
+              <span style={{ color: "#7ecb96" }} className="font-medium">{booking.trangThai}</span>
             </div>
             {booking.tenChiNhanh && (
               <div className="mt-3 flex justify-between">
-                <span className="opacity-50">Branch</span>
+                <span className="opacity-50">Chi nhánh</span>
                 <span>{booking.tenChiNhanh}</span>
               </div>
             )}
             {booking.ngay && (
               <div className="mt-3 flex justify-between">
-                <span className="opacity-50">Date</span>
+                <span className="opacity-50">Ngày đặt</span>
                 <span>{booking.ngay}</span>
               </div>
             )}
             {booking.gio && (
               <div className="mt-3 flex justify-between">
-                <span className="opacity-50">Time</span>
+                <span className="opacity-50">Khung giờ</span>
                 <span>{booking.gio}</span>
               </div>
             )}
             {booking.soKhach !== "" && (
               <div className="mt-3 flex justify-between">
-                <span className="opacity-50">Guests</span>
-                <span>{booking.soKhach}</span>
+                <span className="opacity-50">Số lượng khách</span>
+                <span>{booking.soKhach} khách</span>
               </div>
             )}
             {booking.hoTen && (
               <div className="mt-3 flex justify-between">
-                <span className="opacity-50">Guest name</span>
+                <span className="opacity-50">Tên khách hàng</span>
                 <span>{booking.hoTen}</span>
+              </div>
+            )}
+            {booking.soDienThoai && (
+              <div className="mt-3 flex justify-between">
+                <span className="opacity-50">Số điện thoại</span>
+                <span>{booking.soDienThoai}</span>
+              </div>
+            )}
+            {booking.soBan && (
+              <div className="mt-3 flex justify-between">
+                <span className="opacity-50">Bàn phục vụ</span>
+                <span style={{ color: "var(--color-primary-gold, #c8882a)" }} className="font-bold">
+                  {booking.soBan}
+                </span>
               </div>
             )}
             {booking.ghiChu && (
@@ -114,7 +127,7 @@ function TrangTraCuu({ onBack }) {
                 className="mt-4 border-t pt-4 text-xs opacity-60"
                 style={{ borderColor: "rgba(200,136,42,.1)" }}
               >
-                Notes: {booking.ghiChu}
+                Ghi chú: {booking.ghiChu}
               </div>
             )}
           </div>

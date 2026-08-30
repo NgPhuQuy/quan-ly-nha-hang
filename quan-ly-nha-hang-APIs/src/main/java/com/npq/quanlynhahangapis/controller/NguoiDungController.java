@@ -31,18 +31,31 @@ public class NguoiDungController {
     }
 
     @GetMapping("/users")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    ResponseEntity<List<NguoiDungResponse>> layDSNguoiDung() {
+    public ResponseEntity<List<NguoiDungResponse>> layDSNguoiDung() {
         return ResponseEntity.ok(nguoiDungService.layDSNguoiDung());
     }
 
     @GetMapping("/users/{maNguoiDung}")
-    ResponseEntity<?> chiTietNguoiDung(@PathVariable Integer maNguoiDung) {
+    public ResponseEntity<?> chiTietNguoiDung(@PathVariable Integer maNguoiDung) {
         return ResponseEntity.ok(nguoiDungService.layNguoiDungTheoId(maNguoiDung));
     }
 
     @PutMapping("/users/{maNguoiDung}")
-    ResponseEntity<?> capNhatNguoiDung(@RequestBody NguoiDungRequest request) {
-        return ResponseEntity.ok(nguoiDungService.capNhatNguoiDung(request));
+    public ResponseEntity<?> capNhatNguoiDung(
+            @PathVariable Integer maNguoiDung,
+            @RequestBody com.npq.quanlynhahangapis.dto.request.NguoiDungCapNhatRequest request
+    ) {
+        return ResponseEntity.ok(nguoiDungService.capNhatNguoiDung(maNguoiDung, request));
+    }
+
+    @PatchMapping({"/users/{maNguoiDung}/status", "/users/{maNguoiDung}/trang-thai"})
+    public ResponseEntity<?> doiTrangThaiNguoiDung(@PathVariable Integer maNguoiDung) {
+        return ResponseEntity.ok(nguoiDungService.doiTrangThaiNguoiDung(maNguoiDung));
+    }
+
+    @DeleteMapping("/users/{maNguoiDung}")
+    public ResponseEntity<?> xoaNguoiDung(@PathVariable Integer maNguoiDung) {
+        nguoiDungService.xoaNguoiDung(maNguoiDung);
+        return ResponseEntity.noContent().build();
     }
 }

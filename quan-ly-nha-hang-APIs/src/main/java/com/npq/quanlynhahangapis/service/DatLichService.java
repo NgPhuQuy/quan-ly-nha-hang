@@ -5,6 +5,7 @@ import com.npq.quanlynhahangapis.dto.request.DatTruocRequest;
 import com.npq.quanlynhahangapis.dto.response.DatLichResponse;
 import com.npq.quanlynhahangapis.dto.response.KhungGioResponse;
 import com.npq.quanlynhahangapis.entity.*;
+import com.npq.quanlynhahangapis.entity.enums.TrangThaiDatLich;
 import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
 import com.npq.quanlynhahangapis.repository.*;
@@ -21,7 +22,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +39,7 @@ public class DatLichService {
     private final DatLichRepository datLichRepository;
     private final GioHoatDongRepository gioHoatDongRepository;
     private final KhachHangRepository khachHangRepository;
+    private final BanRepository banRepository;
     private final ChiNhanhService chiNhanhService;
     private final DatTruocService datTruocService;
     private final JwtUtil jwtUtil;
@@ -47,12 +51,22 @@ public class DatLichService {
             throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Integer maNguoiDung = (Integer) authentication.getPrincipal();
-        Integer maNguoiDung = 1;
-        KhachHang khachHang = khachHangRepository
-                .findById(maNguoiDung)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        if (request.ngay().isBefore(LocalDate.now())) {
+            throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
+        }
+
+        KhachHang khachHang = null;
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.isAuthenticated()
+                    && !"anonymousUser".equals(authentication.getPrincipal())) {
+                if (authentication.getPrincipal() instanceof Integer userId) {
+                    khachHang = khachHangRepository.findById(userId).orElse(null);
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
         ChiNhanh chiNhanh = chiNhanhService.layChiNhanhTheoId(request.maChiNhanh());
 
         if (chiNhanh.getSucChua() == null || chiNhanh.getSucChua() <= 0
@@ -71,7 +85,11 @@ public class DatLichService {
         }
 
         List<DatLich> listDatLich = datLichRepository
-                .findByChiNhanh_MaChiNhanhAndNgay(request.maChiNhanh(), request.ngay());
+                .findByChiNhanh_MaChiNhanhAndNgayAndTrangThaiNotIn(
+                        request.maChiNhanh(),
+                        request.ngay(),
+                        List.of(TrangThaiDatLich.DA_HUY, TrangThaiDatLich.VANG_MAT)
+                );
 
         int conCho = tinhConCho(chiNhanh, listDatLich, gioBatDau, gioKetThuc);
 
@@ -79,25 +97,46 @@ public class DatLichService {
             throw new AppException(ErrorCode.CAPACITY_EXCEEDED);
         }
 
+        String dichVuStr = (request.dichVuBoSung() != null && !request.dichVuBoSung().isEmpty())
+                ? String.join(",", request.dichVuBoSung())
+                : null;
+
+        String maCode = sinhMaDatLichCode(request.ngay().getYear());
+
         DatLich datLich = DatLich.builder()
+                .maDatLichCode(maCode)
                 .khachHang(khachHang)
                 .chiNhanh(chiNhanh)
+                .hoTen(request.hoTen())
+                .soDienThoai(request.soDienThoai())
+                .email(request.email())
+                .dip(request.dip())
+                .dichVuBoSung(dichVuStr)
                 .ngay(request.ngay())
                 .gio(request.gio())
                 .soKhach(request.soKhach())
                 .ghiChu(request.ghiChu())
+                .trangThai(TrangThaiDatLich.CHO_XAC_NHAN)
                 .build();
 
-        List<DatTruoc> listDatTruoc = new ArrayList<>();
+        DatLich savedDatLich = datLichRepository.save(datLich);
 
-        for (DatTruocRequest r : request.listDatTruoc()) {
-            DatTruoc datTruoc = this.chuyenSangObj(r, datLich);
-            listDatTruoc.add(datTruoc);
+        if (request.listDatTruoc() != null && !request.listDatTruoc().isEmpty()) {
+            List<DatTruoc> listDatTruoc = new ArrayList<>();
+            for (DatTruocRequest r : request.listDatTruoc()) {
+                DatTruoc datTruoc = this.chuyenSangObj(r, savedDatLich);
+                listDatTruoc.add(datTruoc);
+            }
+            savedDatLich.setListDatTruoc(listDatTruoc);
+            datTruocRepository.saveAll(listDatTruoc);
         }
-        datLich.setListDatTruoc(listDatTruoc);
-        datTruocRepository.saveAll(listDatTruoc);
 
-        return chuyenSangDto(datLichRepository.save(datLich));
+        return chuyenSangDto(savedDatLich);
+    }
+
+    private String sinhMaDatLichCode(int year) {
+        int randomPart = 1000 + new Random().nextInt(9000);
+        return String.format("5S-%d-%04d", year, randomPart);
     }
 
     private DatTruoc chuyenSangObj(DatTruocRequest request, DatLich datLich) {
@@ -122,15 +161,24 @@ public class DatLichService {
         }
 
         GioHoatDong gioHoatDong = layGioHoatDong(maChiNhanh, ngay);
-        List<DatLich> datLiches = datLichRepository.findByChiNhanh_MaChiNhanhAndNgay(maChiNhanh, ngay);
+        List<DatLich> datLiches = datLichRepository.findByChiNhanh_MaChiNhanhAndNgayAndTrangThaiNotIn(
+                maChiNhanh,
+                ngay,
+                List.of(TrangThaiDatLich.DA_HUY, TrangThaiDatLich.VANG_MAT)
+        );
 
         List<KhungGioResponse> result = new ArrayList<>();
         LocalTime slotBatDau = gioHoatDong.getGioMoCua();
+        boolean isToday = ngay.isEqual(LocalDate.now());
+        LocalTime now = LocalTime.now();
 
         while (!slotBatDau.isAfter(gioHoatDong.getGioDongCua())) {
             LocalTime slotKetThuc = slotBatDau.plusHours(BOOKING_DURATION_HOURS);
-            int conCho = tinhConCho(chiNhanh, datLiches, slotBatDau, slotKetThuc);
-            result.add(new KhungGioResponse(slotBatDau, conCho, conCho >= soKhach));
+            boolean isPast = isToday && slotBatDau.isBefore(now);
+            int conCho = isPast ? 0 : tinhConCho(chiNhanh, datLiches, slotBatDau, slotKetThuc);
+            boolean coTheDat = !isPast && (conCho >= soKhach);
+
+            result.add(new KhungGioResponse(slotBatDau, conCho, coTheDat));
             slotBatDau = slotBatDau.plusMinutes(SLOT_INTERVAL_MINUTES);
         }
 
@@ -147,12 +195,70 @@ public class DatLichService {
                 .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND)));
     }
 
+    public DatLichResponse traCuu(String codeOrId) {
+        if (codeOrId == null || codeOrId.isBlank()) {
+            throw new AppException(ErrorCode.SOURCE_NOT_FOUND);
+        }
+        return datLichRepository.findByMaDatLichCode(codeOrId.trim())
+                .or(() -> {
+                    try {
+                        Integer id = Integer.parseInt(codeOrId.trim());
+                        return datLichRepository.findById(id);
+                    } catch (NumberFormatException e) {
+                        return java.util.Optional.empty();
+                    }
+                })
+                .map(this::chuyenSangDto)
+                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
+    }
+
+    @Transactional
+    public DatLichResponse capNhatTrangThai(Integer maDatLich, TrangThaiDatLich trangThai, Integer maBan) {
+        DatLich datLich = datLichRepository.findById(maDatLich)
+                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
+
+        if (trangThai != null) {
+            datLich.setTrangThai(trangThai);
+        }
+        if (maBan != null) {
+            Ban ban = banRepository.findById(maBan)
+                    .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
+            datLich.setBan(ban);
+        }
+        return chuyenSangDto(datLichRepository.save(datLich));
+    }
+
+    @Transactional
+    public DatLichResponse capNhatDatLich(Integer maDatLich, DatLichRequest request) {
+        DatLich datLich = datLichRepository.findById(maDatLich)
+                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
+
+        if (request.hoTen() != null) datLich.setHoTen(request.hoTen());
+        if (request.soDienThoai() != null) datLich.setSoDienThoai(request.soDienThoai());
+        if (request.email() != null) datLich.setEmail(request.email());
+        if (request.ngay() != null) datLich.setNgay(request.ngay());
+        if (request.gio() != null) datLich.setGio(request.gio());
+        if (request.soKhach() != null) datLich.setSoKhach(request.soKhach());
+        if (request.ghiChu() != null) datLich.setGhiChu(request.ghiChu());
+        if (request.dip() != null) datLich.setDip(request.dip());
+
+        return chuyenSangDto(datLichRepository.save(datLich));
+    }
+
+    @Transactional
+    public void xoaDatLich(Integer maDatLich) {
+        if (!datLichRepository.existsById(maDatLich)) {
+            throw new AppException(ErrorCode.SOURCE_NOT_FOUND);
+        }
+        datLichRepository.deleteById(maDatLich);
+    }
+
     private GioHoatDong layGioHoatDong(Integer maChiNhanh, LocalDate ngay) {
         DayOfWeek thu = ngay.getDayOfWeek();
         List<GioHoatDong> list = gioHoatDongRepository.findByChiNhanh_MaChiNhanh(maChiNhanh);
 
-        return list.stream().
-                filter(gio -> gio.getThu() == thu)
+        return list.stream()
+                .filter(gio -> gio.getThu() == thu)
                 .filter(gio -> Boolean.TRUE.equals(gio.getHoatDong()))
                 .findFirst()
                 .orElseThrow(() -> new AppException(ErrorCode.CLOSED_DAY));
@@ -167,7 +273,7 @@ public class DatLichService {
             LocalTime bookingKetThuc = bookingBatDau.plusHours(BOOKING_DURATION_HOURS);
 
             if (biOverlap(slotBatDau, slotKetThuc, bookingBatDau, bookingKetThuc)) {
-                tongSoKhach += datLich.getSoKhach();
+                tongSoKhach += (datLich.getSoKhach() != null ? datLich.getSoKhach() : 0);
             }
         }
 
@@ -181,16 +287,33 @@ public class DatLichService {
     }
 
     private DatLichResponse chuyenSangDto(DatLich dto) {
+        List<String> dichVuList = (dto.getDichVuBoSung() != null && !dto.getDichVuBoSung().isBlank())
+                ? Arrays.asList(dto.getDichVuBoSung().split(","))
+                : new ArrayList<>();
+
         return DatLichResponse.builder()
-                .maChiNhanh(dto.getChiNhanh().getMaChiNhanh())
+                .maDatLich(dto.getMaDatLich())
+                .maDatLichCode(dto.getMaDatLichCode())
+                .maChiNhanh(dto.getChiNhanh() != null ? dto.getChiNhanh().getMaChiNhanh() : null)
+                .tenChiNhanh(dto.getChiNhanh() != null ? dto.getChiNhanh().getTenChiNhanh() : null)
+                .hoTen(dto.getHoTen())
+                .soDienThoai(dto.getSoDienThoai())
+                .email(dto.getEmail())
+                .dip(dto.getDip())
+                .dichVuBoSung(dichVuList)
                 .ngay(dto.getNgay())
                 .gio(dto.getGio())
                 .soKhach(dto.getSoKhach())
                 .ghiChu(dto.getGhiChu())
-                .listDatTruoc(dto.getListDatTruoc()
+                .trangThai(dto.getTrangThai())
+                .maBan(dto.getBan() != null ? dto.getBan().getMaBan() : null)
+                .soBan(dto.getBan() != null ? dto.getBan().getSoBan() : null)
+                .listDatTruoc(dto.getListDatTruoc() != null
+                        ? dto.getListDatTruoc()
                         .stream()
                         .map(datTruocService::chuyenSangDto)
-                        .toList())
+                        .toList()
+                        : new ArrayList<>())
                 .build();
     }
-}
+}

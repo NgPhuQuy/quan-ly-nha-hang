@@ -18,8 +18,10 @@ public class Ban {
     private String soBan; // todo bao gom thong tin co ban vd: VIP-0001, OUTSIDE-0001
     private Integer sucChua;
 
+    @Builder.Default
+    private String trangThai = "Trống";
+
     @ManyToOne
     @JoinColumn(name = "ma_chi_nhanh", nullable = false)
     private ChiNhanh chiNhanh;
-
 }

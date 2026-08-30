@@ -1,25 +1,29 @@
-import NavigationBar from "../../components/landing/home/NavigationBar";
-import Hero from "../../components/landing/home/Hero";
-import BranchSection from "../../components/landing/home/BranchSection";
-import MenuGallery from "../../components/landing/home/MenuGallery";
-import CustomerTestimonials from "../../components/landing/home/CustomerTestimonials";
-import BookingCta from "../../components/landing/home/BookingCta";
-import Footer from "../../components/landing/home/Footer";
+import ThanhDieuHuong from "../../components/landing/home/ThanhDieuHuong";
+import PhanDauTrang from "../../components/landing/home/PhanDauTrang";
+import KhuVucChiNhanh from "../../components/landing/home/KhuVucChiNhanh";
+import BoSuuTapMonAn from "../../components/landing/home/BoSuuTapMonAn";
+import CamNhanKhachHang from "../../components/landing/home/CamNhanKhachHang";
+import DatBan from "../../components/landing/home/DatBan";
+import ChanTrang from "../../components/landing/home/ChanTrang";
 
-function HomePage({ onBookTable, onLookupBooking }) {
+function TrangChu({ onDatBan, onTraCuuDatBan, onBookTable, onLookupBooking }) {
+  const handleDatBan = onDatBan || onBookTable;
+  const handleTraCuuDatBan = onTraCuuDatBan || onLookupBooking;
+
   return (
     <div>
-      <NavigationBar
-        onBookTable={onBookTable}
-        onLookupBooking={onLookupBooking}
+      <ThanhDieuHuong
+        onDatBan={handleDatBan}
+        onTraCuuDatBan={handleTraCuuDatBan}
       />
-      <Hero onBookTable={onBookTable} />
-      <BranchSection onBookTable={onBookTable} />
-      <MenuGallery />
-      <CustomerTestimonials />
-      <BookingCta onBookTable={onBookTable} onLookupBooking={onLookupBooking} />
-      <Footer />
+      <PhanDauTrang onDatBan={handleDatBan} />
+      <KhuVucChiNhanh onDatBan={handleDatBan} />
+      <BoSuuTapMonAn />
+      <CamNhanKhachHang />
+      <DatBan onDatBan={handleDatBan} onTraCuuDatBan={handleTraCuuDatBan} />
+      <ChanTrang />
     </div>
   );
 }
-export default HomePage;
+
+export default TrangChu;

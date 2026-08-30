@@ -12,7 +12,7 @@ const DEFAULT_MENU_IMAGES = [
 
 const normalizeMenuItem = (data, index, defaultCategory) => ({
   id: data.maMonAn ?? data.maMatHang ?? data.id ?? `item-${index}`,
-  ten: data.tenMonAn ?? data.ten ?? data.tenMatHang ?? "Updating",
+  ten: data.tenMonAn ?? data.ten ?? data.tenMatHang ?? "Món ăn",
   moTa: data.moTa ?? "",
   gia: data.gia ?? data.donGia ?? data.giaMatHang ?? 0,
   anh:
@@ -26,6 +26,7 @@ const normalizeMenuItem = (data, index, defaultCategory) => ({
     data.loaiMatHang ??
     data.danhMuc ??
     defaultCategory,
+  trangThai: data.trangThai ?? "Đang bán",
 });
 
 const guessServiceIcon = (name) => {
@@ -40,13 +41,55 @@ const guessServiceIcon = (name) => {
 };
 
 const normalizeService = (data, index) => {
-  const name = data.tenDichVu ?? data.ten ?? "Updating";
+  const name = data.tenDichVu ?? data.ten ?? "Dịch vụ";
   return {
-    id: data.maDichVu ?? data.id ?? `service-${index}`,
+    id: data.maDichVu ?? data.maMatHang ?? data.id ?? `service-${index}`,
     ten: name,
-    gia: data.gia ?? data.donGia ?? 0,
+    gia: data.gia ?? data.donGia ?? data.giaMatHang ?? 0,
     bieuTuong: data.bieuTuong ?? guessServiceIcon(name),
   };
+};
+
+export const layTatCaMonAn = async () => {
+  try {
+    const res = await apis.get(endpoints.foods);
+    return (res.data || []).map((item, index) => ({
+      id: item.maMatHang,
+      name: item.tenMatHang,
+      category: item.danhMuc || "Món chính",
+      price: item.giaMatHang,
+      status: item.trangThai || "Đang bán",
+      image: item.anhMinhHoa || DEFAULT_MENU_IMAGES[index % DEFAULT_MENU_IMAGES.length],
+      branch: "Quận 1",
+    }));
+  } catch (error) {
+    console.warn("Could not fetch foods from API:", error);
+    return [];
+  }
+};
+
+export const layChiTietMonAn = async (id) => {
+  const res = await apis.get(endpoints.chi_tiet_mon(id));
+  return res.data;
+};
+
+export const taoMonAn = async (formData) => {
+  const res = await apis.post(endpoints.foods, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res.data;
+};
+
+export const capNhatMonAn = async (id, formData) => {
+  const res = await apis.put(endpoints.cap_nhat_mon(id), formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res.data;
+};
+
+export const xoaMonAn = async (id) => {
+  const res = await apis.delete(endpoints.xoa_mon(id));
+  return res.data;
 };
 
 export const layDanhSachMonAn = async (branchId) => {
@@ -61,8 +104,7 @@ export const layDanhSachMonAn = async (branchId) => {
     const drinks = (drinkResponse.data || []).map((item, index) =>
       normalizeMenuItem(item, index, "Drinks"),
     );
-    const items = [...menuItems, ...drinks];
-    return items;
+    return [...menuItems, ...drinks];
   } catch (error) {
     console.error("Could not load menu items and drinks:", error);
     return [];

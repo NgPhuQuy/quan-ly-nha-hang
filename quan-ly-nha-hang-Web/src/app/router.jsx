@@ -40,13 +40,13 @@ function Router() {
       onNavigate={(trangMoi) => dieuHuong(`${khuVuc}/${trangMoi}`)}
     />
   ) : manHinh === "booking" ? (
-    <TrangDatBan onBack={() => dieuHuong("home")} />
+    <TrangDatBan onQuayLai={() => dieuHuong("home")} />
   ) : manHinh === "lookup" ? (
-    <TrangTraCuu onBack={() => dieuHuong("home")} />
+    <TrangTraCuu onQuayLai={() => dieuHuong("home")} />
   ) : (
     <TrangChu
-      onBookTable={() => dieuHuong("booking")}
-      onLookupBooking={() => dieuHuong("lookup")}
+      onDatBan={() => dieuHuong("booking")}
+      onTraCuuDatBan={() => dieuHuong("lookup")}
     />
   );
 

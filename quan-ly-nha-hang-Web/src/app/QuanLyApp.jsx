@@ -2,21 +2,21 @@ import { lazy, Suspense, useState } from "react";
 import Sidebar from "../components/quanLy/Sidebar";
 import Header from "../components/quanLy/Header";
 
-const Dashboard = lazy(() => import("../pages/quanLy/Dashboard"));
-const Invoices = lazy(() => import("../pages/quanLy/Invoices"));
-const CreateInvoice = lazy(() => import("../pages/quanLy/CreateInvoice"));
-const InvoiceDetail = lazy(() => import("../pages/quanLy/InvoiceDetail"));
-const FoodMenu = lazy(() => import("../pages/quanLy/FoodMenu"));
-const IncomeExpense = lazy(() => import("../pages/quanLy/IncomeExpense"));
-const Reports = lazy(() => import("../pages/quanLy/Reports"));
-const Branches = lazy(() => import("../pages/quanLy/Branches"));
-const Users = lazy(() => import("../pages/quanLy/Users"));
-const Customers = lazy(() => import("../pages/quanLy/Customers"));
-const Categories = lazy(() => import("../pages/quanLy/Categories"));
-const Tables = lazy(() => import("../pages/quanLy/Tables"));
-const Bookings = lazy(() => import("../pages/quanLy/Bookings"));
-const Promotions = lazy(() => import("../pages/quanLy/Promotions"));
-const Settings = lazy(() => import("../pages/quanLy/Settings"));
+const TongQuan = lazy(() => import("../pages/quanLy/TongQuan"));
+const DanhSachHoaDon = lazy(() => import("../pages/quanLy/DanhSachHoaDon"));
+const TaoHoaDon = lazy(() => import("../pages/quanLy/TaoHoaDon"));
+const ChiTietHoaDon = lazy(() => import("../pages/quanLy/ChiTietHoaDon"));
+const ThucDon = lazy(() => import("../pages/quanLy/ThucDon"));
+const ThuChi = lazy(() => import("../pages/quanLy/ThuChi"));
+const BaoCao = lazy(() => import("../pages/quanLy/BaoCao"));
+const ChiNhanh = lazy(() => import("../pages/quanLy/ChiNhanh"));
+const TaiKhoan = lazy(() => import("../pages/quanLy/TaiKhoan"));
+const KhachHang = lazy(() => import("../pages/quanLy/KhachHang"));
+const DanhMucMon = lazy(() => import("../pages/quanLy/DanhMucMon"));
+const DanhSachBan = lazy(() => import("../pages/quanLy/DanhSachBan"));
+const DatLich = lazy(() => import("../pages/quanLy/DatLich"));
+const KhuyenMai = lazy(() => import("../pages/quanLy/KhuyenMai"));
+const CaiDat = lazy(() => import("../pages/quanLy/CaiDat"));
 
 const pageTitles = {
   dashboard: "Tổng quan",
@@ -37,21 +37,21 @@ const pageTitles = {
 };
 
 const pages = {
-  dashboard: Dashboard,
-  invoices: Invoices,
-  "create-invoice": CreateInvoice,
-  "invoice-detail": InvoiceDetail,
-  food: FoodMenu,
-  "income-expense": IncomeExpense,
-  reports: Reports,
-  tables: Tables,
-  branches: Branches,
-  users: Users,
-  customers: Customers,
-  categories: Categories,
-  bookings: Bookings,
-  promotions: Promotions,
-  settings: Settings,
+  dashboard: TongQuan,
+  invoices: DanhSachHoaDon,
+  "create-invoice": TaoHoaDon,
+  "invoice-detail": ChiTietHoaDon,
+  food: ThucDon,
+  "income-expense": ThuChi,
+  reports: BaoCao,
+  tables: DanhSachBan,
+  branches: ChiNhanh,
+  users: TaiKhoan,
+  customers: KhachHang,
+  categories: DanhMucMon,
+  bookings: DatLich,
+  promotions: KhuyenMai,
+  settings: CaiDat,
 };
 
 export default function QuanLyApp({
@@ -62,7 +62,7 @@ export default function QuanLyApp({
   const [page, setPage] = useState(initialPage);
   const role = initialRole;
   const [selectedInvoiceId, setSelectedInvoiceId] = useState("");
-  const Page = pages[page] || Dashboard;
+  const Page = pages[page] || TongQuan;
   const noHeader = page === "create-invoice";
 
   const khiChuyenTrang = (trangMoi) => {

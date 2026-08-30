@@ -7,7 +7,7 @@ export function useTraCuuDatLich() {
   const [booking, setBooking] = useState(null);
   const [notFound, setNotFound] = useState(false);
 
-  const searchBooking = async () => {
+  const handleTraCuu = async () => {
     if (!bookingCode.trim()) return;
     setLoading(true);
     setBooking(null);
@@ -15,7 +15,7 @@ export function useTraCuuDatLich() {
     try {
       setBooking(await layDatLichTheoMa(bookingCode.trim()));
     } catch (error) {
-      console.error("Could not find booking:", error);
+      console.error("Không tìm thấy thông tin đặt chỗ:", error);
       setNotFound(true);
     } finally {
       setLoading(false);
@@ -28,6 +28,7 @@ export function useTraCuuDatLich() {
     loading,
     booking,
     notFound,
-    searchBooking,
+    handleTraCuu,
+    searchBooking: handleTraCuu,
   };
 }

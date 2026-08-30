@@ -10,7 +10,11 @@ public record DatLichRequest(
         LocalTime gio,
         Integer soKhach,
         String ghiChu,
-
+        String hoTen,
+        String soDienThoai,
+        String email,
+        String dip,
+        List<String> dichVuBoSung,
         List<DatTruocRequest> listDatTruoc
 ) {
 }
