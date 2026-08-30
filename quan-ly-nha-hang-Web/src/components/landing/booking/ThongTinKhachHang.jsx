@@ -27,8 +27,7 @@ function GuestDetails({
 
   const handleKiemTraVaXacNhan = () => {
     const loiForm = {};
-    if (!guestDetails.hoTen.trim())
-      loiForm.hoTen = "Vui lòng nhập họ và tên";
+    if (!guestDetails.hoTen.trim()) loiForm.hoTen = "Vui lòng nhập họ và tên";
     if (!/^((0|\+84)[0-9]{8,10})$/.test(guestDetails.soDienThoai.trim()))
       loiForm.soDienThoai = "Vui lòng nhập số điện thoại hợp lệ";
     setErrors(loiForm);
@@ -55,7 +54,9 @@ function GuestDetails({
           <input
             className="input-warm px-4 py-3"
             value={guestDetails.hoTen}
-            onChange={(event) => handleCapNhatTruong("hoTen", event.target.value)}
+            onChange={(event) =>
+              handleCapNhatTruong("hoTen", event.target.value)
+            }
             placeholder="Nguyễn Văn A"
           />
           {errors.hoTen && (
@@ -67,7 +68,9 @@ function GuestDetails({
           <input
             className="input-warm px-4 py-3"
             value={guestDetails.soDienThoai}
-            onChange={(event) => handleCapNhatTruong("soDienThoai", event.target.value)}
+            onChange={(event) =>
+              handleCapNhatTruong("soDienThoai", event.target.value)
+            }
             placeholder="0912345678"
           />
           {errors.soDienThoai && (
@@ -80,7 +83,9 @@ function GuestDetails({
             type="email"
             className="input-warm px-4 py-3"
             value={guestDetails.email}
-            onChange={(event) => handleCapNhatTruong("email", event.target.value)}
+            onChange={(event) =>
+              handleCapNhatTruong("email", event.target.value)
+            }
             placeholder="you@example.com"
           />
         </div>
@@ -103,7 +108,9 @@ function GuestDetails({
           <input
             className="input-warm px-4 py-3"
             value={guestDetails.ghiChu}
-            onChange={(event) => handleCapNhatTruong("ghiChu", event.target.value)}
+            onChange={(event) =>
+              handleCapNhatTruong("ghiChu", event.target.value)
+            }
             placeholder="Bàn gần cửa sổ, ghế trẻ em..."
           />
         </div>
@@ -140,7 +147,10 @@ function GuestDetails({
         </div>
       </div>
       <div className="mt-8 flex gap-3">
-        <button onClick={onQuayLai} className="btn-ghost flex-1 rounded-xl py-3">
+        <button
+          onClick={onQuayLai}
+          className="btn-ghost flex-1 rounded-xl py-3"
+        >
           Quay lại
         </button>
         <button

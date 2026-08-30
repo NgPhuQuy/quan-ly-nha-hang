@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { Plus, TrendingUp, TrendingDown } from "lucide-react";
 import { mockTransactions } from "../../data/quanLyMock";
-import { layDanhSachThuChi, taoThuChi, xoaThuChi } from "../../services/thuChi.service";
+import {
+  layDanhSachThuChi,
+  taoThuChi,
+  xoaThuChi,
+} from "../../services/thuChi.service";
 import { dinhDangTien } from "../../utils/dinhDang";
 const MONTHS = ["Tháng 1/2025", "Tháng 12/2024", "Tháng 11/2024"];
 function IncomeExpense() {
@@ -52,7 +56,9 @@ function IncomeExpense() {
           {
             id: created.maGiaoDichCode || `TC-${created.maGiaoDich}`,
             maGiaoDichId: created.maGiaoDich,
-            date: created.ngayGiaoDich ? String(created.ngayGiaoDich).slice(0, 10) : new Date().toISOString().slice(0, 10),
+            date: created.ngayGiaoDich
+              ? String(created.ngayGiaoDich).slice(0, 10)
+              : new Date().toISOString().slice(0, 10),
             type: created.loai || form.type,
             category: created.danhMuc || form.category || "Khác",
             description: created.moTa || form.description,

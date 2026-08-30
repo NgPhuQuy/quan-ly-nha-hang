@@ -38,7 +38,7 @@ function Tables() {
             capacity: b.sucChua || 4,
             status: b.trangThai || "Trống",
             currentInvoice: b.currentInvoice,
-          }))
+          })),
         );
       }
     });
@@ -65,6 +65,15 @@ function Tables() {
       ),
     );
   };
+
+  const filtered = filter ? tables.filter((t) => t.status === filter) : tables;
+  const counts = tables.reduce(
+    (acc, t) => {
+      acc[t.status] = (acc[t.status] || 0) + 1;
+      return acc;
+    },
+    { Trống: 0, "Đang phục vụ": 0, "Đã đặt trước": 0 },
+  );
   return (
     <div className="p-5 flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -144,7 +153,9 @@ function Tables() {
           return (
             <button
               key={table.id}
-              onClick={() => handleDoiTrangThaiBan(table.id, table.status, table.maBanId)}
+              onClick={() =>
+                handleDoiTrangThaiBan(table.id, table.status, table.maBanId)
+              }
               className="bg-white rounded-xl border-2 p-4 text-left transition-all hover:shadow-md"
               style={{
                 borderColor: s.border,

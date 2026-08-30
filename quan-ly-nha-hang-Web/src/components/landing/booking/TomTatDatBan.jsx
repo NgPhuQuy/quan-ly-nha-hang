@@ -76,10 +76,16 @@ function BookingSummary({
           className="mt-5 border-t pt-4"
           style={{ borderColor: "rgba(200,136,42,.1)" }}
         >
-          <span className="text-xs block mb-1" style={{ color: "rgba(240,216,144,.45)" }}>
+          <span
+            className="text-xs block mb-1"
+            style={{ color: "rgba(240,216,144,.45)" }}
+          >
             Món & dịch vụ đặt trước:
           </span>
-          <span className="text-base font-serif font-semibold" style={{ color: "rgba(232,184,75,.95)" }}>
+          <span
+            className="text-base font-serif font-semibold"
+            style={{ color: "rgba(232,184,75,.95)" }}
+          >
             {totalAmount.toLocaleString("vi-VN")}₫
           </span>
         </div>

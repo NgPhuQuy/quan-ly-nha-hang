@@ -31,7 +31,7 @@ function Branches() {
             status: b.trangThaiChiNhanh ? "Hoạt động" : "Tạm đóng",
             monthlyRevenue: 140000000,
             tables: b.sucChua ? Math.round(b.sucChua / 4) : 10,
-          }))
+          })),
         );
       }
     });

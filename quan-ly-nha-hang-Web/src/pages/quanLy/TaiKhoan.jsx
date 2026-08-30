@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { Plus, Search } from "lucide-react";
 import { mockUsers, BRANCH_OPTIONS } from "../../data/quanLyMock";
-import { layDanhSachNguoiDung, xoaNguoiDung } from "../../services/nguoiDung.service";
+import {
+  layDanhSachNguoiDung,
+  xoaNguoiDung,
+} from "../../services/nguoiDung.service";
 const roleStyle = {
   "Quản lý": {
     bg: "rgba(212,150,43,0.12)",
@@ -11,7 +14,7 @@ const roleStyle = {
     bg: "var(--info-bg)",
     color: "var(--info)",
   },
-  "Admin": {
+  Admin: {
     bg: "rgba(139,92,246,0.12)",
     color: "#8B5CF6",
   },

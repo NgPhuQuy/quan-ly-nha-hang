@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { Plus, Tag } from "lucide-react";
 import { mockPromotions } from "../../data/quanLyMock";
-import { layDanhSachKhuyenMai, xoaKhuyenMai } from "../../services/khuyenMai.service";
+import {
+  layDanhSachKhuyenMai,
+  xoaKhuyenMai,
+} from "../../services/khuyenMai.service";
 const statusStyle = {
   "Đang chạy": {
     bg: "var(--success-bg)",

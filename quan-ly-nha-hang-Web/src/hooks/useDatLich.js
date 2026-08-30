@@ -50,7 +50,10 @@ export function useDatLich() {
   }, [branchId, date, guestCount]);
 
   const selectedBranch = useMemo(
-    () => branches.find((branch) => String(branch.maChiNhanh ?? branch.id) === String(branchId)),
+    () =>
+      branches.find(
+        (branch) => String(branch.maChiNhanh ?? branch.id) === String(branchId),
+      ),
     [branches, branchId],
   );
 
@@ -99,7 +102,9 @@ export function useDatLich() {
       setStep(5);
     } catch (error) {
       console.error("Lỗi đặt bàn:", error);
-      window.alert("Đặt bàn chưa thành công. Vui lòng kiểm tra lại thông tin và thử lại!");
+      window.alert(
+        "Đặt bàn chưa thành công. Vui lòng kiểm tra lại thông tin và thử lại!",
+      );
     }
   };
 

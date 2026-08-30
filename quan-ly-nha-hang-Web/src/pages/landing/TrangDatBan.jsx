@@ -14,7 +14,11 @@ function TrangDatBan({ onQuayLai }) {
     <div className="min-h-screen bg-[var(--color-warm-black)]">
       <header className="sticky top-0 z-50 border-b border-[rgba(200,136,42,.18)] bg-[rgba(10,7,4,.96)]">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <button onClick={onQuayLai} style={{ color: "rgba(200,136,42,.65)" }} className="hover:text-amber-300 transition-colors">
+          <button
+            onClick={onQuayLai}
+            style={{ color: "rgba(200,136,42,.65)" }}
+            className="hover:text-amber-300 transition-colors"
+          >
             ← 5S Dining
           </button>
           <span

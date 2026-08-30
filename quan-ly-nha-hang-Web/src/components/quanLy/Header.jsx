@@ -11,9 +11,21 @@ function Header({ title, role }) {
     year: "numeric",
   });
 
-  const tenHienThi = nguoiDung?.hoTen || nguoiDung?.taiKhoan || (role === "admin" ? "Admin 5S" : "Quản lý 5S");
+  const tenHienThi =
+    nguoiDung?.hoTen ||
+    nguoiDung?.taiKhoan ||
+    (role === "admin" ? "Admin 5S" : "Quản lý 5S");
   const tenVietTat = tenHienThi.slice(0, 2).toUpperCase();
-  const tenVaiTro = nguoiDung?.vaiTro === "ADMIN" ? "Quản trị viên" : nguoiDung?.vaiTro === "QUANLY" ? "Quản lý chi nhánh" : nguoiDung?.vaiTro === "NHANVIEN" ? "Nhân viên POS" : (role === "admin" ? "Quản trị viên" : "Quản lý");
+  const tenVaiTro =
+    nguoiDung?.vaiTro === "ADMIN"
+      ? "Quản trị viên"
+      : nguoiDung?.vaiTro === "QUANLY"
+        ? "Quản lý chi nhánh"
+        : nguoiDung?.vaiTro === "NHANVIEN"
+          ? "Nhân viên POS"
+          : role === "admin"
+            ? "Quản trị viên"
+            : "Quản lý";
 
   return (
     <header

@@ -34,7 +34,12 @@ function BookingConfirmation({
         </h1>
         <p className="mt-2 text-sm" style={{ color: "rgba(240,216,144,.42)" }}>
           Mã đặt chỗ của quý khách:{" "}
-          <b className="text-base tracking-wider" style={{ color: "rgba(232,184,75,.95)" }}>{bookingCode}</b>
+          <b
+            className="text-base tracking-wider"
+            style={{ color: "rgba(232,184,75,.95)" }}
+          >
+            {bookingCode}
+          </b>
         </p>
       </div>
       <div className="card-warm rounded-2xl p-5 sm:p-7">
@@ -70,15 +75,20 @@ function BookingConfirmation({
             style={{ borderColor: "rgba(200,136,42,.1)" }}
           >
             <div className="flex justify-between items-center">
-              <span className="text-sm opacity-60">Món ăn & dịch vụ đặt trước</span>
-              <span className="font-serif font-semibold text-amber-300">{Number(totalAmount).toLocaleString("vi-VN")}₫</span>
+              <span className="text-sm opacity-60">
+                Món ăn & dịch vụ đặt trước
+              </span>
+              <span className="font-serif font-semibold text-amber-300">
+                {Number(totalAmount).toLocaleString("vi-VN")}₫
+              </span>
             </div>
             {guestDetails.dip !== "khong" && (
               <p className="mt-2 text-xs opacity-50">
                 Dịp kỷ niệm:{" "}
                 {
-                  DIP_DAT_BAN.find((occasion) => occasion.id === guestDetails.dip)
-                    ?.ten
+                  DIP_DAT_BAN.find(
+                    (occasion) => occasion.id === guestDetails.dip,
+                  )?.ten
                 }
               </p>
             )}

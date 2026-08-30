@@ -6,21 +6,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping
+@RequestMapping("/khach-hang")
 @RequiredArgsConstructor
 public class KhachHangController {
     private final KhachHangService khachHangService;
 
-    @GetMapping({"/customers", "/khach-hang"})
-    public ResponseEntity<?> danhSachKhachHang(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String search
-    ) {
-        String s = keyword != null ? keyword : search;
-        return ResponseEntity.ok(khachHangService.layDSKhachHang(s));
+    @GetMapping
+    public ResponseEntity<?> danhSachKhachHang(@RequestParam(required = false) String keyword) {
+        return ResponseEntity.ok(khachHangService.layDSKhachHang(keyword));
     }
 
-    @GetMapping({"/customers/{maKhachHang}", "/khach-hang/{maKhachHang}"})
+    @GetMapping("/{maKhachHang}")
     public ResponseEntity<?> chiTietKhachHang(@PathVariable Integer maKhachHang) {
         return ResponseEntity.ok(khachHangService.layKhachHangTheoId(maKhachHang));
     }

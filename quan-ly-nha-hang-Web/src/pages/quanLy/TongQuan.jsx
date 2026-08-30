@@ -95,9 +95,9 @@ const statusBg = {
 };
 function Dashboard({ role, onNavigate }) {
   const isAdmin = role === "admin";
-  const [dayData, setDayData] = useState(mockRevenueByDay);
-  const [sourceData, setSourceData] = useState(mockRevenueBySource);
-  const [branchData, setBranchData] = useState(mockRevenueByBranch);
+  const [revenueByDay, setRevenueByDay] = useState(mockRevenueByDay);
+  const [revenueBySource, setRevenueBySource] = useState(mockRevenueBySource);
+  const [revenueByBranch, setRevenueByBranch] = useState(mockRevenueByBranch);
   const [overview, setOverview] = useState(null);
 
   useEffect(() => {
@@ -105,31 +105,41 @@ function Dashboard({ role, onNavigate }) {
       if (data) setOverview(data);
     });
     layDoanhThuTheoNgay().then((data) => {
-      if (data && data.length > 0) setDayData(data);
+      if (data && data.length > 0) setRevenueByDay(data);
     });
     layDoanhThuTheoChiNhanh().then((data) => {
-      if (data && data.length > 0) setBranchData(data);
+      if (data && data.length > 0) setRevenueByBranch(data);
     });
     layDoanhThuTheoNguon().then((data) => {
-      if (data && data.length > 0) setSourceData(data);
+      if (data && data.length > 0) setRevenueBySource(data);
     });
   }, []);
 
   const totalRevenue = overview?.tongDoanhThu
     ? Number(overview.tongDoanhThu)
     : isAdmin
-    ? 962e5
-    : dayData.reduce((s, d) => s + Number(d.revenue || 0), 0);
+      ? 962e5
+      : revenueByDay.reduce((s, d) => s + Number(d.revenue || 0), 0);
 
   const totalInvoices = overview?.tongHoaDon
     ? Number(overview.tongHoaDon)
     : isAdmin
-    ? 847
-    : dayData.reduce((s, d) => s + Number(d.invoices || 0), 0);
+      ? 847
+      : revenueByDay.reduce((s, d) => s + Number(d.invoices || 0), 0);
 
-  const totalIncome = overview?.tongThu ? Number(overview.tongThu) : (isAdmin ? 962e5 : 144e5);
-  const totalExpense = overview?.tongChi ? Number(overview.tongChi) : (isAdmin ? 428e5 : 82e5);
-  const profit = overview?.loiNhuan ? Number(overview.loiNhuan) : (totalIncome - totalExpense);
+  const totalIncome = overview?.tongThu
+    ? Number(overview.tongThu)
+    : isAdmin
+      ? 962e5
+      : 144e5;
+  const totalExpense = overview?.tongChi
+    ? Number(overview.tongChi)
+    : isAdmin
+      ? 428e5
+      : 82e5;
+  const profit = overview?.loiNhuan
+    ? Number(overview.loiNhuan)
+    : totalIncome - totalExpense;
   return (
     <div className="p-5 flex flex-col gap-4 overflow-y-auto">
       <div className="flex items-center justify-between">
@@ -248,9 +258,7 @@ function Dashboard({ role, onNavigate }) {
                   color: "var(--foreground)",
                 }}
               >
-                {isAdmin
-                  ? "Doanh thu toàn hệ thá»‘ng"
-                  : "Doanh thu theo ngày"}
+                {isAdmin ? "Doanh thu toàn hệ thá»‘ng" : "Doanh thu theo ngày"}
               </div>
               <div
                 className="text-xs"

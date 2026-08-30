@@ -23,14 +23,14 @@ export const giaiMaToken = (token) => {
 };
 
 /**
- * Lấy token hiện tại từ cookie hoặc localStorage (nếu còn hạn)
+ * Lấy token hiện tại từ cookie (xác thực thời hạn)
  */
 export const layToken = () => {
-  const token = cookies.load("token") || localStorage.getItem("token");
+  const token = cookies.load("token");
   if (!token) return null;
 
   const payload = giaiMaToken(token);
-  if (payload && payload.exp) {
+  if (payload?.exp) {
     const now = Math.floor(Date.now() / 1000);
     if (payload.exp < now) {
       dangXuat();
@@ -41,26 +41,58 @@ export const layToken = () => {
 };
 
 /**
- * Lấy thông tin người dùng đang đăng nhập
+ * Lấy thông tin người dùng từ server qua API /auth/me
+ */
+export const layThongTinMe = async () => {
+  const token = layToken();
+  if (!token) return null;
+
+  try {
+    const res = await apis.get(endpoints.auth_me);
+    if (res.data) {
+      const user = {
+        ...res.data,
+        vaiTro: (res.data.vaiTro || "KHACHHANG").toUpperCase(),
+      };
+      localStorage.setItem("user_profile", JSON.stringify(user));
+      return user;
+    }
+  } catch (error) {
+    console.warn("Không thể tải thông tin từ /auth/me:", error);
+  }
+  return layNguoiDungHienTai();
+};
+
+/**
+ * Lấy thông tin người dùng hiện tại (từ cache/localStorage hoặc giải mã token)
  */
 export const layNguoiDungHienTai = () => {
   const token = layToken();
   if (!token) return null;
 
-  const payload = giaiMaToken(token);
-  const userLuuTru = localStorage.getItem("user");
-  const thongTin = userLuuTru ? JSON.parse(userLuuTru) : {};
+  try {
+    const cached = localStorage.getItem("user_profile");
+    if (cached) {
+      return JSON.parse(cached);
+    }
+  } catch (e) {
+    console.warn("Lỗi đọc user_profile từ localStorage:", e);
+  }
 
+  const payload = giaiMaToken(token);
+  if (!payload) return null;
+
+  const vaiTro = (payload.vaiTro || "KHACHHANG").toUpperCase();
   return {
-    taiKhoan: payload?.sub || thongTin.taiKhoan || "Admin",
-    maNguoiDung: payload?.maNguoiDung || thongTin.maNguoiDung,
-    vaiTro: (payload?.vaiTro || thongTin.vaiTro || "ADMIN").toUpperCase(),
-    hoTen: thongTin.hoTen || payload?.sub || "Người dùng",
+    taiKhoan: payload.sub || "Người dùng",
+    maNguoiDung: payload.maNguoiDung,
+    vaiTro: vaiTro,
+    hoTen: payload.sub || "Người dùng",
   };
 };
 
 /**
- * Đăng nhập hệ thống qua API /auth/login
+ * Đăng nhập hệ thống qua API /auth/login và lấy thông tin từ /auth/me
  */
 export const dangNhap = async (taiKhoan, matKhau) => {
   try {
@@ -73,15 +105,34 @@ export const dangNhap = async (taiKhoan, matKhau) => {
     if (token) {
       // Lưu cookie 7 ngày
       cookies.save("token", token, { path: "/", maxAge: 7 * 24 * 3600 });
-      localStorage.setItem("token", token);
 
-      const payload = giaiMaToken(token);
-      const user = {
-        taiKhoan: payload?.sub || taiKhoan,
-        maNguoiDung: payload?.maNguoiDung,
-        vaiTro: (payload?.vaiTro || "ADMIN").toUpperCase(),
-      };
-      localStorage.setItem("user", JSON.stringify(user));
+      // Gọi API /auth/me để lấy profile đầy đủ từ backend
+      let user = null;
+      try {
+        const meRes = await apis.get(endpoints.auth_me, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (meRes.data) {
+          user = {
+            ...meRes.data,
+            vaiTro: (meRes.data.vaiTro || "KHACHHANG").toUpperCase(),
+          };
+          localStorage.setItem("user_profile", JSON.stringify(user));
+        }
+      } catch (meErr) {
+        console.warn(
+          "Could not fetch meRes, fallback to token payload:",
+          meErr,
+        );
+        const payload = giaiMaToken(token);
+        user = {
+          taiKhoan: payload?.sub || taiKhoan,
+          maNguoiDung: payload?.maNguoiDung,
+          vaiTro: (payload?.vaiTro || "KHACHHANG").toUpperCase(),
+          hoTen: payload?.sub || taiKhoan,
+        };
+        localStorage.setItem("user_profile", JSON.stringify(user));
+      }
 
       return {
         thanhCong: true,
@@ -103,16 +154,48 @@ export const dangNhap = async (taiKhoan, matKhau) => {
 };
 
 /**
- * Đăng xuất khỏi hệ thống
+ * Đăng ký tài khoản khách hàng mới
  */
-export const dangXuat = () => {
-  cookies.remove("token", { path: "/" });
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
+export const dangKy = async (duLieu) => {
+  try {
+    const res = await apis.post(endpoints.register, {
+      ho: duLieu.ho?.trim() || "",
+      ten: duLieu.ten?.trim() || "",
+      taiKhoan: duLieu.taiKhoan?.trim(),
+      matKhau: duLieu.matKhau?.trim(),
+      email: duLieu.email?.trim() || null,
+      soDienThoai: duLieu.soDienThoai?.trim(),
+    });
+
+    return {
+      thanhCong: true,
+      duLieu: res.data,
+    };
+  } catch (error) {
+    const msg =
+      error.response?.data?.message ||
+      error.response?.data?.errors?.[0] ||
+      "Đăng ký không thành công. Vui lòng kiểm tra lại thông tin!";
+    return {
+      thanhCong: false,
+      thongBao: msg,
+    };
+  }
 };
 
 /**
- * Kiểm tra trạng thái đã đăng nhập hay chưa
+ * Đăng xuất: Xóa cookie token & profile cache, gọi API /auth/logout
+ */
+export const dangXuat = async () => {
+  try {
+    await apis.post(endpoints.logout);
+  } catch (ignored) {}
+  cookies.remove("token", { path: "/" });
+  localStorage.removeItem("user_profile");
+};
+
+/**
+ * Kiểm tra trạng thái đã đăng nhập
  */
 export const isDaDangNhap = () => {
   return !!layToken();

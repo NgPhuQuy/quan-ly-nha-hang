@@ -12,7 +12,8 @@ function DatBan({ onDatBan, onTraCuuDatBan }) {
           Sẵn sàng cho một buổi tối đặc biệt?
         </h2>
         <p className="mb-8 text-sm" style={{ color: "rgba(240,216,144,.42)" }}>
-          Đặt bàn ngay hôm nay để thưởng thức không gian ẩm thực tinh hoa cùng dịch vụ tận tâm tại 5S Dining.
+          Đặt bàn ngay hôm nay để thưởng thức không gian ẩm thực tinh hoa cùng
+          dịch vụ tận tâm tại 5S Dining.
         </p>
         <div className="flex flex-col justify-center gap-3 sm:flex-row">
           <button
@@ -34,4 +35,3 @@ function DatBan({ onDatBan, onTraCuuDatBan }) {
 }
 
 export default DatBan;
-

@@ -29,4 +29,3 @@ export const xoaThuChi = async (id) => {
   const res = await apis.delete(endpoints.xoa_giao_dich(id));
   return res.data;
 };
-

@@ -1,6 +1,7 @@
 package com.npq.quanlynhahangapis.service;
 
 import com.npq.quanlynhahangapis.dto.request.DangNhapRequest;
+import com.npq.quanlynhahangapis.dto.request.NguoiDungCapNhatRequest;
 import com.npq.quanlynhahangapis.dto.request.NguoiDungRequest;
 import com.npq.quanlynhahangapis.dto.response.DangNhapResponse;
 import com.npq.quanlynhahangapis.dto.response.NguoiDungResponse;
@@ -12,6 +13,8 @@ import com.npq.quanlynhahangapis.repository.*;
 import com.npq.quanlynhahangapis.utils.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +37,18 @@ public class NguoiDungService {
         return nguoiDungRepository.findAll().stream()
                 .map(this::chuyenSangDto)
                 .toList();
+    }
+
+    public NguoiDungResponse layThongTinHienTai() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof Integer maNguoiDung) {
+            return layNguoiDungTheoId(maNguoiDung);
+        }
+        throw new AppException(ErrorCode.UNAUTHORIZED);
     }
 
     public NguoiDungResponse layNguoiDungTheoId(int maNguoiDung) {
@@ -157,7 +172,7 @@ public class NguoiDungService {
     }
 
     @Transactional
-    public NguoiDungResponse capNhatNguoiDung(Integer maNguoiDung, com.npq.quanlynhahangapis.dto.request.NguoiDungCapNhatRequest request) {
+    public NguoiDungResponse capNhatNguoiDung(Integer maNguoiDung, NguoiDungCapNhatRequest request) {
         NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 

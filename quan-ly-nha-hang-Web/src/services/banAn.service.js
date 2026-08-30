@@ -1,10 +1,10 @@
 import apis, { endpoints } from "./apis";
 
-export const layDanhSachBan = async (branchId, status) => {
+export const layDanhSachBan = async (maChiNhanh, trangThai) => {
   try {
     const params = {};
-    if (branchId) params.branchId = branchId;
-    if (status) params.status = status;
+    if (maChiNhanh) params.maChiNhanh = maChiNhanh;
+    if (trangThai) params.trangThai = trangThai;
 
     const res = await apis.get(endpoints.tables, { params });
     return res.data || [];
@@ -29,8 +29,8 @@ export const capNhatBan = async (id, data) => {
   return res.data;
 };
 
-export const doiTrangThaiBan = async (id, status) => {
-  const res = await apis.patch(endpoints.doi_trang_thai_ban(id), { status });
+export const doiTrangThaiBan = async (id, trangThai) => {
+  const res = await apis.patch(endpoints.doi_trang_thai_ban(id), { trangThai });
   return res.data;
 };
 
@@ -38,4 +38,3 @@ export const xoaBan = async (id) => {
   const res = await apis.delete(endpoints.xoa_ban(id));
   return res.data;
 };
-

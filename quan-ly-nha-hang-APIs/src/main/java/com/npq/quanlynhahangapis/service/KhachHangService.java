@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -20,8 +19,6 @@ import java.util.List;
 public class KhachHangService {
     private final KhachHangRepository khachHangRepository;
     private final HoaDonRepository hoaDonRepository;
-
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public List<KhachHangResponse> layDSKhachHang(String keyword) {
         List<KhachHang> list = khachHangRepository.findAll();
@@ -74,7 +71,7 @@ public class KhachHangService {
                 .map(HoaDon::getNgayLapHoaDon)
                 .filter(java.util.Objects::nonNull)
                 .max(java.time.LocalDateTime::compareTo)
-                .map(dt -> dt.format(DATE_FORMATTER))
+                .map(dt -> dt.toLocalDate().toString())
                 .orElse("—");
 
         return KhachHangResponse.builder()

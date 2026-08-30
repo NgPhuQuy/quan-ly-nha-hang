@@ -8,10 +8,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,13 +22,24 @@ public class NguoiDungController {
     private final NguoiDungService nguoiDungService;
 
     @PostMapping("/users")
-    ResponseEntity<?> dangKy(@RequestBody @Valid NguoiDungRequest dto) {
+    public ResponseEntity<?> dangKy(@RequestBody @Valid NguoiDungRequest dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(nguoiDungService.dangKy(dto));
     }
 
     @PostMapping("/auth/login")
-    ResponseEntity<?> dangNhap(@RequestBody @Valid DangNhapRequest dto) {
+    public ResponseEntity<?> dangNhap(@RequestBody @Valid DangNhapRequest dto) {
         return ResponseEntity.ok(nguoiDungService.dangNhap(dto));
+    }
+
+    @GetMapping("/auth/me")
+    public ResponseEntity<?> layThongTinMe() {
+        return ResponseEntity.ok(nguoiDungService.layThongTinHienTai());
+    }
+
+    @PostMapping("/auth/logout")
+    public ResponseEntity<?> dangXuat() {
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok(Map.of("message", "Đăng xuất thành công!"));
     }
 
     @GetMapping("/users")
@@ -48,7 +60,7 @@ public class NguoiDungController {
         return ResponseEntity.ok(nguoiDungService.capNhatNguoiDung(maNguoiDung, request));
     }
 
-    @PatchMapping({"/users/{maNguoiDung}/status", "/users/{maNguoiDung}/trang-thai"})
+    @PatchMapping("/users/{maNguoiDung}/trang-thai")
     public ResponseEntity<?> doiTrangThaiNguoiDung(@PathVariable Integer maNguoiDung) {
         return ResponseEntity.ok(nguoiDungService.doiTrangThaiNguoiDung(maNguoiDung));
     }

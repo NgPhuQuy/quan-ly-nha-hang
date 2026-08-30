@@ -62,7 +62,8 @@ function Hero({ onDatBan }) {
           className="fade-in-up delay-3 mx-auto mb-9 max-w-lg text-sm sm:text-base"
           style={{ color: "rgba(240,216,144,.58)", lineHeight: 1.78 }}
         >
-          Mỗi bữa tiệc tại 5S Dining là một trải nghiệm khó quên. Hãy đặt chỗ trước để chúng tôi chuẩn bị đón tiếp quý khách chu đáo nhất.
+          Mỗi bữa tiệc tại 5S Dining là một trải nghiệm khó quên. Hãy đặt chỗ
+          trước để chúng tôi chuẩn bị đón tiếp quý khách chu đáo nhất.
         </p>
         <div className="fade-in-up delay-4 flex flex-col justify-center gap-3 sm:flex-row">
           <button

@@ -1,5 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -61,6 +61,7 @@
   --card: #ffffff;
   --card-foreground: #2a1a0d;
   --primary: #c8862a;
+  --primary-light: rgba(200, 134, 42, 0.12);
   --primary-foreground: #ffffff;
   --secondary: #f3ede3;
   --secondary-foreground: #5c3d1a;
@@ -70,6 +71,12 @@
   --accent-foreground: #ffffff;
   --border: #e5d9c8;
   --ring: #c8862a;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --success: #16a34a;
+  --success-bg: #f0fdf4;
+  --warning: #d97706;
+  --warning-bg: #fffbeb;
   --radius: 10px;
 }
 
@@ -88,6 +95,7 @@
     background: var(--color-warm-black);
     color: var(--color-cream);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   button,
@@ -101,16 +109,48 @@
     cursor: pointer;
   }
 
+  /* Tùy chỉnh thanh cuộn sang trọng */
   ::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(12, 9, 5, 0.2);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(200, 136, 42, 0.3);
-    border-radius: 3px;
+    background: rgba(200, 136, 42, 0.35);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(200, 136, 42, 0.6);
   }
 }
 
+/* Utilities trọng số font tùy chỉnh */
+@utility font-500 {
+  font-weight: 500;
+}
+
+@utility font-600 {
+  font-weight: 600;
+}
+
+@utility font-700 {
+  font-weight: 700;
+}
+
+@utility font-800 {
+  font-weight: 800;
+}
+
+@utility h-13 {
+  height: 3.25rem;
+}
+
+/* Animation Utilities */
 @utility fade-in-up {
   animation: var(--animate-fade-in-up);
 }
@@ -148,17 +188,22 @@
   animation: var(--animate-shimmer);
 }
 
+/* Nút bấm thương hiệu */
 @utility btn-primary {
   background: linear-gradient(135deg, var(--color-amber), var(--color-gold));
   color: var(--color-espresso);
   font-weight: 600;
   letter-spacing: 0.04em;
-  transition: 0.25s ease;
+  transition: all 0.25s ease;
   box-shadow: 0 4px 16px rgba(200, 136, 42, 0.35);
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 6px 24px rgba(200, 136, 42, 0.5);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
   }
 
   &:disabled {
@@ -170,7 +215,7 @@
 @utility btn-ghost {
   border: 1px solid rgba(200, 136, 42, 0.4);
   color: var(--color-gold);
-  transition: 0.25s ease;
+  transition: all 0.25s ease;
 
   &:hover {
     background: rgba(200, 136, 42, 0.1);
@@ -178,6 +223,7 @@
   }
 }
 
+/* Thẻ Card tông ấm */
 @utility card-warm {
   background: linear-gradient(
     135deg,
@@ -188,17 +234,21 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
 }
 
+/* Input & Select tông ấm */
 @utility input-warm {
   width: 100%;
   background: rgba(26, 18, 10, 0.8);
   border: 1px solid rgba(200, 136, 42, 0.25);
   color: var(--color-cream);
   border-radius: 12px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 
   &:focus {
     outline: none;
     border-color: rgba(200, 136, 42, 0.6);
-    box-shadow: 0 0 0 3px rgba(200, 136, 42, 0.1);
+    box-shadow: 0 0 0 3px rgba(200, 136, 42, 0.15);
   }
 
   &::placeholder {
@@ -212,16 +262,22 @@
   border: 1px solid rgba(200, 136, 42, 0.25);
   color: var(--color-cream);
   border-radius: 12px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 
   &:focus {
     outline: none;
     border-color: rgba(200, 136, 42, 0.6);
-    box-shadow: 0 0 0 3px rgba(200, 136, 42, 0.1);
+    box-shadow: 0 0 0 3px rgba(200, 136, 42, 0.15);
   }
 }
 
+/* Card Chi nhánh & Món ăn */
 @utility branch-card {
-  transition: 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 
   &:hover {
     transform: translateY(-4px);
@@ -245,18 +301,25 @@
   }
 }
 
+/* Nút trạng thái khung giờ */
 @utility time-available {
   border-radius: 12px;
   padding: 10px 12px;
   text-align: center;
-  transition: 0.2s ease;
+  transition: all 0.2s ease;
   background: rgba(74, 140, 92, 0.15);
   border: 1px solid rgba(74, 140, 92, 0.45);
   color: #7ecb96;
 
-  &.selected {
-    background: rgba(74, 140, 92, 0.3);
+  &:hover {
+    background: rgba(74, 140, 92, 0.25);
     border-color: #7ecb96;
+  }
+
+  &.selected {
+    background: rgba(74, 140, 92, 0.35);
+    border-color: #7ecb96;
+    box-shadow: 0 0 12px rgba(126, 203, 150, 0.3);
   }
 }
 
@@ -264,14 +327,20 @@
   border-radius: 12px;
   padding: 10px 12px;
   text-align: center;
-  transition: 0.2s ease;
+  transition: all 0.2s ease;
   background: rgba(196, 122, 32, 0.15);
   border: 1px solid rgba(196, 122, 32, 0.45);
   color: #e8a04a;
 
-  &.selected {
-    background: rgba(196, 122, 32, 0.3);
+  &:hover {
+    background: rgba(196, 122, 32, 0.25);
     border-color: #e8a04a;
+  }
+
+  &.selected {
+    background: rgba(196, 122, 32, 0.35);
+    border-color: #e8a04a;
+    box-shadow: 0 0 12px rgba(232, 160, 74, 0.3);
   }
 }
 
@@ -279,7 +348,7 @@
   border-radius: 12px;
   padding: 10px 12px;
   text-align: center;
-  transition: 0.2s ease;
+  transition: all 0.2s ease;
   background: rgba(107, 64, 64, 0.2);
   border: 1px solid rgba(107, 64, 64, 0.3);
   color: rgba(180, 120, 120, 0.5);

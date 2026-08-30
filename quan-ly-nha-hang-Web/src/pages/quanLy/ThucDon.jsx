@@ -90,7 +90,12 @@ function FoodMenu() {
           />
         </div>
         <div className="flex items-center gap-1.5 flex-wrap">
-          {["Tất cả", ...new Set(foods.map((f) => f.category || f.danhMuc).filter(Boolean))].map((cat) => (
+          {[
+            "Tất cả",
+            ...new Set(
+              foods.map((f) => f.category || f.danhMuc).filter(Boolean),
+            ),
+          ].map((cat) => (
             <button
               key={cat}
               onClick={() => setCatFilter(cat)}

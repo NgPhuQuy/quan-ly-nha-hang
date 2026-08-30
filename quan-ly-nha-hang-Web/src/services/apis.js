@@ -7,10 +7,10 @@ const apis = axios.create({
   baseURL: BASE_URL,
 });
 
-// Tự động đính kèm JWT Bearer Token vào tất cả request
+// Tự động đính kèm JWT Token từ cookie vào tất cả request
 apis.interceptors.request.use(
   (config) => {
-    const token = cookies.load("token") || localStorage.getItem("token");
+    const token = cookies.load("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -19,12 +19,12 @@ apis.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Xử lý tự động khi Token hết hạn hoặc không có quyền (401)
+// Bắt lỗi 401 khi Token hết hạn
 apis.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      console.warn("Token JWT hết hạn hoặc không hợp lệ (401)");
+      cookies.remove("token", { path: "/" });
     }
     return Promise.reject(error);
   },
@@ -35,11 +35,13 @@ export const authApis = () => apis;
 export const endpoints = {
   // Auth & Người dùng
   login: "/auth/login",
+  logout: "/auth/logout",
+  auth_me: "/auth/me",
   register: "/users",
   users: "/users",
   chi_tiet_nguoi_dung: (id) => `/users/${id}`,
   cap_nhat_nguoi_dung: (id) => `/users/${id}`,
-  doi_trang_thai_nguoi_dung: (id) => `/users/${id}/status`,
+  doi_trang_thai_nguoi_dung: (id) => `/users/${id}/trang-thai`,
   xoa_nguoi_dung: (id) => `/users/${id}`,
 
   // Chi nhánh
@@ -51,18 +53,18 @@ export const endpoints = {
   xoa_chi_nhanh: (id) => `/chi-nhanh/${id}`,
 
   // Bàn ăn
-  tables: "/tables",
-  chi_tiet_ban: (id) => `/tables/${id}`,
-  cap_nhat_ban: (id) => `/tables/${id}`,
-  doi_trang_thai_ban: (id) => `/tables/${id}/status`,
-  xoa_ban: (id) => `/tables/${id}`,
+  tables: "/ban",
+  chi_tiet_ban: (id) => `/ban/${id}`,
+  cap_nhat_ban: (id) => `/ban/${id}`,
+  doi_trang_thai_ban: (id) => `/ban/${id}/trang-thai`,
+  xoa_ban: (id) => `/ban/${id}`,
   tables_chi_nhanh: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/ban`,
 
   // Thực đơn & Món ăn
-  foods: "/foods",
-  chi_tiet_mon: (id) => `/foods/${id}`,
-  cap_nhat_mon: (id) => `/foods/${id}`,
-  xoa_mon: (id) => `/foods/${id}`,
+  foods: "/mat-hang",
+  chi_tiet_mon: (id) => `/mat-hang/${id}`,
+  cap_nhat_mon: (id) => `/mat-hang/${id}`,
+  xoa_mon: (id) => `/mat-hang/${id}`,
   mon_an: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/mon-an`,
   thuc_uong: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/thuc-uong`,
   dich_vu: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/dich-vu`,
@@ -78,26 +80,26 @@ export const endpoints = {
     `/dat-lich/khung-gio?maChiNhanh=${maChiNhanh}&ngay=${ngay}&soKhach=${soKhach}`,
 
   // Hóa đơn & POS
-  invoices: "/invoices",
-  chi_tiet_hoa_don: (id) => `/invoices/${id}`,
-  thanh_toan_hoa_don: (id) => `/invoices/${id}/payment`,
-  huy_hoa_don: (id) => `/invoices/${id}/cancel`,
-  xoa_hoa_don: (id) => `/invoices/${id}`,
+  invoices: "/hoa-don",
+  chi_tiet_hoa_don: (id) => `/hoa-don/${id}`,
+  thanh_toan_hoa_don: (id) => `/hoa-don/${id}/thanh-toan`,
+  huy_hoa_don: (id) => `/hoa-don/${id}/huy`,
+  xoa_hoa_don: (id) => `/hoa-don/${id}`,
 
   // Khách hàng
-  customers: "/customers",
-  chi_tiet_khach_hang: (id) => `/customers/${id}`,
+  customers: "/khach-hang",
+  chi_tiet_khach_hang: (id) => `/khach-hang/${id}`,
 
   // Thu chi
-  transactions: "/transactions",
-  xoa_giao_dich: (id) => `/transactions/${id}`,
+  transactions: "/thu-chi",
+  xoa_giao_dich: (id) => `/thu-chi/${id}`,
 
   // Khuyến mãi
-  promotions: "/promotions",
-  chi_tiet_khuyen_mai: (id) => `/promotions/${id}`,
-  cap_nhat_khuyen_mai: (id) => `/promotions/${id}`,
-  doi_trang_thai_khuyen_mai: (id) => `/promotions/${id}/status`,
-  xoa_khuyen_mai: (id) => `/promotions/${id}`,
+  promotions: "/khuyen-mai",
+  chi_tiet_khuyen_mai: (id) => `/khuyen-mai/${id}`,
+  cap_nhat_khuyen_mai: (id) => `/khuyen-mai/${id}`,
+  doi_trang_thai_khuyen_mai: (id) => `/khuyen-mai/${id}/trang-thai`,
+  xoa_khuyen_mai: (id) => `/khuyen-mai/${id}`,
 
   // Dashboard & Báo cáo
   dashboard_overview: "/dashboard/overview",

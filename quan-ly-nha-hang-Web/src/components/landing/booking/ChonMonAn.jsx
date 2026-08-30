@@ -13,10 +13,30 @@ function MenuSelection({
     if (currentCategory === "Tất cả") return true;
     if (!itemNhom) return false;
     const cat = itemNhom.toLowerCase();
-    if (currentCategory === "Khai vị" && (cat.includes("khai vị") || cat.includes("starter"))) return true;
-    if (currentCategory === "Món chính" && (cat.includes("món chính") || cat.includes("main") || cat.includes("mon_an"))) return true;
-    if (currentCategory === "Tráng miệng" && (cat.includes("tráng miệng") || cat.includes("dessert"))) return true;
-    if (currentCategory === "Đồ uống" && (cat.includes("uống") || cat.includes("drink") || cat.includes("thuc_uong"))) return true;
+    if (
+      currentCategory === "Khai vị" &&
+      (cat.includes("khai vị") || cat.includes("starter"))
+    )
+      return true;
+    if (
+      currentCategory === "Món chính" &&
+      (cat.includes("món chính") ||
+        cat.includes("main") ||
+        cat.includes("mon_an"))
+    )
+      return true;
+    if (
+      currentCategory === "Tráng miệng" &&
+      (cat.includes("tráng miệng") || cat.includes("dessert"))
+    )
+      return true;
+    if (
+      currentCategory === "Đồ uống" &&
+      (cat.includes("uống") ||
+        cat.includes("drink") ||
+        cat.includes("thuc_uong"))
+    )
+      return true;
     return itemNhom === currentCategory;
   };
 
@@ -70,10 +90,13 @@ function MenuSelection({
       >
         Quý khách có thể bỏ qua bước này và gọi món trực tiếp tại bàn.
       </p>
-      
+
       {/* Danh mục tự động đồng bộ từ Backend, không cần lưu const */}
       <div className="mb-6 flex gap-2 overflow-x-auto">
-        {["Tất cả", ...new Set(menuItems.map((m) => m.nhom || m.danhMuc).filter(Boolean))].map((category) => (
+        {[
+          "Tất cả",
+          ...new Set(menuItems.map((m) => m.nhom || m.danhMuc).filter(Boolean)),
+        ].map((category) => (
           <button
             key={category}
             onClick={() => setNhom(category)}
@@ -86,7 +109,9 @@ function MenuSelection({
 
       <div className="space-y-3 max-h-[480px] overflow-y-auto pr-1">
         {filteredItems.length === 0 && (
-          <p className="py-8 text-center text-sm opacity-40">Đang tải thực đơn...</p>
+          <p className="py-8 text-center text-sm opacity-40">
+            Đang tải thực đơn...
+          </p>
         )}
         {filteredItems.map((mon) => (
           <div
@@ -139,7 +164,10 @@ function MenuSelection({
         ))}
       </div>
       <div className="mt-8 flex gap-3">
-        <button onClick={onQuayLai} className="btn-ghost flex-1 rounded-xl py-3">
+        <button
+          onClick={onQuayLai}
+          className="btn-ghost flex-1 rounded-xl py-3"
+        >
           Quay lại
         </button>
         <button

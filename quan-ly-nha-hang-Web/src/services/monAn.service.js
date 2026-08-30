@@ -59,7 +59,9 @@ export const layTatCaMonAn = async () => {
       category: item.danhMuc || "Món chính",
       price: item.giaMatHang,
       status: item.trangThai || "Đang bán",
-      image: item.anhMinhHoa || DEFAULT_MENU_IMAGES[index % DEFAULT_MENU_IMAGES.length],
+      image:
+        item.anhMinhHoa ||
+        DEFAULT_MENU_IMAGES[index % DEFAULT_MENU_IMAGES.length],
       branch: "Quận 1",
     }));
   } catch (error) {

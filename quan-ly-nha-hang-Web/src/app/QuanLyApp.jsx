@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState, useEffect } from "react";
+import { lazy, Suspense, useState } from "react";
 import Sidebar from "../components/quanLy/Sidebar";
 import Header from "../components/quanLy/Header";
 import DangNhap from "../pages/quanLy/DangNhap";
@@ -71,7 +71,11 @@ export default function QuanLyApp({
   const [page, setPage] = useState(initialPage);
   const [selectedInvoiceId, setSelectedInvoiceId] = useState("");
 
-  const role = nguoiDung?.vaiTro === "ADMIN" ? "admin" : "manager";
+  const role = nguoiDung?.vaiTro
+    ? nguoiDung.vaiTro === "ADMIN"
+      ? "admin"
+      : "manager"
+    : initialRole;
   const Page = pages[page] || TongQuan;
   const noHeader = page === "create-invoice";
 

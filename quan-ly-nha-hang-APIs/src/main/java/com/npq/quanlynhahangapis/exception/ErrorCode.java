@@ -16,6 +16,8 @@ public enum ErrorCode {
     UNAUTHORIZED(401, "Bạn chưa đăng nhập, vui lòng đăng nhập để sử dụng các tính năng!"),
     TOKEN_EXPIRATION(401, "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!"),
     INVALID_TOKEN(401, "Token không hợp lệ!"),
+    FORBIDDEN(403, "Bạn không có quyền thực hiện thao tác này!"),
+    INTERNAL_SERVER_ERROR(500, "Đã xảy ra lỗi hệ thống, vui lòng thử lại sau!"),
 
     BRANCH_NOT_FOUND(404, "Không tìm thấy chi nhánh"),
     CLOSED_DAY(400, "Chi nhánh không hoạt động vào ngày này"),

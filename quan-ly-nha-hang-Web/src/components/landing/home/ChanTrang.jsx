@@ -17,7 +17,8 @@ function Footer() {
             className="mt-3 text-xs leading-relaxed"
             style={{ color: "rgba(240,216,144,.45)" }}
           >
-            Hệ thống nhà hàng ẩm thực cao cấp với hơn 15 năm kiến tạo những trải nghiệm khó quên.
+            Hệ thống nhà hàng ẩm thực cao cấp với hơn 15 năm kiến tạo những trải
+            nghiệm khó quên.
           </p>
         </div>
         <div>
@@ -28,8 +29,12 @@ function Footer() {
             Chi nhánh
           </h4>
           <p className="text-xs text-[rgba(240,216,144,.6)]">Quận 1, TP.HCM</p>
-          <p className="mt-2 text-xs text-[rgba(240,216,144,.6)]">Tây Hồ, Hà Nội</p>
-          <p className="mt-2 text-xs text-[rgba(240,216,144,.6)]">Hải Châu, Đà Nẵng</p>
+          <p className="mt-2 text-xs text-[rgba(240,216,144,.6)]">
+            Tây Hồ, Hà Nội
+          </p>
+          <p className="mt-2 text-xs text-[rgba(240,216,144,.6)]">
+            Hải Châu, Đà Nẵng
+          </p>
         </div>
         <div>
           <h4
@@ -55,13 +60,13 @@ function Footer() {
           >
             Liên hệ
           </h4>
-          <p className="text-xs text-[rgba(240,216,144,.6)]">Hotline: 1800 5678</p>
+          <p className="text-xs text-[rgba(240,216,144,.6)]">
+            Hotline: 1800 5678
+          </p>
           <p className="mt-2 text-xs text-[rgba(240,216,144,.6)]">
             cskh@5sdining.vn
           </p>
-          <p className="mt-2 text-xs text-[rgba(240,216,144,.6)]">
-            Việt Nam
-          </p>
+          <p className="mt-2 text-xs text-[rgba(240,216,144,.6)]">Việt Nam</p>
         </div>
       </div>
     </footer>

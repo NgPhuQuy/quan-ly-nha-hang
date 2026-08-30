@@ -5,7 +5,8 @@ function CustomerTestimonials() {
   const [viTriHienTai, setViTriHienTai] = useState(0);
   useEffect(() => {
     const timerTuDongChuyen = setInterval(
-      () => setViTriHienTai((index) => (index + 1) % CAM_NHAN_KHACH_HANG.length),
+      () =>
+        setViTriHienTai((index) => (index + 1) % CAM_NHAN_KHACH_HANG.length),
       5500,
     );
     return () => clearInterval(timerTuDongChuyen);

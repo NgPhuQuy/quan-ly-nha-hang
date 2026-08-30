@@ -75,4 +75,3 @@ export const xoaHoaDon = async (maHoaDon) => {
   const res = await apis.delete(endpoints.xoa_hoa_don(maHoaDon));
   return res.data;
 };
-

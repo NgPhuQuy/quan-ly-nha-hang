@@ -3,6 +3,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 const TrangChu = lazy(() => import("../pages/landing/TrangChu"));
 const TrangDatBan = lazy(() => import("../pages/landing/TrangDatBan"));
 const TrangTraCuu = lazy(() => import("../pages/landing/TrangTraCuu"));
+const TrangXacThuc = lazy(() => import("../pages/landing/TrangXacThuc"));
 const QuanLyApp = lazy(() => import("./QuanLyApp"));
 
 const layDuongDan = () =>
@@ -31,13 +32,36 @@ function Router() {
     return () => window.removeEventListener("popstate", khiThayDoiLichSu);
   }, []);
 
-  const laQuanLy =
-    manHinh.startsWith("admin") ||
-    manHinh.startsWith("pos") ||
+  const laXacThuc =
+    manHinh === "auth" ||
     manHinh === "login" ||
-    manHinh === "dang-nhap";
+    manHinh === "register" ||
+    manHinh === "dang-nhap" ||
+    manHinh === "dang-ky";
+
+  const laQuanLy = manHinh.startsWith("admin") || manHinh.startsWith("pos");
+
   const khuVuc = manHinh.startsWith("admin") ? "admin" : "pos";
-  const noiDung = laQuanLy ? (
+
+  const noiDung = laXacThuc ? (
+    <TrangXacThuc
+      defaultTab={
+        manHinh === "register" || manHinh === "dang-ky" ? "register" : "login"
+      }
+      onDangNhapThanhCong={(user) => {
+        if (
+          user?.vaiTro === "ADMIN" ||
+          user?.vaiTro === "QUANLY" ||
+          user?.vaiTro === "NHANVIEN"
+        ) {
+          dieuHuong("admin");
+        } else {
+          dieuHuong("home");
+        }
+      }}
+      onQuayVeTrangChu={() => dieuHuong("home")}
+    />
+  ) : laQuanLy ? (
     <QuanLyApp
       initialPage={manHinh.split("/")[1] || "dashboard"}
       initialRole={khuVuc === "admin" ? "admin" : "manager"}
@@ -52,7 +76,8 @@ function Router() {
     <TrangChu
       onDatBan={() => dieuHuong("booking")}
       onTraCuuDatBan={() => dieuHuong("lookup")}
-      onDangNhap={() => dieuHuong("admin")}
+      onDangNhap={() => dieuHuong("login")}
+      onDangKy={() => dieuHuong("register")}
     />
   );
 

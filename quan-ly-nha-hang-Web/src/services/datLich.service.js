@@ -26,7 +26,12 @@ const normalizeBooking = (data) => {
     email: data.email ?? "",
     dip: data.dip ?? "khong",
     dichVuBoSung: data.dichVuBoSung ?? [],
-    status: displayStatus === "DA_XAC_NHAN" || displayStatus === "Xác nhận" ? "Xác nhận" : displayStatus === "DA_HUY" || displayStatus === "Đã huỷ" ? "Đã huỷ" : "Chờ xác nhận",
+    status:
+      displayStatus === "DA_XAC_NHAN" || displayStatus === "Xác nhận"
+        ? "Xác nhận"
+        : displayStatus === "DA_HUY" || displayStatus === "Đã huỷ"
+          ? "Đã huỷ"
+          : "Chờ xác nhận",
     rawTrangThai: rawStatus,
     note: data.ghiChu ?? "",
     table: data.soBan ?? "—",
@@ -60,10 +65,13 @@ export const capNhatDatLich = async (id, data) => {
 };
 
 export const capNhatTrangThaiDatLich = async (maDatLich, trangThai, maBan) => {
-  const res = await apis.patch(endpoints.cap_nhat_trang_thai_dat_lich(maDatLich), {
-    trangThai,
-    maBan,
-  });
+  const res = await apis.patch(
+    endpoints.cap_nhat_trang_thai_dat_lich(maDatLich),
+    {
+      trangThai,
+      maBan,
+    },
+  );
   return normalizeBooking(res.data);
 };
 

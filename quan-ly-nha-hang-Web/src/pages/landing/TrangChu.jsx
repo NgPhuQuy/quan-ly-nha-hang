@@ -6,7 +6,13 @@ import CamNhanKhachHang from "../../components/landing/home/CamNhanKhachHang";
 import DatBan from "../../components/landing/home/DatBan";
 import ChanTrang from "../../components/landing/home/ChanTrang";
 
-function TrangChu({ onDatBan, onTraCuuDatBan, onDangNhap, onBookTable, onLookupBooking }) {
+function TrangChu({
+  onDatBan,
+  onTraCuuDatBan,
+  onDangNhap,
+  onBookTable,
+  onLookupBooking,
+}) {
   const handleDatBan = onDatBan || onBookTable;
   const handleTraCuuDatBan = onTraCuuDatBan || onLookupBooking;
 

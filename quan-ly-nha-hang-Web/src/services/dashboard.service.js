@@ -1,8 +1,8 @@
 import apis, { endpoints } from "./apis";
 
-export const layDashboardOverview = async (branchId) => {
+export const layDashboardOverview = async (maChiNhanh) => {
   try {
-    const params = branchId ? { branchId } : {};
+    const params = maChiNhanh ? { maChiNhanh } : {};
     const res = await apis.get(endpoints.dashboard_overview, { params });
     return res.data;
   } catch (error) {
@@ -11,9 +11,9 @@ export const layDashboardOverview = async (branchId) => {
   }
 };
 
-export const layDoanhThuTheoNgay = async (branchId) => {
+export const layDoanhThuTheoNgay = async (maChiNhanh) => {
   try {
-    const params = branchId ? { branchId } : {};
+    const params = maChiNhanh ? { maChiNhanh } : {};
     const res = await apis.get(endpoints.dashboard_revenue_by_day, { params });
     return res.data || [];
   } catch (error) {
@@ -32,14 +32,15 @@ export const layDoanhThuTheoChiNhanh = async () => {
   }
 };
 
-export const layDoanhThuTheoNguon = async (branchId) => {
+export const layDoanhThuTheoNguon = async (maChiNhanh) => {
   try {
-    const params = branchId ? { branchId } : {};
-    const res = await apis.get(endpoints.dashboard_revenue_by_source, { params });
+    const params = maChiNhanh ? { maChiNhanh } : {};
+    const res = await apis.get(endpoints.dashboard_revenue_by_source, {
+      params,
+    });
     return res.data || [];
   } catch (error) {
     console.warn("Could not fetch revenue by source from API:", error);
     return [];
   }
 };
-

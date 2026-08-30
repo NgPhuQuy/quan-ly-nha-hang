@@ -14,7 +14,11 @@ function TrangTraCuu({ onQuayLai }) {
     <div className="min-h-screen bg-[var(--color-warm-black)]">
       <header className="border-b border-[rgba(200,136,42,.18)] bg-[rgba(10,7,4,.96)] px-4 py-4">
         <div className="mx-auto flex max-w-4xl justify-between">
-          <button onClick={onQuayLai} style={{ color: "rgba(200,136,42,.65)" }} className="hover:text-amber-300 transition-colors">
+          <button
+            onClick={onQuayLai}
+            style={{ color: "rgba(200,136,42,.65)" }}
+            className="hover:text-amber-300 transition-colors"
+          >
             ← 5S Dining
           </button>
           <span
@@ -36,7 +40,8 @@ function TrangTraCuu({ onQuayLai }) {
           className="mt-2 text-center text-sm"
           style={{ color: "rgba(240,216,144,.42)" }}
         >
-          Nhập mã đặt bàn của quý khách để kiểm tra trạng thái và thông tin bàn phục vụ.
+          Nhập mã đặt bàn của quý khách để kiểm tra trạng thái và thông tin bàn
+          phục vụ.
         </p>
         <div className="mt-8 flex gap-2">
           <input
@@ -64,7 +69,8 @@ function TrangTraCuu({ onQuayLai }) {
               color: "rgba(240,180,180,.85)",
             }}
           >
-            Không tìm thấy thông tin đặt chỗ với mã này. Quý khách vui lòng kiểm tra lại mã hoặc liên hệ hotline nhà hàng.
+            Không tìm thấy thông tin đặt chỗ với mã này. Quý khách vui lòng kiểm
+            tra lại mã hoặc liên hệ hotline nhà hàng.
           </div>
         )}
 
@@ -72,11 +78,15 @@ function TrangTraCuu({ onQuayLai }) {
           <div className="card-warm mt-6 rounded-2xl p-5">
             <div className="flex justify-between">
               <span className="opacity-50">Mã đặt chỗ</span>
-              <span className="font-semibold text-amber-300">{booking.maDatLich || bookingCode}</span>
+              <span className="font-semibold text-amber-300">
+                {booking.maDatLich || bookingCode}
+              </span>
             </div>
             <div className="mt-3 flex justify-between">
               <span className="opacity-50">Trạng thái</span>
-              <span style={{ color: "#7ecb96" }} className="font-medium">{booking.trangThai}</span>
+              <span style={{ color: "#7ecb96" }} className="font-medium">
+                {booking.trangThai}
+              </span>
             </div>
             {booking.tenChiNhanh && (
               <div className="mt-3 flex justify-between">
@@ -117,7 +127,10 @@ function TrangTraCuu({ onQuayLai }) {
             {booking.soBan && (
               <div className="mt-3 flex justify-between">
                 <span className="opacity-50">Bàn phục vụ</span>
-                <span style={{ color: "var(--color-primary-gold, #c8882a)" }} className="font-bold">
+                <span
+                  style={{ color: "var(--color-primary-gold, #c8882a)" }}
+                  className="font-bold"
+                >
                   {booking.soBan}
                 </span>
               </div>

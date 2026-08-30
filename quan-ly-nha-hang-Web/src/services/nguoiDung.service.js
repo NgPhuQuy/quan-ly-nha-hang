@@ -43,4 +43,3 @@ export const xoaNguoiDung = async (id) => {
   const res = await apis.delete(endpoints.xoa_nguoi_dung(id));
   return res.data;
 };
-

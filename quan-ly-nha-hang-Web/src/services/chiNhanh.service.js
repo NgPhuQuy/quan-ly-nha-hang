@@ -2,7 +2,9 @@ import apis, { endpoints } from "./apis";
 
 export const layDanhSachChiNhanh = async (tatCa = false) => {
   try {
-    const res = await apis.get(tatCa ? endpoints.chi_nhanh_all : endpoints.chi_nhanh);
+    const res = await apis.get(
+      tatCa ? endpoints.chi_nhanh_all : endpoints.chi_nhanh,
+    );
     return res.data || [];
   } catch (error) {
     console.warn("Could not fetch branches from API, using fallback:", error);

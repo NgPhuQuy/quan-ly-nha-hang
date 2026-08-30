@@ -69,7 +69,10 @@ function TimeSelection({
         setSelectedTime={setSelectedTime}
       />
       <div className="mt-8 flex gap-3">
-        <button onClick={onQuayLai} className="btn-ghost flex-1 rounded-xl py-3">
+        <button
+          onClick={onQuayLai}
+          className="btn-ghost flex-1 rounded-xl py-3"
+        >
           Quay lại
         </button>
         <button

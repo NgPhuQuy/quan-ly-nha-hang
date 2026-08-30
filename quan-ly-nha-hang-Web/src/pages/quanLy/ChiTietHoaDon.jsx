@@ -32,7 +32,7 @@ const statusStyle = {
 };
 function InvoiceDetail({ invoiceId, onNavigate }) {
   const [invoice, setInvoice] = useState(
-    () => mockInvoices.find((inv) => inv.id === invoiceId) || null
+    () => mockInvoices.find((inv) => inv.id === invoiceId) || null,
   );
 
   useEffect(() => {

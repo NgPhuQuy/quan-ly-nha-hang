@@ -24,4 +24,3 @@ export const layChiTietKhachHang = async (id) => {
   const res = await apis.get(endpoints.chi_tiet_khach_hang(id));
   return res.data;
 };
-
