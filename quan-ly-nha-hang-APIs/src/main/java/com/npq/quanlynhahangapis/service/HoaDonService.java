@@ -132,6 +132,11 @@ public class HoaDonService {
             savedHoaDon.setListChiTietHoaDon(items);
         }
 
+        if (ban != null) {
+            ban.setTrangThai("Đang phục vụ");
+            banRepository.save(ban);
+        }
+
         savedHoaDon.setTongTien(tongTien);
         return chuyenSangDto(hoaDonRepository.save(savedHoaDon));
     }
@@ -151,7 +156,7 @@ public class HoaDonService {
 
         if (hoaDon.getKhachHang() != null && hoaDon.getTongTien() != null) {
             KhachHang kh = hoaDon.getKhachHang();
-            int diemThem = hoaDon.getTongTien().divide(BigDecimal.valueOf(10000), BigDecimal.ROUND_HALF_UP).intValue();
+            int diemThem = hoaDon.getTongTien().divide(BigDecimal.valueOf(10000), java.math.RoundingMode.HALF_UP).intValue();
             int currentDiem = kh.getDiemTichLuy() != null ? kh.getDiemTichLuy() : 0;
             kh.setDiemTichLuy(currentDiem + diemThem);
             khachHangRepository.save(kh);

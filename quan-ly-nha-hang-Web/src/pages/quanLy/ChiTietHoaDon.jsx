@@ -7,15 +7,24 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
+  CreditCard,
+  Ban,
+  Printer,
 } from "lucide-react";
 import { mockInvoices } from "../../data/quanLyMock";
-import { layChiTietHoaDon } from "../../services/hoaDon.service";
+import {
+  layChiTietHoaDon,
+  thanhToanHoaDon,
+  huyHoaDon,
+} from "../../services/hoaDon.service";
 import { dinhDangTien } from "../../utils/dinhDang";
+
 const statusIcon = {
   "Hoàn thành": <CheckCircle size={14} color="#16A34A" />,
   "Chờ xử lý": <AlertCircle size={14} color="#D97706" />,
   "Đã hủy": <XCircle size={14} color="#DC2626" />,
 };
+
 const statusStyle = {
   "Hoàn thành": {
     bg: "#F0FDF4",
@@ -30,18 +39,54 @@ const statusStyle = {
     text: "#DC2626",
   },
 };
+
 function InvoiceDetail({ invoiceId, onNavigate }) {
   const [invoice, setInvoice] = useState(
     () => mockInvoices.find((inv) => inv.id === invoiceId) || null,
   );
+  const [actionLoading, setActionLoading] = useState(false);
 
-  useEffect(() => {
+  const fetchDetail = () => {
     if (invoiceId) {
       layChiTietHoaDon(invoiceId).then((data) => {
         if (data) setInvoice(data);
       });
     }
+  };
+
+  useEffect(() => {
+    fetchDetail();
   }, [invoiceId]);
+
+  const handleThanhToan = async () => {
+    if (!invoice?.maHoaDonId) return;
+    if (!window.confirm("Xác nhận thanh toán hóa đơn này?")) return;
+    setActionLoading(true);
+    try {
+      await thanhToanHoaDon(invoice.maHoaDonId);
+      fetchDetail();
+    } catch (e) {
+      console.error(e);
+      alert("Lỗi khi thanh toán hóa đơn!");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleHuy = async () => {
+    if (!invoice?.maHoaDonId) return;
+    if (!window.confirm("Bạn có chắc chắn muốn hủy hóa đơn này?")) return;
+    setActionLoading(true);
+    try {
+      await huyHoaDon(invoice.maHoaDonId);
+      fetchDetail();
+    } catch (e) {
+      console.error(e);
+      alert("Lỗi khi hủy hóa đơn!");
+    } finally {
+      setActionLoading(false);
+    }
+  };
 
   if (!invoice)
     return (
@@ -54,19 +99,52 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
         Không tìm thấy hóa đơn.
       </div>
     );
+
   return (
     <div className="p-6 max-w-3xl">
-      <button
-        onClick={() => onNavigate("invoices")}
-        className="flex items-center gap-1.5 text-sm font-500 mb-5"
-        style={{
-          color: "var(--muted-foreground)",
-        }}
-      >
-        <ArrowLeft size={15} /> Quay lại danh sách
-      </button>
+      <div className="flex items-center justify-between mb-5">
+        <button
+          onClick={() => onNavigate("invoices")}
+          className="flex items-center gap-1.5 text-sm font-500 hover:text-[var(--primary)] transition-colors"
+          style={{
+            color: "var(--muted-foreground)",
+          }}
+        >
+          <ArrowLeft size={15} /> Quay lại danh sách
+        </button>
+
+        <div className="flex items-center gap-2">
+          {invoice.status === "Chờ xử lý" && (
+            <>
+              <button
+                onClick={handleHuy}
+                disabled={actionLoading}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-600 border border-red-200 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+              >
+                <Ban size={13} /> Hủy hóa đơn
+              </button>
+              <button
+                onClick={handleThanhToan}
+                disabled={actionLoading}
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-700 text-white shadow-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                style={{ background: "var(--primary)" }}
+              >
+                <CreditCard size={14} /> Thanh toán
+              </button>
+            </>
+          )}
+          <button
+            onClick={() => window.print()}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-600 border hover:bg-gray-50 transition-colors"
+            style={{ borderColor: "var(--border)", color: "var(--foreground)" }}
+          >
+            <Printer size={13} /> In phiếu
+          </button>
+        </div>
+      </div>
+
       <div
-        className="bg-white rounded-xl border overflow-hidden"
+        className="bg-white rounded-xl border overflow-hidden shadow-sm"
         style={{
           borderColor: "var(--border)",
         }}
@@ -98,10 +176,10 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
               </div>
             </div>
             <span
-              className="flex items-center gap-1.5 text-sm px-3 py-1 rounded-full font-500"
+              className="flex items-center gap-1.5 text-xs px-3 py-1 rounded-full font-600"
               style={{
-                background: statusStyle[invoice.status].bg,
-                color: statusStyle[invoice.status].text,
+                background: statusStyle[invoice.status]?.bg || "#F0FDF4",
+                color: statusStyle[invoice.status]?.text || "#16A34A",
               }}
             >
               {statusIcon[invoice.status]}
@@ -109,6 +187,7 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
             </span>
           </div>
         </div>
+
         <div
           className="px-6 py-5 grid grid-cols-3 gap-4 border-b"
           style={{
@@ -130,7 +209,7 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
                   color: "var(--muted-foreground)",
                 }}
               >
-                Chi nhánh
+                Chi nhánh & Bàn
               </div>
               <div
                 className="text-sm font-600"
@@ -138,7 +217,8 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
                   color: "var(--foreground)",
                 }}
               >
-                Nhà Hàng Vị Việt – Q1
+                {invoice.branch || "Chi nhánh chính"} -{" "}
+                {invoice.table ? `Bàn ${invoice.table}` : "Tại quầy"}
               </div>
             </div>
           </div>
@@ -184,29 +264,29 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
                   color: "var(--muted-foreground)",
                 }}
               >
-                Nguồn
+                Khách hàng & Nguồn
               </div>
-              <span
-                className="text-sm px-2 py-0.5 rounded font-500 inline-flex"
+              <div
+                className="text-sm font-600"
                 style={{
-                  background:
-                    invoice.source === "ONLINE" ? "#EFF6FF" : "#F0FDF4",
-                  color: invoice.source === "ONLINE" ? "#2563EB" : "#16A34A",
+                  color: "var(--foreground)",
                 }}
               >
-                {invoice.source === "ONLINE" ? "Online" : "Tại quầy"}
-              </span>
+                {invoice.customer || "Khách vãng lai"} (
+                {invoice.source === "ONLINE" ? "Online" : "Tại quầy"})
+              </div>
             </div>
           </div>
         </div>
+
         <div className="px-6 py-5">
           <div
-            className="text-sm font-600 mb-3"
+            className="text-sm font-700 mb-3"
             style={{
               color: "var(--foreground)",
             }}
           >
-            Danh sách món
+            Danh sách món ăn
           </div>
           <table className="w-full text-sm">
             <thead>
@@ -217,6 +297,7 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
               >
                 {["Món", "Đơn giá", "Số lượng", "Thành tiền"].map((h) => (
                   <th
+                    key={h}
                     className="pb-2 text-left text-xs font-600"
                     style={{
                       color: "var(--muted-foreground)",
@@ -228,15 +309,16 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
               </tr>
             </thead>
             <tbody>
-              {invoice.items.map((item) => (
+              {(invoice.items || []).map((item, idx) => (
                 <tr
+                  key={idx}
                   className="border-b last:border-0"
                   style={{
                     borderColor: "var(--border)",
                   }}
                 >
                   <td
-                    className="py-3 text-sm font-500"
+                    className="py-3 text-sm font-600"
                     style={{
                       color: "var(--foreground)",
                     }}
@@ -252,7 +334,7 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
                     {dinhDangTien(item.unitPrice)}
                   </td>
                   <td
-                    className="py-3 text-sm"
+                    className="py-3 text-sm font-600"
                     style={{
                       color: "var(--foreground)",
                     }}
@@ -260,7 +342,7 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
                     ×{item.quantity}
                   </td>
                   <td
-                    className="py-3 text-sm font-600"
+                    className="py-3 text-sm font-700"
                     style={{
                       color: "var(--foreground)",
                     }}
@@ -284,7 +366,7 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
                   color: "var(--foreground)",
                 }}
               >
-                Tổng tiền
+                Tổng thanh toán:
               </span>
               <span
                 className="text-xl font-800"
@@ -301,4 +383,5 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
     </div>
   );
 }
-export { InvoiceDetail as default };
+
+export default InvoiceDetail;
