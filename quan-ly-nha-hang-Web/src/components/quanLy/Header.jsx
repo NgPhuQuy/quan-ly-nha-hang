@@ -1,5 +1,8 @@
 import { Bell, ChevronDown } from "lucide-react";
+import { layNguoiDungHienTai } from "../../services/xacThuc.service";
+
 function Header({ title, role }) {
+  const nguoiDung = layNguoiDungHienTai();
   const now = new Date();
   const dateStr = now.toLocaleDateString("vi-VN", {
     weekday: "long",
@@ -7,6 +10,11 @@ function Header({ title, role }) {
     month: "2-digit",
     year: "numeric",
   });
+
+  const tenHienThi = nguoiDung?.hoTen || nguoiDung?.taiKhoan || (role === "admin" ? "Admin 5S" : "Quản lý 5S");
+  const tenVietTat = tenHienThi.slice(0, 2).toUpperCase();
+  const tenVaiTro = nguoiDung?.vaiTro === "ADMIN" ? "Quản trị viên" : nguoiDung?.vaiTro === "QUANLY" ? "Quản lý chi nhánh" : nguoiDung?.vaiTro === "NHANVIEN" ? "Nhân viên POS" : (role === "admin" ? "Quản trị viên" : "Quản lý");
+
   return (
     <header
       className="h-13 shrink-0 flex items-center justify-between px-6 bg-white border-b"
@@ -59,7 +67,7 @@ function Header({ title, role }) {
               background: "var(--primary)",
             }}
           >
-            {role === "admin" ? "AD" : "TL"}
+            {tenVietTat}
           </div>
           <div>
             <div
@@ -68,7 +76,7 @@ function Header({ title, role }) {
                 color: "var(--foreground)",
               }}
             >
-              {role === "admin" ? "Admin 5S" : "Trần Long"}
+              {tenHienThi}
             </div>
             <div
               className="text-xs leading-tight"
@@ -76,7 +84,7 @@ function Header({ title, role }) {
                 color: "var(--muted-foreground)",
               }}
             >
-              {role === "admin" ? "Quản trị viên" : "Quản lý chi nhánh"}
+              {tenVaiTro}
             </div>
           </div>
           <ChevronDown

@@ -1,6 +1,12 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import Sidebar from "../components/quanLy/Sidebar";
 import Header from "../components/quanLy/Header";
+import DangNhap from "../pages/quanLy/DangNhap";
+import {
+  isDaDangNhap,
+  layNguoiDungHienTai,
+  dangXuat,
+} from "../services/xacThuc.service";
 
 const TongQuan = lazy(() => import("../pages/quanLy/TongQuan"));
 const DanhSachHoaDon = lazy(() => import("../pages/quanLy/DanhSachHoaDon"));
@@ -58,12 +64,28 @@ export default function QuanLyApp({
   initialPage = "dashboard",
   initialRole = "manager",
   onNavigate,
+  onQuayVeTrangChu,
 }) {
+  const [daXacThuc, setDaXacThuc] = useState(isDaDangNhap);
+  const [nguoiDung, setNguoiDung] = useState(layNguoiDungHienTai);
   const [page, setPage] = useState(initialPage);
-  const role = initialRole;
   const [selectedInvoiceId, setSelectedInvoiceId] = useState("");
+
+  const role = nguoiDung?.vaiTro === "ADMIN" ? "admin" : "manager";
   const Page = pages[page] || TongQuan;
   const noHeader = page === "create-invoice";
+
+  const handleDangNhapThanhCong = (user) => {
+    setDaXacThuc(true);
+    setNguoiDung(user);
+    setPage("dashboard");
+  };
+
+  const handleDangXuat = () => {
+    dangXuat();
+    setDaXacThuc(false);
+    setNguoiDung(null);
+  };
 
   const khiChuyenTrang = (trangMoi) => {
     if (trangMoi === "branches" && role === "manager") return;
@@ -74,6 +96,15 @@ export default function QuanLyApp({
     setPage(trangMoi);
     onNavigate?.(trangMoi);
   };
+
+  if (!daXacThuc) {
+    return (
+      <DangNhap
+        onDangNhapThanhCong={handleDangNhapThanhCong}
+        onQuayVeTrangChu={onQuayVeTrangChu}
+      />
+    );
+  }
 
   const pageProps = {
     onNavigate: khiChuyenTrang,
@@ -86,7 +117,12 @@ export default function QuanLyApp({
       className="flex h-screen overflow-hidden"
       style={{ background: "var(--background)" }}
     >
-      <Sidebar activePage={page} role={role} onNavigate={khiChuyenTrang} />
+      <Sidebar
+        activePage={page}
+        role={role}
+        onNavigate={khiChuyenTrang}
+        onDangXuat={handleDangXuat}
+      />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {!noHeader && <Header title={pageTitles[page]} role={role} />}
         <main className="flex-1 min-h-0 overflow-y-auto">

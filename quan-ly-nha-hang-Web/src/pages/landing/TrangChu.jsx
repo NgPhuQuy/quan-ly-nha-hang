@@ -6,7 +6,7 @@ import CamNhanKhachHang from "../../components/landing/home/CamNhanKhachHang";
 import DatBan from "../../components/landing/home/DatBan";
 import ChanTrang from "../../components/landing/home/ChanTrang";
 
-function TrangChu({ onDatBan, onTraCuuDatBan, onBookTable, onLookupBooking }) {
+function TrangChu({ onDatBan, onTraCuuDatBan, onDangNhap, onBookTable, onLookupBooking }) {
   const handleDatBan = onDatBan || onBookTable;
   const handleTraCuuDatBan = onTraCuuDatBan || onLookupBooking;
 
@@ -15,6 +15,7 @@ function TrangChu({ onDatBan, onTraCuuDatBan, onBookTable, onLookupBooking }) {
       <ThanhDieuHuong
         onDatBan={handleDatBan}
         onTraCuuDatBan={handleTraCuuDatBan}
+        onDangNhap={onDangNhap}
       />
       <PhanDauTrang onDatBan={handleDatBan} />
       <KhuVucChiNhanh onDatBan={handleDatBan} />

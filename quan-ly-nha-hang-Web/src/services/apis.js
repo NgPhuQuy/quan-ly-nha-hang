@@ -3,13 +3,34 @@ import cookies from "react-cookies";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8080/api";
 
-const apis = axios.create({ baseURL: BASE_URL });
+const apis = axios.create({
+  baseURL: BASE_URL,
+});
 
-export const authApis = () =>
-  axios.create({
-    baseURL: BASE_URL,
-    headers: { Authorization: `Bearer ${cookies.load("token") || ""}` },
-  });
+// Tự động đính kèm JWT Bearer Token vào tất cả request
+apis.interceptors.request.use(
+  (config) => {
+    const token = cookies.load("token") || localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
+// Xử lý tự động khi Token hết hạn hoặc không có quyền (401)
+apis.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      console.warn("Token JWT hết hạn hoặc không hợp lệ (401)");
+    }
+    return Promise.reject(error);
+  },
+);
+
+export const authApis = () => apis;
 
 export const endpoints = {
   // Auth & Người dùng

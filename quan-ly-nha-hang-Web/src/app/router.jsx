@@ -31,13 +31,18 @@ function Router() {
     return () => window.removeEventListener("popstate", khiThayDoiLichSu);
   }, []);
 
-  const laQuanLy = manHinh.startsWith("admin") || manHinh.startsWith("pos");
+  const laQuanLy =
+    manHinh.startsWith("admin") ||
+    manHinh.startsWith("pos") ||
+    manHinh === "login" ||
+    manHinh === "dang-nhap";
   const khuVuc = manHinh.startsWith("admin") ? "admin" : "pos";
   const noiDung = laQuanLy ? (
     <QuanLyApp
       initialPage={manHinh.split("/")[1] || "dashboard"}
       initialRole={khuVuc === "admin" ? "admin" : "manager"}
       onNavigate={(trangMoi) => dieuHuong(`${khuVuc}/${trangMoi}`)}
+      onQuayVeTrangChu={() => dieuHuong("home")}
     />
   ) : manHinh === "booking" ? (
     <TrangDatBan onQuayLai={() => dieuHuong("home")} />
@@ -47,6 +52,7 @@ function Router() {
     <TrangChu
       onDatBan={() => dieuHuong("booking")}
       onTraCuuDatBan={() => dieuHuong("lookup")}
+      onDangNhap={() => dieuHuong("admin")}
     />
   );
 

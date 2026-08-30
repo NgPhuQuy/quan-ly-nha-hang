@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { mutedCream, subtleGoldBorder } from "../../../themes";
+import { isDaDangNhap, layNguoiDungHienTai } from "../../../services/xacThuc.service";
 
-function NavigationBar({ onDatBan, onTraCuuDatBan }) {
+function ThanhDieuHuong({ onDatBan, onTraCuuDatBan, onDangNhap }) {
   const [isMoMenu, setIsMoMenu] = useState(false);
+  const daDangNhap = isDaDangNhap();
+  const nguoiDung = layNguoiDungHienTai();
+
   const handleDongMenu = () => setIsMoMenu(false);
   const handleDatBan = () => {
     handleDongMenu();
@@ -11,6 +15,10 @@ function NavigationBar({ onDatBan, onTraCuuDatBan }) {
   const handleTraCuuDatBan = () => {
     handleDongMenu();
     onTraCuuDatBan();
+  };
+  const handleDangNhap = () => {
+    handleDongMenu();
+    onDangNhap?.();
   };
 
   return (
@@ -74,6 +82,12 @@ function NavigationBar({ onDatBan, onTraCuuDatBan }) {
           >
             Tra cứu đặt bàn
           </button>
+          <button
+            onClick={handleDangNhap}
+            className="transition-colors hover:text-amber-300 opacity-75 text-xs border border-[rgba(200,136,42,0.3)] px-2.5 py-1 rounded-full"
+          >
+            {daDangNhap ? `Quản lý (${nguoiDung?.taiKhoan || "Admin"})` : "Quản trị / POS"}
+          </button>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -103,7 +117,7 @@ function NavigationBar({ onDatBan, onTraCuuDatBan }) {
         </div>
       </div>
       <div
-        className={`overflow-hidden transition-all md:hidden ${isMoMenu ? "max-h-56" : "max-h-0"}`}
+        className={`overflow-hidden transition-all md:hidden ${isMoMenu ? "max-h-64" : "max-h-0"}`}
         style={{
           background: "rgba(12,9,5,.97)",
           borderTop: isMoMenu ? `1px solid ${subtleGoldBorder}` : "none",
@@ -149,9 +163,15 @@ function NavigationBar({ onDatBan, onTraCuuDatBan }) {
           >
             Tra cứu đặt bàn
           </button>
+          <button
+            onClick={handleDangNhap}
+            className="block w-full text-left text-sm text-amber-300"
+          >
+            {daDangNhap ? `Vào Quản lý (${nguoiDung?.taiKhoan || "Admin"})` : "Đăng nhập Quản trị"}
+          </button>
         </div>
       </div>
     </nav>
   );
 }
-export default NavigationBar;
+export default ThanhDieuHuong;

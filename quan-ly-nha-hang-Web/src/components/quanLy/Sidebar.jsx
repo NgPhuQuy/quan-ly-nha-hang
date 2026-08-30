@@ -114,7 +114,7 @@ const adminNav = [
     icon: BarChart3,
   },
 ];
-function Sidebar({ activePage, role, onNavigate }) {
+function Sidebar({ activePage, role, onNavigate, onDangXuat }) {
   const navItems = role === "admin" ? adminNav : managerNav;
   const activeNav = ["create-invoice", "invoice-detail"].includes(activePage)
     ? "invoices"
@@ -214,6 +214,7 @@ function Sidebar({ activePage, role, onNavigate }) {
           Cài đặt
         </button>
         <button
+          onClick={onDangXuat}
           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-500 transition-colors text-left"
           style={{
             color: "var(--danger)",
