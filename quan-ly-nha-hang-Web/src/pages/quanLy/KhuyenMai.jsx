@@ -4,7 +4,6 @@ import {
   layDanhSachKhuyenMai,
   taoKhuyenMai,
   capNhatKhuyenMai,
-  doiTrangThaiKhuyenMai,
   xoaKhuyenMai,
 } from "../../services/khuyenMai.service";
 
@@ -26,6 +25,21 @@ const statusStyle = {
 const STATUS_OPTIONS = ["Đang chạy", "Chờ chạy", "Đã kết thúc"];
 const TYPE_OPTIONS = ["Giảm %", "Giảm tiền mặt", "Tặng món"];
 
+const taoFormDataMacDinh = () => {
+  const batDau = new Date();
+  const ketThuc = new Date();
+  ketThuc.setDate(ketThuc.getDate() + 30);
+  return {
+    tenKhuyenMai: "",
+    loaiKhuyenMai: "Giảm %",
+    giaTri: "10%",
+    ngayBatDau: batDau.toISOString().slice(0, 10),
+    ngayKetThuc: ketThuc.toISOString().slice(0, 10),
+    trangThai: "Đang chạy",
+    moTa: "",
+  };
+};
+
 function Promotions() {
   const [promos, setPromos] = useState([]);
   const [filter, setFilter] = useState("");
@@ -33,17 +47,7 @@ function Promotions() {
   // Modals
   const [showModal, setShowModal] = useState(false);
   const [editingPromo, setEditingPromo] = useState(null);
-  const [formData, setFormData] = useState({
-    tenKhuyenMai: "",
-    loaiKhuyenMai: "Giảm %",
-    giaTri: "10%",
-    ngayBatDau: new Date().toISOString().slice(0, 10),
-    ngayKetThuc: new Date(Date.now() + 30 * 86400000)
-      .toISOString()
-      .slice(0, 10),
-    trangThai: "Đang chạy",
-    moTa: "",
-  });
+  const [formData, setFormData] = useState(taoFormDataMacDinh);
 
   const fetchPromos = async () => {
     try {

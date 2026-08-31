@@ -2,6 +2,7 @@ import { lazy, Suspense, useState } from "react";
 import Sidebar from "../components/quanLy/Sidebar";
 import Header from "../components/quanLy/Header";
 import DangNhap from "../pages/quanLy/DangNhap";
+import TrangKhongCoQuyen from "../pages/landing/TrangKhongCoQuyen";
 import { useAuth } from "../contexts/AuthContext";
 
 const TongQuan = lazy(() => import("../pages/quanLy/TongQuan"));
@@ -62,7 +63,6 @@ export default function QuanLyApp({
   onQuayVeTrangChu,
 }) {
   const {
-    user: nguoiDung,
     isAuth: daXacThuc,
     isNhanVien,
     isAdmin,
@@ -89,11 +89,20 @@ export default function QuanLyApp({
     onNavigate?.(trangMoi);
   };
 
-  if (!daXacThuc || !isNhanVien) {
+  if (!daXacThuc) {
     return (
       <DangNhap
         onDangNhapThanhCong={handleDangNhapThanhCong}
         onQuayVeTrangChu={onQuayVeTrangChu}
+      />
+    );
+  }
+
+  if (!isNhanVien) {
+    return (
+      <TrangKhongCoQuyen
+        onQuayVeTrangChu={onQuayVeTrangChu}
+        onDangNhapKhac={() => onNavigate?.("login")}
       />
     );
   }

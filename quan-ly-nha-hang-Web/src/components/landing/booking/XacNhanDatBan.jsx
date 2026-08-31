@@ -7,7 +7,6 @@ import {
   MapPin,
   Calendar,
   Clock,
-  Users,
   User,
   Phone,
   Sparkles,

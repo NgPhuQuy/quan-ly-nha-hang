@@ -116,8 +116,13 @@ function Invoices({ role, onNavigate, onSelectInvoice }) {
               borderColor: "var(--border)",
             }}
           >
-            {BRANCHES.map((b) => (
-              <option value={b === "Tất cả" ? "" : b}>{b}</option>
+            {[
+              "Tất cả",
+              ...new Set(invoices.map((i) => i.branch).filter(Boolean)),
+            ].map((b) => (
+              <option key={b} value={b === "Tất cả" ? "" : b}>
+                {b}
+              </option>
             ))}
           </select>
         )}

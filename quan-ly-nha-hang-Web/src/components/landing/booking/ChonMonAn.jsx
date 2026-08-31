@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   Search,
-  Utensils,
   ArrowLeft,
   ChevronRight,
   Plus,

@@ -1,11 +1,4 @@
-import {
-  Sun,
-  Moon,
-  Clock,
-  ArrowLeft,
-  ChevronRight,
-  Sparkles,
-} from "lucide-react";
+import { Sun, Moon, ArrowLeft, ChevronRight } from "lucide-react";
 
 function NhomKhungGio({
   icon: Icon,

@@ -1,11 +1,4 @@
-import {
-  MapPin,
-  Calendar,
-  Clock,
-  Users,
-  Sparkles,
-  Utensils,
-} from "lucide-react";
+import { MapPin, Calendar, Clock, Users, Sparkles } from "lucide-react";
 
 function BookingSummary({
   branch,
@@ -19,7 +12,7 @@ function BookingSummary({
 }) {
   const branchName =
     branch?.tenChiNhanh || branch?.ten || "Chưa chọn chi nhánh";
-  const branchAddress = branch?.diaChi || "Hệ thống nhà hàng 5S Dining";
+  const branchAddress = branch?.diaChi;
 
   const totalFoodAmount = selectedItems.reduce((total, item) => {
     const dish = menuItems.find((m) => m.id === item.monAnId);
@@ -56,6 +49,11 @@ function BookingSummary({
             <span className="font-serif font-bold text-amber-100 block truncate">
               {branchName}
             </span>
+            {branchAddress && (
+              <span className="text-[10px] text-amber-200/50 block truncate">
+                {branchAddress}
+              </span>
+            )}
           </div>
         </div>
 

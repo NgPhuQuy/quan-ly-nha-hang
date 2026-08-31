@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { MapPin, Users, Calendar, ChevronRight, Check } from "lucide-react";
 
 function BranchSelection({

@@ -27,6 +27,8 @@ import {
   layDoanhThuTheoChiNhanh,
   layDoanhThuTheoNguon,
 } from "../../services/dashboard.service";
+import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
+import { layDanhSachHoaDon } from "../../services/hoaDon.service";
 import {
   dinhDangTien,
   dinhDangTienRutGon,
@@ -48,6 +50,8 @@ function Reports({ role }) {
   const [revenueByDay, setRevenueByDay] = useState([]);
   const [revenueBySource, setRevenueBySource] = useState([]);
   const [revenueByBranch, setRevenueByBranch] = useState([]);
+  const [branches, setBranches] = useState([]);
+  const [invoices, setInvoices] = useState([]);
   const [overview, setOverview] = useState(null);
 
   useEffect(() => {
@@ -62,6 +66,12 @@ function Reports({ role }) {
     });
     layDoanhThuTheoNguon().then((data) => {
       if (data && data.length > 0) setRevenueBySource(data);
+    });
+    layDanhSachChiNhanh().then((res) => {
+      if (res && res.length > 0) setBranches(res);
+    });
+    layDanhSachHoaDon().then((res) => {
+      if (res && res.length > 0) setInvoices(res);
     });
   }, []);
 
@@ -159,9 +169,15 @@ function Reports({ role }) {
                 borderColor: "var(--border)",
               }}
             >
-              {BRANCHES.map((b) => (
-                <option value={b === "Tất cả" ? "" : b}>{b}</option>
-              ))}
+              <option value="">Tất cả chi nhánh</option>
+              {branches.map((b) => {
+                const name = b.tenChiNhanh || b.ten;
+                return (
+                  <option key={b.maChiNhanh || b.id || name} value={name}>
+                    {name}
+                  </option>
+                );
+              })}
             </select>
           )}
           <select
@@ -544,8 +560,9 @@ function Reports({ role }) {
             </tr>
           </thead>
           <tbody>
-            {mockInvoices.slice(0, 6).map((inv) => (
+            {invoices.slice(0, 6).map((inv) => (
               <tr
+                key={inv.id}
                 className="border-t"
                 style={{
                   borderColor: "var(--border)",

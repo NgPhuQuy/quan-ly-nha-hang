@@ -102,11 +102,6 @@ export const MAU_TRANG_THAI = {
     text: "text-emerald-400",
     border: "border-emerald-500/30",
   },
-  "Đang phục vụ": {
-    bg: "bg-amber-500/10",
-    text: "text-amber-400",
-    border: "border-amber-500/30",
-  },
   "Chờ xử lý": {
     bg: "bg-amber-500/10",
     text: "text-amber-400",

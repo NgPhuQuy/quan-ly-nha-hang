@@ -524,7 +524,7 @@ function Dashboard({ role, onNavigate }) {
                 color: "var(--foreground)",
               }}
             >
-              Hóa Ä‘Æ¡n gần Ä‘ây
+              Hóa đơn gần đây
             </div>
             <button
               className="text-xs font-500 flex items-center gap-1"

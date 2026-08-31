@@ -7,7 +7,6 @@ import {
   Clock,
   Users,
   User,
-  Phone,
   Sparkles,
   AlertCircle,
   CheckCircle2,

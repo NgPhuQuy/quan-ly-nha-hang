@@ -4,9 +4,11 @@ const TrangChu = lazy(() => import("../pages/landing/TrangChu"));
 const TrangDatBan = lazy(() => import("../pages/landing/TrangDatBan"));
 const TrangTraCuu = lazy(() => import("../pages/landing/TrangTraCuu"));
 const TrangXacThuc = lazy(() => import("../pages/landing/TrangXacThuc"));
+const TrangKhongCoQuyen = lazy(() => import("../pages/landing/TrangKhongCoQuyen"));
 const QuanLyApp = lazy(() => import("./QuanLyApp"));
 
 import { useAuth } from "../contexts/AuthContext";
+import { chuanHoaVaiTro } from "../services/xacThuc.service";
 
 const layDuongDan = () =>
   window.location.pathname.replace(/^\/+|\/+$/g, "") || "home";
@@ -39,8 +41,8 @@ function Router() {
         window.history.pushState({}, "", "/login");
         setManHinh("login");
       } else {
-        window.history.pushState({}, "", "/");
-        setManHinh("home");
+        window.history.pushState({}, "", "/403");
+        setManHinh("403");
       }
       window.scrollTo(0, 0);
       return;
@@ -71,8 +73,8 @@ function Router() {
           window.history.pushState({}, "", "/login");
           setManHinh("login");
         } else {
-          window.history.pushState({}, "", "/");
-          setManHinh("home");
+          window.history.pushState({}, "", "/403");
+          setManHinh("403");
         }
       } else {
         setManHinh(duongDanMoi);
@@ -80,7 +82,7 @@ function Router() {
     };
     window.addEventListener("popstate", khiThayDoiLichSu);
     return () => window.removeEventListener("popstate", khiThayDoiLichSu);
-  }, [isNhanVien]);
+  }, [isAuth, isNhanVien]);
 
   const laXacThuc =
     manHinh === "auth" ||
@@ -89,20 +91,23 @@ function Router() {
     manHinh === "dang-nhap" ||
     manHinh === "dang-ky";
 
+  const laKhongCoQuyen = manHinh === "403" || manHinh === "forbidden";
   const laQuanLy = manHinh.startsWith("admin") || manHinh.startsWith("pos");
   const khuVuc = manHinh.startsWith("admin") ? "admin" : "pos";
 
-  const noiDung = laXacThuc ? (
+  const noiDung = laKhongCoQuyen ? (
+    <TrangKhongCoQuyen
+      onQuayVeTrangChu={() => dieuHuong("home")}
+      onDangNhapKhac={() => dieuHuong("login")}
+    />
+  ) : laXacThuc ? (
     <TrangXacThuc
       defaultTab={
         manHinh === "register" || manHinh === "dang-ky" ? "register" : "login"
       }
       onDangNhapThanhCong={(u) => {
-        if (
-          u?.vaiTro === "ADMIN" ||
-          u?.vaiTro === "QUANLY" ||
-          u?.vaiTro === "NHANVIEN"
-        ) {
+        const role = chuanHoaVaiTro(u?.vaiTro || u?.role);
+        if (["ADMIN", "QUANLY", "NHANVIEN"].includes(role)) {
           dieuHuong(redirectSauDangNhap || "admin");
         } else {
           const target = redirectSauDangNhap || "booking";

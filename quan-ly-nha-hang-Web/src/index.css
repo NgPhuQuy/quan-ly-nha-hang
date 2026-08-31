@@ -55,6 +55,12 @@
   --radius-lg: calc(var(--radius) + 2px);
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  scroll-padding-top: 4.5rem;
+}
+
 :root {
   --background: #f9f7f4;
   --foreground: #2a1a0d;

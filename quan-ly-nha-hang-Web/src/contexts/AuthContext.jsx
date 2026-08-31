@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import {
   layToken,
   layThongTinMe,
+  chuanHoaVaiTro,
   dangNhap as authDangNhap,
   dangKy as authDangKy,
   dangXuat as authDangXuat,
@@ -28,13 +29,16 @@ export function AuthProvider({ children }) {
   }, []);
 
   const isAuth = !!user;
-  const role = user?.vaiTro || "";
+  const role = chuanHoaVaiTro(user?.vaiTro || user?.role);
   const isAdmin = role === "ADMIN";
   const isQuanLy = role === "QUANLY";
   const isNhanVien = ["ADMIN", "QUANLY", "NHANVIEN"].includes(role);
-  const isKhachHang = role === "KHACHHANG";
+  const isKhachHang = role === "KHACHHANG" || (!isNhanVien && isAuth);
 
-  const hasRole = (...roles) => roles.includes(role);
+  const hasRole = (...roles) => {
+    const norm = roles.map(chuanHoaVaiTro);
+    return norm.includes(role);
+  };
 
   const dangNhap = async (taiKhoan, matKhau) => {
     const res = await authDangNhap(taiKhoan, matKhau);
