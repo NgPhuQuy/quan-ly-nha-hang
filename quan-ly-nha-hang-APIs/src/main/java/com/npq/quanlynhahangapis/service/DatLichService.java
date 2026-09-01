@@ -14,15 +14,15 @@ import com.npq.quanlynhahangapis.utils.JwtUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +32,7 @@ public class DatLichService {
     private static final int SLOT_INTERVAL_MINUTES = 30;
     private static final int BOOKING_DURATION_HOURS = 2;
 
+    private final NguoiDungService nguoiDungService;
     private final NguoiDungRepository nguoiDungRepository;
     private final DatTruocRepository datTruocRepository;
     private final MatHangRepository matHangRepository;
@@ -43,84 +44,95 @@ public class DatLichService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public DatLichResponse datLich(DatLichRequest request) {
-        if (request.ngay().isBefore(LocalDate.now())) {
-            throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
-        }
+    public DatLichResponse datLich(DatLichRequest request, Integer maNguoiDung) {
+        // Giai doan 1: validate dau vao
+        validateThoiGianDat(request.ngay(), request.gio());
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        assert authentication != null;
-        String username = Objects.requireNonNull(authentication.getPrincipal()).toString();
-        if (authentication != null && authentication.isAuthenticated()
-                && !"anonymousUser".equals(authentication.getPrincipal())) {
-            if (authentication.getPrincipal() instanceof Integer userId) {
-                NguoiDung nguoiDung = nguoiDungRepository.findById(userId).orElse(null);
-            }
-        }
-
-        NguoiDung nguoiDung = nguoiDungRepository.findById((Integer) authentication.getPrincipal())
-                .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_FOUND)) ;
-
+        // Giai doan 2: lay du lieu tham chieu
+        NguoiDung nguoiDung = nguoiDungService.layNguoiDungTheoId(maNguoiDung);
         ChiNhanh chiNhanh = chiNhanhService.layChiNhanhTheoId(request.maChiNhanh());
-
-        if (chiNhanh.getSucChua() == null || chiNhanh.getSucChua() <= 0
-                || request.soKhach() > chiNhanh.getSucChua()) {
-            throw new AppException(ErrorCode.CAPACITY_EXCEEDED);
-        }
-
         GioHoatDong gioHoatDong = layGioHoatDong(request.maChiNhanh(), request.ngay());
 
-        LocalTime gioBatDau = request.gio();
+        // Giai doan 3: validate nghiep vu
+        validateSucChuaToiDa(chiNhanh, request.soKhach());
+        LocalTime gioKetThuc = validateKhungGioHoatDong(gioHoatDong, request.gio());
+
+        // Giai doan 4: kiem tra va giu cho
+        kiemTraVaGiuCho(chiNhanh, request.maChiNhanh(), request.ngay(), request.gio(), gioKetThuc, request.soKhach());
+
+        // Giai doan 5: tao ban ghi
+        DatLich savedDatLich = taoDatLich(request, nguoiDung, chiNhanh);
+        luuDanhSachDatTruoc(request.listDatTruoc(), savedDatLich);
+
+        return chuyenSangDto(savedDatLich);
+    }
+
+    private void validateThoiGianDat(LocalDate ngay, LocalTime gio) {
+        if (ngay.isBefore(LocalDate.now())) {
+            throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
+        }
+        if (ngay.isEqual(LocalDate.now()) && gio.isBefore(LocalTime.now())) {
+            throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
+        }
+    }
+
+    private void validateSucChuaToiDa(ChiNhanh chiNhanh, Integer soKhach) {
+        if (chiNhanh.getSucChua() == null || chiNhanh.getSucChua() <= 0
+                || soKhach > chiNhanh.getSucChua()) {
+            throw new AppException(ErrorCode.CAPACITY_EXCEEDED);
+        }
+    }
+
+    private LocalTime validateKhungGioHoatDong(GioHoatDong gioHoatDong, LocalTime gioBatDau) {
         LocalTime gioKetThuc = gioBatDau.plusHours(BOOKING_DURATION_HOURS);
 
         if (gioBatDau.isBefore(gioHoatDong.getGioMoCua())
-                || gioBatDau.isAfter(gioHoatDong.getGioDongCua())) {
+                || gioKetThuc.isAfter(gioHoatDong.getGioDongCua())) {
             throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
         }
+        return gioKetThuc;
+    }
 
+    private void kiemTraVaGiuCho(ChiNhanh chiNhanh, Integer maChiNhanh, LocalDate ngay,
+                                 LocalTime gioBatDau, LocalTime gioKetThuc, Integer soKhach) {
         List<DatLich> listDatLich = datLichRepository
-                .findByChiNhanh_MaChiNhanhAndNgayAndTrangThaiNotIn(
-                        request.maChiNhanh(),
-                        request.ngay(),
+                .findByChiNhanh_MaChiNhanhAndNgayAndTrangThaiNotInForUpdate(
+                        maChiNhanh,
+                        ngay,
                         List.of(TrangThaiDatLich.DA_HUY, TrangThaiDatLich.VANG_MAT)
                 );
 
         int conCho = tinhConCho(chiNhanh, listDatLich, gioBatDau, gioKetThuc);
-
-        if (conCho < request.soKhach()) {
+        if (conCho < soKhach) {
             throw new AppException(ErrorCode.CAPACITY_EXCEEDED);
         }
+    }
 
-
-
-        String maCode = sinhMaDatLichCode(request.ngay().getYear());
-
+    private DatLich taoDatLich(DatLichRequest request, NguoiDung nguoiDung, ChiNhanh chiNhanh) {
         DatLich datLich = DatLich.builder()
+                .nguoiDung(nguoiDung)
                 .chiNhanh(chiNhanh)
                 .ngay(request.ngay())
                 .gio(request.gio())
                 .soKhach(request.soKhach())
                 .ghiChu(request.ghiChu())
+                .trangThai(TrangThaiDatLich.THANH_CONG)
                 .build();
 
-        DatLich savedDatLich = datLichRepository.save(datLich);
-
-        if (request.listDatTruoc() != null && !request.listDatTruoc().isEmpty()) {
-            List<DatTruoc> listDatTruoc = new ArrayList<>();
-            for (DatTruocRequest r : request.listDatTruoc()) {
-                DatTruoc datTruoc = this.chuyenSangObj(r, savedDatLich);
-                listDatTruoc.add(datTruoc);
-            }
-            savedDatLich.setListDatTruoc(listDatTruoc);
-            datTruocRepository.saveAll(listDatTruoc);
-        }
-
-        return chuyenSangDto(savedDatLich);
+        return datLichRepository.save(datLich);
     }
 
-    private String sinhMaDatLichCode(int year) {
-        int randomPart = 1000 + new Random().nextInt(9000);
-        return String.format("5S-%d-%04d", year, randomPart);
+    private void luuDanhSachDatTruoc(List<DatTruocRequest> requests, DatLich savedDatLich) {
+        if (requests == null || requests.isEmpty()) {
+            return;
+        }
+        List<DatTruoc> listDatTruoc = new ArrayList<>();
+        for (DatTruocRequest r : requests) {
+            DatTruoc datTruoc = this.chuyenSangObj(r, savedDatLich);
+            listDatTruoc.add(datTruoc);
+        }
+        savedDatLich.setListDatTruoc(listDatTruoc);
+        datTruocRepository.saveAll(listDatTruoc);
     }
 
     private DatTruoc chuyenSangObj(DatTruocRequest request, DatLich datLich) {

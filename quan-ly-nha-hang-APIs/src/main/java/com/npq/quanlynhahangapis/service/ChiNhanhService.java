@@ -42,13 +42,8 @@ public class ChiNhanhService {
                 .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
     }
 
-    public ChiNhanhResponse layChiNhanhTheoID(Integer maChiNhanh) {
-        return chuyenSangDto(layChiNhanhTheoId(maChiNhanh));
-    }
-
     public ChiNhanhResponse chiTietChiNhanh(Integer maChiNhanh) {
-        return chuyenSangDto(chiNhanhRepository.findById(maChiNhanh)
-                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND)));
+        return chuyenSangDto(layChiNhanhTheoId(maChiNhanh));
     }
 
     private ChiNhanhResponse chuyenSangDto(ChiNhanh chiNhanh) {
@@ -65,18 +60,15 @@ public class ChiNhanhService {
 
     @Transactional
     public ChiNhanhResponse taoChiNhanh(ChiNhanhRequest request) {
-        String url = request.anhChiNhanh() != null && !request.anhChiNhanh().isEmpty()
-                ? cloudinaryService.taiAnhLenCloudinary(request.anhChiNhanh())
-                : "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&h=300&fit=crop";
+        String url = cloudinaryService.taiAnhLenCloudinary(request.anhChiNhanh());
 
         ChiNhanh chiNhanh = ChiNhanh.builder()
                 .tenChiNhanh(request.tenChiNhanh())
-                .sucChua(request.sucChua() != null ? request.sucChua() : 50)
+                .sucChua(request.sucChua())
                 .soDienThoai(request.soDienThoai())
                 .diaChi(request.diaChi())
                 .anhChiNhanh(url)
                 .build();
-
         chiNhanh = chiNhanhRepository.save(chiNhanh);
 
         gioHoatDongService.thoiGianMacDinh(chiNhanh);
@@ -87,15 +79,14 @@ public class ChiNhanhService {
 
     @Transactional
     public ChiNhanhResponse capNhatChiNhanh(Integer maChiNhanh, ChiNhanhRequest request) {
-        ChiNhanh chiNhanh = chiNhanhRepository.findById(maChiNhanh)
-                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
+        ChiNhanh chiNhanh = layChiNhanhTheoId(maChiNhanh);
 
-        if (request.tenChiNhanh() != null) chiNhanh.setTenChiNhanh(request.tenChiNhanh());
-        if (request.sucChua() != null) chiNhanh.setSucChua(request.sucChua());
-        if (request.trangThaiChiNhanh() != null) chiNhanh.setTrangThai(request.trangThaiChiNhanh());
-        if (request.soDienThoai() != null) chiNhanh.setSoDienThoai(request.soDienThoai());
-        if (request.diaChi() != null) chiNhanh.setDiaChi(request.diaChi());
-        if (request.anhChiNhanh() != null && !request.anhChiNhanh().isEmpty()) {
+        chiNhanh.setTenChiNhanh(request.tenChiNhanh());
+        chiNhanh.setSucChua(request.sucChua());
+        chiNhanh.setSoDienThoai(request.soDienThoai());
+        chiNhanh.setDiaChi(request.diaChi());
+
+        if (!request.anhChiNhanh().isEmpty()) {
             chiNhanh.setAnhChiNhanh(cloudinaryService.taiAnhLenCloudinary(request.anhChiNhanh()));
         }
 
@@ -104,17 +95,9 @@ public class ChiNhanhService {
 
     @Transactional
     public ChiNhanhResponse doiTrangThaiChiNhanh(Integer maChiNhanh) {
-        ChiNhanh chiNhanh = chiNhanhRepository.findById(maChiNhanh)
-                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
+        ChiNhanh chiNhanh = layChiNhanhTheoId(maChiNhanh);
         chiNhanh.setTrangThai(!chiNhanh.isTrangThai());
         return chuyenSangDto(chiNhanhRepository.save(chiNhanh));
     }
 
-    @Transactional
-    public void xoaChiNhanh(Integer maChiNhanh) {
-        if (!chiNhanhRepository.existsById(maChiNhanh)) {
-            throw new AppException(ErrorCode.SOURCE_NOT_FOUND);
-        }
-        chiNhanhRepository.deleteById(maChiNhanh);
-    }
 }

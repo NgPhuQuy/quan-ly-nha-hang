@@ -28,7 +28,7 @@ function CustomerTestimonials() {
   return (
     <section
       id="reviews"
-      className="px-4 py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-[#0c0804] via-[#150e07] to-[#0e0905] relative overflow-hidden min-h-screen flex flex-col justify-center snap-start scroll-mt-16"
+      className="px-4 py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-[#0c0804] via-[#150e07] to-[#0e0905] relative overflow-hidden scroll-mt-16"
     >
       {/* Atmosphere Texture Background */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-15 mix-blend-luminosity overflow-hidden">

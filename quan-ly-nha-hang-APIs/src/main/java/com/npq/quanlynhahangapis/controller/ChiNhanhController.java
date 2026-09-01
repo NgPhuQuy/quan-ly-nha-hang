@@ -39,11 +39,9 @@ public class ChiNhanhController {
         return ResponseEntity.status(HttpStatus.CREATED).body(chiNhanhService.taoChiNhanh(request));
     }
 
-    @PutMapping(path = "/{maChiNhanh}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> capNhatChiNhanh(
-            @PathVariable Integer maChiNhanh,
-            @ModelAttribute @Valid ChiNhanhRequest request
-    ) {
+    @PutMapping(name = "/{maChiNhanh}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> capNhatChiNhanh(@PathVariable Integer maChiNhanh,
+                                             @ModelAttribute @Valid ChiNhanhRequest request) {
         return ResponseEntity.ok(chiNhanhService.capNhatChiNhanh(maChiNhanh, request));
     }
 
@@ -52,9 +50,4 @@ public class ChiNhanhController {
         return ResponseEntity.ok(chiNhanhService.doiTrangThaiChiNhanh(maChiNhanh));
     }
 
-    @DeleteMapping("/{maChiNhanh}")
-    public ResponseEntity<?> xoaChiNhanh(@PathVariable Integer maChiNhanh) {
-        chiNhanhService.xoaChiNhanh(maChiNhanh);
-        return ResponseEntity.noContent().build();
-    }
 }

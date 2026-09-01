@@ -2,7 +2,7 @@ import { Calendar, Search, PhoneCall, Sparkles } from "lucide-react";
 
 function DatBan({ onDatBan, onTraCuuDatBan }) {
   return (
-    <section className="px-4 py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-[#0e0905] via-[#160f08] to-[#080503] relative overflow-hidden min-h-screen flex flex-col justify-center snap-start scroll-mt-16">
+    <section className="px-4 py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-[#0e0905] via-[#160f08] to-[#080503] relative overflow-hidden scroll-mt-16">
       {/* Atmosphere Texture Background */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-20 mix-blend-luminosity overflow-hidden">
         <img

@@ -7,7 +7,6 @@ import com.npq.quanlynhahangapis.entity.ChiNhanh;
 import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
 import com.npq.quanlynhahangapis.repository.BanRepository;
-import com.npq.quanlynhahangapis.repository.ChiNhanhRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BanService {
     private final BanRepository banRepository;
-    private final ChiNhanhRepository chiNhanhRepository;
+    private final ChiNhanhService chiNhanhService;
 
     public List<BanResponse> layDSBan() {
         return banRepository.findAll()
@@ -27,35 +26,19 @@ public class BanService {
                 .toList();
     }
 
-//    public List<BanResponse> layDSBanTheoTrangThai(Integer maChiNhanh) {
-//
-//        if (maChiNhanh != null ) {
-//            return banRepository.findByChiNhanh_MaChiNhanhAndTrangThai(maChiNhanh, trangThai)
-//                    .stream()
-//                    .map(this::chuyenSangDto)
-//                    .toList();
-//        } else if (maChiNhanh != null) {
-//            return layDSBan(maChiNhanh);
-//        } else if (trangThai != null && !trangThai.isBlank()) {
-//            return banRepository.findByTrangThai(trangThai)
-//                    .stream()
-//                    .map(this::chuyenSangDto)
-//                    .toList();
-//        }
-//        return layDSBan(null);
-//    }
-
-    public BanResponse layBanTheoId(Integer maBan) {
-        Ban ban = banRepository.findById(maBan)
+    public Ban layBanTheoId(Integer maBan) {
+        return banRepository.findById(maBan)
                 .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
+    }
+
+    public BanResponse chiTietBan(Integer maBan) {
+        Ban ban = layBanTheoId(maBan);
         return chuyenSangDto(ban);
     }
 
     @Transactional
     public BanResponse taoBan(BanRequest request) {
-        ChiNhanh chiNhanh = chiNhanhRepository.findById(request.maChiNhanh())
-                    .orElseThrow(() -> new AppException(ErrorCode.BRANCH_NOT_FOUND));
-
+        ChiNhanh chiNhanh = chiNhanhService.layChiNhanhTheoId(request.maChiNhanh());
         Ban ban = Ban.builder()
                 .sucChua(request.sucChua())
                 .chiNhanh(chiNhanh)
@@ -66,25 +49,15 @@ public class BanService {
 
     @Transactional
     public BanResponse capNhatBan(Integer maBan, BanRequest request) {
-        Ban ban = banRepository.findById(maBan)
-                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
-//
-//        if (request.soBan() != null) ban.setSoBan(request.soBan());
-//        if (request.sucChua() != null) ban.setSucChua(request.sucChua());
-//        if (request.trangThai() != null) ban.setTrangThai(request.trangThai());
-//        if (request.maChiNhanh() != null) {
-//            ChiNhanh chiNhanh = chiNhanhRepository.findById(request.maChiNhanh())
-//                    .orElseThrow(() -> new AppException(ErrorCode.BRANCH_NOT_FOUND));
-//            ban.setChiNhanh(chiNhanh);
-//        }
-
+        Ban ban = layBanTheoId(maBan);
+        ban.setSucChua(request.sucChua());
+        ban.setTrangThai(request.trangThai());
         return chuyenSangDto(banRepository.save(ban));
     }
 
     @Transactional
     public BanResponse doiTrangThaiBan(Integer maBan, String trangThai) {
-        Ban ban = banRepository.findById(maBan)
-                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
+        Ban ban = layBanTheoId(maBan);
         ban.setTrangThai(trangThai);
         return chuyenSangDto(banRepository.save(ban));
     }

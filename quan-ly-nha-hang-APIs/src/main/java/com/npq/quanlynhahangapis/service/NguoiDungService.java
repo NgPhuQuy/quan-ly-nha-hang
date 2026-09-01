@@ -8,7 +8,7 @@ import com.npq.quanlynhahangapis.dto.response.NguoiDungResponse;
 import com.npq.quanlynhahangapis.entity.NguoiDung;
 import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
-import com.npq.quanlynhahangapis.repository.*;
+import com.npq.quanlynhahangapis.repository.NguoiDungRepository;
 import com.npq.quanlynhahangapis.utils.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,26 +34,15 @@ public class NguoiDungService {
                 .toList();
     }
 
-    public NguoiDungResponse layThongTinHienTai() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
-        }
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof Integer maNguoiDung) {
-            return layNguoiDungTheoId(maNguoiDung);
-        }
-        throw new AppException(ErrorCode.UNAUTHORIZED);
-    }
-
-    public NguoiDungResponse layNguoiDungTheoId(int maNguoiDung) {
-        NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    public NguoiDungResponse chiTietNguoiDung(int maNguoiDung) {
+        NguoiDung nguoiDung = layNguoiDungTheoId(maNguoiDung);
         return chuyenSangDto(nguoiDung);
     }
-// tai sao 2 cai func nay lai tra ve 2 kieu du lieu khac nhau, muc dich la gi???
-// func 1 la tra ve dto gui ra response
-// func 2 la tra ve obj de service su dung de validate
+
+    public NguoiDung layNguoiDungTheoId(int maNguoiDung) {
+        return nguoiDungRepository.findById(maNguoiDung)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    }
 
     public NguoiDung layNguoiDungTheoTaiKhoan(String taiKhoan) {
         return nguoiDungRepository.findByTaiKhoan(taiKhoan)
@@ -180,9 +169,8 @@ public class NguoiDungService {
 
     @Transactional
     public NguoiDungResponse doiTrangThaiNguoiDung(Integer maNguoiDung) {
-        NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        nguoiDung.setTrangThai(nguoiDung.getTrangThai() == null || !nguoiDung.getTrangThai());
+        NguoiDung nguoiDung = layNguoiDungTheoId(maNguoiDung);
+        nguoiDung.setTrangThai(!nguoiDung.getTrangThai());
         return chuyenSangDto(nguoiDungRepository.save(nguoiDung));
     }
 

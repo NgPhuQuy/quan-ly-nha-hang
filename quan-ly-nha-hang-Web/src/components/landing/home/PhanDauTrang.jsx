@@ -21,7 +21,7 @@ function Hero({ onDatBan }) {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-[100dvh] h-screen w-full flex flex-col justify-center items-center bg-[#0c0905] pt-16 sm:pt-20 pb-6 sm:pb-8 z-10 snap-start overflow-hidden"
+      className="relative min-h-[100dvh] h-screen w-full flex flex-col justify-center items-center bg-[#0c0905] pt-16 sm:pt-20 pb-6 sm:pb-8 z-10 overflow-hidden"
     >
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">

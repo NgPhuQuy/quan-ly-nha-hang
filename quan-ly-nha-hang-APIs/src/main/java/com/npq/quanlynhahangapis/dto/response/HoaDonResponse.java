@@ -8,14 +8,14 @@ import java.util.List;
 
 @Builder
 public record HoaDonResponse(//todo chuyen các tham so ve ...Response
-        Integer maHoaDon,
-        Integer maChiNhanh,
-        Integer maKhachHang,
-        String nguon,
-        String trangThai,
-        BigDecimal tongTien,
-        LocalDateTime ngayLapHoaDon,
-        List<ChiTietHoaDonResponse> items
+                             Integer maHoaDon,
+                             Integer maChiNhanh,
+                             Integer maKhachHang,
+                             String nguon,
+                             String trangThai,
+                             BigDecimal tongTien,
+                             LocalDateTime ngayLapHoaDon,
+                             List<ChiTietHoaDonResponse> items
 ) {
 }
 

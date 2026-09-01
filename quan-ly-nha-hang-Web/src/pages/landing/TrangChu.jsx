@@ -25,7 +25,7 @@ function TrangChu({
       />
       <PhanDauTrang onDatBan={handleDatBan} />
       <KhuVucChiNhanh onDatBan={handleDatBan} />
-      <BoSuuTapMonAn />
+      <BoSuuTapMonAn onDatBan={handleDatBan} />
       <CamNhanKhachHang />
       <DatBan onDatBan={handleDatBan} onTraCuuDatBan={handleTraCuuDatBan} />
       <ChanTrang />

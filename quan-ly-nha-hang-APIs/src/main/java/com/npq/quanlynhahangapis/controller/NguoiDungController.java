@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +33,8 @@ public class NguoiDungController {
     }
 
     @GetMapping("/auth/me")
-    public ResponseEntity<?> layThongTinMe() {
-        return ResponseEntity.ok(nguoiDungService.layThongTinHienTai());
+    public ResponseEntity<?> layThongTinMe(@AuthenticationPrincipal Integer maNguoiDung) {
+        return ResponseEntity.ok(nguoiDungService.chiTietNguoiDung(maNguoiDung));
     }
 
     @PostMapping("/auth/logout")
@@ -49,7 +50,7 @@ public class NguoiDungController {
 
     @GetMapping("/users/{maNguoiDung}")
     public ResponseEntity<?> chiTietNguoiDung(@PathVariable Integer maNguoiDung) {
-        return ResponseEntity.ok(nguoiDungService.layNguoiDungTheoId(maNguoiDung));
+        return ResponseEntity.ok(nguoiDungService.chiTietNguoiDung(maNguoiDung));
     }
 
     @PutMapping("/users/{maNguoiDung}")
@@ -65,9 +66,4 @@ public class NguoiDungController {
         return ResponseEntity.ok(nguoiDungService.doiTrangThaiNguoiDung(maNguoiDung));
     }
 
-    @DeleteMapping("/users/{maNguoiDung}")
-    public ResponseEntity<?> xoaNguoiDung(@PathVariable Integer maNguoiDung) {
-        nguoiDungService.xoaNguoiDung(maNguoiDung);
-        return ResponseEntity.noContent().build();
-    }
 }

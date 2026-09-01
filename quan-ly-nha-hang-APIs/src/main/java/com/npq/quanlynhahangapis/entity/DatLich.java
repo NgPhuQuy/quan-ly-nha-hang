@@ -36,7 +36,7 @@ public class DatLich {
     @Builder.Default
     private TrangThaiDatLich trangThai = TrangThaiDatLich.THANH_CONG;
 
-    @OneToMany(mappedBy = "datLich", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "datLich", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DatTruoc> listDatTruoc;
 
 }

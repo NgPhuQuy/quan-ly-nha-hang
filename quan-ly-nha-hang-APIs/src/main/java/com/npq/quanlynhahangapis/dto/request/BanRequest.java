@@ -1,7 +1,6 @@
 package com.npq.quanlynhahangapis.dto.request;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record BanRequest(
@@ -9,7 +8,8 @@ public record BanRequest(
         @Min(value = 1, message = "Sức chứa tối thiểu là 1 người!")
         Integer sucChua,
         @NotNull(message = "Mã chi nhánh không được để trống!")
-        Integer maChiNhanh
+        Integer maChiNhanh,
+        String trangThai
 ) {
 }
 

@@ -23,7 +23,7 @@ public class BanController {
 
     @GetMapping("/ban/{maBan}")
     public ResponseEntity<?> chiTietBan(@PathVariable Integer maBan) {
-        return ResponseEntity.ok(banService.layBanTheoId(maBan));
+        return ResponseEntity.ok(banService.chiTietBan(maBan));
     }
 
     @PostMapping("/ban")

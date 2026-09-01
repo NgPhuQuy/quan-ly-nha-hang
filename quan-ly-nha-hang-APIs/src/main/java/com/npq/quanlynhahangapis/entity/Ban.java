@@ -3,8 +3,6 @@ package com.npq.quanlynhahangapis.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 @Entity
 @Builder
 @Getter
@@ -20,7 +18,7 @@ public class Ban {
     @Builder.Default
     private String trangThai = "Trống";
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "ma_chi_nhanh", nullable = false)
     private ChiNhanh chiNhanh;
 }

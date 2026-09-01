@@ -1,7 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ANH } from "../../../assets/anh";
 import { layTatCaMonAn } from "../../../services/monAn.service";
-import { Utensils, Star, Sparkles } from "lucide-react";
+import {
+  Utensils,
+  Sparkles,
+  ChevronLeft,
+  ChevronRight,
+  ArrowRight,
+} from "lucide-react";
 
 const SIGNATURE_FALLBACK = [
   {
@@ -58,11 +64,21 @@ const SIGNATURE_FALLBACK = [
     nhom: "Khai vị",
     isSignature: false,
   },
+  {
+    id: 7,
+    ten: "Rượu Vang Đỏ Chateau Margaux",
+    moTa: "Hương vị nồng nàn của trái cây chín mọng, gỗ sồi và gia vị quý phái.",
+    gia: 2450000,
+    anh: ANH.monMenu5,
+    nhom: "Thức uống",
+    isSignature: true,
+  },
 ];
 
-function DishCollection() {
+function DishCollection({ onDatBan }) {
   const [selectedCat, setSelectedCat] = useState("Tất cả");
   const [items, setItems] = useState(SIGNATURE_FALLBACK);
+  const sliderRef = useRef(null);
 
   useEffect(() => {
     layTatCaMonAn().then((res) => {
@@ -77,7 +93,12 @@ function DishCollection() {
               m.anh ||
               m.image ||
               SIGNATURE_FALLBACK[idx % SIGNATURE_FALLBACK.length].anh,
-            nhom: m.nhom || m.category || "Món chính",
+            nhom:
+              m.loaiMatHang === "THUC_UONG"
+                ? "Thức uống"
+                : m.loaiMatHang === "DICH_VU"
+                  ? "Dịch vụ"
+                  : m.nhom || m.category || "Món chính",
             isSignature: idx < 3,
           })),
         );
@@ -95,10 +116,19 @@ function DishCollection() {
       ? items
       : items.filter((i) => i.nhom === selectedCat);
 
+  const scrollSlider = (direction) => {
+    if (!sliderRef.current) return;
+    const scrollAmount = 340;
+    sliderRef.current.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <section
       id="menu"
-      className="px-4 py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-[#0a0704] via-[#130d07] to-[#0c0804] relative overflow-hidden min-h-screen flex flex-col justify-center snap-start scroll-mt-16"
+      className="px-4 py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-[#0a0704] via-[#130d07] to-[#0c0804] relative overflow-hidden scroll-mt-16"
     >
       {/* Atmosphere Texture Background */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-15 mix-blend-luminosity overflow-hidden">
@@ -117,101 +147,140 @@ function DishCollection() {
 
       <div className="mx-auto max-w-6xl relative z-10">
         {/* Section Header */}
-        <div className="mb-14 text-center max-w-2xl mx-auto">
+        <div className="mb-10 text-center max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold uppercase tracking-widest mb-3 backdrop-blur-md shadow-lg shadow-amber-950/40">
             <Utensils className="w-3.5 h-3.5 text-amber-400" />
             <span>Món Ngon Đặc Sắc</span>
           </div>
 
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-amber-100 mb-4 leading-tight">
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-amber-100 mb-3 leading-tight">
             Mỗi Món Ăn Là Một Tuyệt Tác
           </h2>
 
-          <p className="text-sm sm:text-base text-amber-200/70 font-light leading-relaxed">
+          <p className="text-xs sm:text-sm text-amber-200/70 font-light leading-relaxed">
             Sự kết hợp hoàn mỹ giữa nguyên liệu nhập khẩu tươi sống cùng kỹ nghệ
             chế biến đỉnh cao từ đội ngũ đầu bếp 5 sao.
           </p>
 
-          <div className="my-5 flex items-center justify-center gap-3">
-            <div className="h-px w-20 bg-gradient-to-r from-transparent to-amber-500/50" />
+          <div className="my-4 flex items-center justify-center gap-3">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-500/50" />
             <span className="w-1.5 h-1.5 rotate-45 bg-amber-400 shadow-sm shadow-amber-400" />
-            <div className="h-px w-20 bg-gradient-to-l from-transparent to-amber-500/50" />
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-500/50" />
           </div>
 
-          {/* Category Tabs */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5 mt-8">
-            {categories.map((cat) => (
+          {/* Category Tabs & Slider Controls Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-3 mt-6 pt-2">
+            {/* Category Pills */}
+            <div className="flex flex-wrap items-center gap-2 mx-auto sm:mx-0">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCat(cat)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                    selectedCat === cat
+                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-black shadow-lg shadow-amber-900/50 font-bold scale-105"
+                      : "bg-white/5 text-amber-200/70 hover:bg-white/10 hover:text-amber-200 border border-white/10"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Next / Prev Navigation Controls */}
+            <div className="hidden sm:flex items-center gap-2 ml-auto">
               <button
-                key={cat}
-                onClick={() => setSelectedCat(cat)}
-                className={`px-5 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                  selectedCat === cat
-                    ? "bg-gradient-to-r from-amber-400 to-amber-500 text-black shadow-lg shadow-amber-900/50 font-bold scale-105"
-                    : "bg-white/5 text-amber-200/70 hover:bg-white/10 hover:text-amber-200 border border-white/10"
-                }`}
+                type="button"
+                onClick={() => scrollSlider("left")}
+                className="w-9 h-9 rounded-full bg-white/5 border border-amber-500/30 hover:border-amber-400 hover:bg-amber-500/20 text-amber-300 flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95"
+                title="Xem món trước"
               >
-                {cat}
+                <ChevronLeft size={18} />
               </button>
-            ))}
+              <button
+                type="button"
+                onClick={() => scrollSlider("right")}
+                className="w-9 h-9 rounded-full bg-white/5 border border-amber-500/30 hover:border-amber-400 hover:bg-amber-500/20 text-amber-300 flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95"
+                title="Xem món tiếp theo"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Dishes Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch">
-          {filteredItems.map((dish) => (
-            <article
-              key={dish.id}
-              className="group flex flex-col rounded-3xl overflow-hidden bg-gradient-to-b from-[#181109]/90 to-[#0e0904]/95 border border-amber-500/25 hover:border-amber-400/60 shadow-[0_10px_30px_rgba(0,0,0,0.6)] hover:shadow-[0_20px_45px_rgba(212,150,43,0.18)] transition-all duration-300 backdrop-blur-md"
-            >
-              {/* Dish Image */}
-              <div className="relative h-56 overflow-hidden bg-[#1a120a]">
-                <img
-                  src={dish.anh}
-                  alt={dish.ten}
-                  className="h-full w-full object-cover group-hover:scale-108 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#181109] via-transparent to-black/30" />
+        {/* Horizontal Fixed-Height Showcase Carousel */}
+        <div className="relative">
+          {/* Scrollable Container with Smooth Touch / Mouse Drag */}
+          <div
+            ref={sliderRef}
+            className="flex gap-6 overflow-x-auto pb-4 pt-1 snap-x snap-mandatory scroll-smooth no-scrollbar"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {filteredItems.map((dish) => (
+              <article
+                key={dish.id}
+                className="w-[280px] sm:w-[320px] shrink-0 snap-start flex flex-col rounded-3xl overflow-hidden bg-gradient-to-b from-[#181109]/95 to-[#0e0904]/98 border border-amber-500/25 hover:border-amber-400/60 shadow-[0_10px_30px_rgba(0,0,0,0.6)] hover:shadow-[0_20px_45px_rgba(212,150,43,0.22)] transition-all duration-300 backdrop-blur-md group"
+              >
+                {/* Dish Image */}
+                <div className="relative h-48 sm:h-52 overflow-hidden bg-[#1a120a]">
+                  <img
+                    src={dish.anh}
+                    alt={dish.ten}
+                    className="h-full w-full object-cover group-hover:scale-108 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#181109] via-transparent to-black/40" />
 
-                {dish.isSignature && (
-                  <span className="absolute top-3.5 right-3.5 text-[11px] font-bold px-3 py-1 rounded-full bg-amber-500 text-black shadow-lg flex items-center gap-1 font-sans">
-                    <Sparkles className="w-3 h-3 text-black fill-black" /> Signature
+                  {dish.isSignature && (
+                    <span className="absolute top-3 right-3 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-400 text-black shadow-lg flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 text-black fill-black" /> Signature
+                    </span>
+                  )}
+
+                  <span className="absolute bottom-3 left-3 text-[11px] text-amber-300 font-semibold px-2.5 py-0.5 rounded-lg bg-black/80 backdrop-blur-md border border-amber-500/30">
+                    {dish.nhom}
                   </span>
-                )}
-
-                <span className="absolute bottom-3.5 left-3.5 text-xs text-amber-300 font-semibold px-3 py-1 rounded-xl bg-black/75 backdrop-blur-md border border-amber-500/30">
-                  {dish.nhom}
-                </span>
-              </div>
-
-              {/* Dish Content */}
-              <div className="p-6 flex flex-1 flex-col justify-between space-y-4">
-                <div>
-                  <h3 className="font-serif text-lg font-bold text-amber-100 group-hover:text-amber-300 transition-colors line-clamp-1 mb-2">
-                    {dish.ten}
-                  </h3>
-                  <p className="text-xs text-amber-200/60 font-light line-clamp-2 leading-relaxed">
-                    {dish.moTa}
-                  </p>
                 </div>
 
-                <div className="pt-4 border-t border-amber-500/15 flex items-center justify-between">
+                {/* Dish Content */}
+                <div className="p-5 flex flex-1 flex-col justify-between space-y-3">
                   <div>
-                    <span className="text-[10px] text-amber-200/50 block uppercase tracking-wider">
-                      Giá phục vụ
-                    </span>
-                    <span className="font-serif text-base sm:text-lg font-bold text-amber-300">
-                      {dish.gia.toLocaleString("vi-VN")} đ
-                    </span>
+                    <h3 className="font-serif text-base sm:text-lg font-bold text-amber-100 group-hover:text-amber-300 transition-colors line-clamp-1 mb-1.5">
+                      {dish.ten}
+                    </h3>
+                    <p className="text-xs text-amber-200/60 font-light line-clamp-2 leading-relaxed">
+                      {dish.moTa}
+                    </p>
                   </div>
 
-                  <div className="flex items-center gap-1 text-xs text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20 font-semibold">
-                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    <span>5.0</span>
+                  <div className="pt-3 border-t border-amber-500/15 flex items-center justify-between">
+                    <div>
+                      <span className="text-[9px] text-amber-200/50 block uppercase tracking-wider">
+                        Giá phục vụ
+                      </span>
+                      <span className="font-serif text-base font-bold text-amber-300">
+                        {dish.gia.toLocaleString("vi-VN")} đ
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={onDatBan}
+                      className="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-400 hover:text-black border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center gap-1 transition-all cursor-pointer group-hover:bg-amber-400 group-hover:text-black"
+                    >
+                      <span>Đặt bàn</span>
+                      <ArrowRight size={12} />
+                    </button>
                   </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            ))}
+          </div>
+
+          {/* Bottom helper text for mobile swipe */}
+          <div className="text-center sm:hidden mt-3 text-[11px] text-amber-200/40">
+            ← Vuốt ngang để khám phá thêm món →
+          </div>
         </div>
       </div>
     </section>
