@@ -19,26 +19,13 @@ public class DatLich {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer maDatLich;
 
-    @Column(unique = true, length = 30)
-    private String maDatLichCode;
-
     @ManyToOne
-    @JoinColumn(name = "ma_khach_hang", nullable = true)
-    private KhachHang khachHang;
+    @JoinColumn(name = "ma_khach_hang", nullable = false)
+    private NguoiDung nguoiDung;
 
     @ManyToOne
     @JoinColumn(name = "ma_chi_nhanh", nullable = false)
     private ChiNhanh chiNhanh;
-
-    @ManyToOne
-    @JoinColumn(name = "ma_ban", nullable = true)
-    private Ban ban;
-
-    private String hoTen;
-    private String soDienThoai;
-    private String email;
-    private String dip;
-    private String dichVuBoSung;
 
     private LocalDate ngay;
     private LocalTime gio;
@@ -47,7 +34,7 @@ public class DatLich {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private TrangThaiDatLich trangThai = TrangThaiDatLich.CHO_XAC_NHAN;
+    private TrangThaiDatLich trangThai = TrangThaiDatLich.THANH_CONG;
 
     @OneToMany(mappedBy = "datLich", fetch = FetchType.LAZY)
     private List<DatTruoc> listDatTruoc;

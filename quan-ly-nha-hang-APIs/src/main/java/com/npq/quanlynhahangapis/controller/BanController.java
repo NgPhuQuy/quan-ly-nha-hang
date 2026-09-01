@@ -17,14 +17,9 @@ public class BanController {
     private final BanService banService;
 
     @GetMapping("/ban")
-    public ResponseEntity<?> danhSachTatCaBan(@RequestParam Integer maChiNhanh) {
-        return ResponseEntity.ok(banService.layDSBan(maChiNhanh));
+    public ResponseEntity<?> danhSachTatCaBan() {
+        return ResponseEntity.ok(banService.layDSBan());
     }
-
-//    @GetMapping("/chi-nhanh/{maChiNhanh}/ban")
-//    public ResponseEntity<?> danhSachBan(@PathVariable Integer maChiNhanh) {
-//        return ResponseEntity.ok(banService.layDSBan(maChiNhanh));
-//    }
 
     @GetMapping("/ban/{maBan}")
     public ResponseEntity<?> chiTietBan(@PathVariable Integer maBan) {
@@ -32,7 +27,7 @@ public class BanController {
     }
 
     @PostMapping("/ban")
-    public ResponseEntity<?> taoBan(@RequestBody @Valid BanRequest request) {
+    public ResponseEntity<?> taoBan(@RequestBody BanRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(banService.taoBan(request));
     }
 

@@ -13,26 +13,26 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class HoaDonController {
     private final HoaDonService hoaDonService;
+//
+//    @GetMapping
+//    public ResponseEntity<?> danhSachHoaDon(
+//            @RequestParam(required = false) Integer maChiNhanh,
+//            @RequestParam(required = false) String nguon,
+//            @RequestParam(required = false) String trangThai,
+//            @RequestParam(required = false) String search
+//    ) {
+//        return ResponseEntity.ok(hoaDonService.layDSHoaDon(maChiNhanh, nguon, trangThai, search));
+//    }
 
-    @GetMapping
-    public ResponseEntity<?> danhSachHoaDon(
-            @RequestParam(required = false) Integer maChiNhanh,
-            @RequestParam(required = false) String nguon,
-            @RequestParam(required = false) String trangThai,
-            @RequestParam(required = false) String search
-    ) {
-        return ResponseEntity.ok(hoaDonService.layDSHoaDon(maChiNhanh, nguon, trangThai, search));
-    }
-
-    @GetMapping("/{idOrCode}")
-    public ResponseEntity<?> chiTietHoaDon(@PathVariable String idOrCode) {
-        try {
-            int id = Integer.parseInt(idOrCode);
-            return ResponseEntity.ok(hoaDonService.layChiTietHoaDon(id));
-        } catch (NumberFormatException e) {
-            return ResponseEntity.ok(hoaDonService.layTheoCode(idOrCode));
-        }
-    }
+//    @GetMapping("/{idOrCode}")
+//    public ResponseEntity<?> chiTietHoaDon(@PathVariable String idOrCode) {
+//        try {
+//            int id = Integer.parseInt(idOrCode);
+//            return ResponseEntity.ok(hoaDonService.layChiTietHoaDon(id));
+//        } catch (NumberFormatException e) {
+//            return ResponseEntity.ok(hoaDonService.layTheoCode(idOrCode));
+//        }
+//    }
 
     @PostMapping
     public ResponseEntity<?> taoHoaDon(@RequestBody @Valid HoaDonRequest request) {

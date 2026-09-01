@@ -28,27 +28,25 @@ public class HoaDonService {
     private final MatHangRepository matHangRepository;
     private final BanRepository banRepository;
     private final ChiNhanhRepository chiNhanhRepository;
-    private final KhachHangRepository khachHangRepository;
-    private final NhanVienRepository nhanVienRepository;
 
-    public List<HoaDonResponse> layDSHoaDon(Integer maChiNhanh, String nguon, String trangThai, String search) {
-        List<HoaDon> list = hoaDonRepository.findAllOrderByNgayLapHoaDonDesc();
-
-        return list.stream()
-                .filter(h -> maChiNhanh == null || (h.getChiNhanh() != null && h.getChiNhanh().getMaChiNhanh().equals(maChiNhanh)))
-                .filter(h -> nguon == null || nguon.isBlank() || (h.getNguon() != null && h.getNguon().equalsIgnoreCase(nguon)))
-                .filter(h -> trangThai == null || trangThai.isBlank() || (h.getTrangThai() != null && h.getTrangThai().equalsIgnoreCase(trangThai)))
-                .filter(h -> {
-                    if (search == null || search.isBlank()) return true;
-                    String s = search.toLowerCase().trim();
-                    boolean matchCode = h.getMaHoaDonCode() != null && h.getMaHoaDonCode().toLowerCase().contains(s);
-                    boolean matchCustomer = h.getTenKhachHang() != null && h.getTenKhachHang().toLowerCase().contains(s);
-                    boolean matchPhone = h.getSoDienThoai() != null && h.getSoDienThoai().contains(s);
-                    return matchCode || matchCustomer || matchPhone;
-                })
-                .map(this::chuyenSangDto)
-                .toList();
-    }
+//    public List<HoaDonResponse> layDSHoaDon(Integer maChiNhanh, String nguon, String trangThai, String search) {
+//        List<HoaDon> list = hoaDonRepository.findAllOrderByNgayLapHoaDonDesc();
+//
+//        return list.stream()
+//                .filter(h -> maChiNhanh == null || (h.getChiNhanh() != null && h.getChiNhanh().getMaChiNhanh().equals(maChiNhanh)))
+//                .filter(h -> nguon == null || nguon.isBlank() || (h.getNguon() != null && h.getNguon().equalsIgnoreCase(nguon)))
+//                .filter(h -> trangThai == null || trangThai.isBlank() || (h.getTrangThai() != null && h.getTrangThai().equalsIgnoreCase(trangThai)))
+//                .filter(h -> {
+//                    if (search == null || search.isBlank()) return true;
+//                    String s = search.toLowerCase().trim();
+//                    boolean matchCode = h.getMaHoaDonCode() != null && h.getMaHoaDonCode().toLowerCase().contains(s);
+//                    boolean matchCustomer = h.getTenKhachHang() != null && h.getTenKhachHang().toLowerCase().contains(s);
+//                    boolean matchPhone = h.getSoDienThoai() != null && h.getSoDienThoai().contains(s);
+//                    return matchCode || matchCustomer || matchPhone;
+//                })
+//                .map(this::chuyenSangDto)
+//                .toList();
+//    }
 
     public HoaDonResponse layChiTietHoaDon(Integer maHoaDon) {
         HoaDon hoaDon = hoaDonRepository.findById(maHoaDon)
@@ -56,11 +54,11 @@ public class HoaDonService {
         return chuyenSangDto(hoaDon);
     }
 
-    public HoaDonResponse layTheoCode(String maHoaDonCode) {
-        HoaDon hoaDon = hoaDonRepository.findByMaHoaDonCode(maHoaDonCode)
-                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
-        return chuyenSangDto(hoaDon);
-    }
+//    public HoaDonResponse layTheoCode(String maHoaDonCode) {
+//        HoaDon hoaDon = hoaDonRepository.findByMaHoaDonCode(maHoaDonCode)
+//                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
+//        return chuyenSangDto(hoaDon);
+//    }
 
     @Transactional
     public HoaDonResponse taoHoaDon(HoaDonRequest request) {
@@ -78,30 +76,21 @@ public class HoaDonService {
             }
         }
 
-        KhachHang khachHang = null;
-        if (request.maKhachHang() != null) {
-            khachHang = khachHangRepository.findById(request.maKhachHang()).orElse(null);
-        }
-
-        NhanVien nhanVien = null;
-        if (request.maNhanVien() != null) {
-            nhanVien = nhanVienRepository.findById(request.maNhanVien()).orElse(null);
-        }
+//        KhachHang khachHang = null;
+//        if (request.maKhachHang() != null) {
+//            khachHang = khachHangRepository.findById(request.maKhachHang()).orElse(null);
+//        }
+//
+//        NhanVien nhanVien = null;
+//        if (request.maNhanVien() != null) {
+//            nhanVien = nhanVienRepository.findById(request.maNhanVien()).orElse(null);
+//        }
 
         String maCode = sinhMaHoaDonCode();
 
         HoaDon hoaDon = HoaDon.builder()
-                .maHoaDonCode(maCode)
-                .chiNhanh(chiNhanh)
                 .ban(ban)
-                .khachHang(khachHang)
-                .nhanVien(nhanVien)
-                .tenKhachHang(request.tenKhachHang())
-                .soDienThoai(request.soDienThoai())
-                .nguon(request.nguon() != null ? request.nguon() : "WALK_IN")
-                .trangThai(request.trangThai() != null ? request.trangThai() : "Chờ xử lý")
-                .tongTien(BigDecimal.ZERO)
-                .ngayLapHoaDon(LocalDateTime.now())
+                .nguon("WALK_IN")
                 .build();
 
         HoaDon savedHoaDon = hoaDonRepository.save(hoaDon);
@@ -153,13 +142,13 @@ public class HoaDonService {
             banRepository.save(ban);
         }
 
-        if (hoaDon.getKhachHang() != null && hoaDon.getTongTien() != null) {
-            KhachHang kh = hoaDon.getKhachHang();
-            int diemThem = hoaDon.getTongTien().divide(BigDecimal.valueOf(10000), java.math.RoundingMode.HALF_UP).intValue();
-            int currentDiem = kh.getDiemTichLuy() != null ? kh.getDiemTichLuy() : 0;
-            kh.setDiemTichLuy(currentDiem + diemThem);
-            khachHangRepository.save(kh);
-        }
+//        if (hoaDon.getKhachHang() != null && hoaDon.getTongTien() != null) {
+//            KhachHang kh = hoaDon.getKhachHang();
+//            int diemThem = hoaDon.getTongTien().divide(BigDecimal.valueOf(10000), java.math.RoundingMode.HALF_UP).intValue();
+//            int currentDiem = kh.getDiemTichLuy() != null ? kh.getDiemTichLuy() : 0;
+//            kh.setDiemTichLuy(currentDiem + diemThem);
+//            khachHangRepository.save(kh);
+//        }
 
         return chuyenSangDto(hoaDonRepository.save(hoaDon));
     }
@@ -217,29 +206,17 @@ public class HoaDonService {
                 ? hoaDon.getNgayLapHoaDon().format(FORMATTER)
                 : LocalDateTime.now().format(FORMATTER);
 
-        String tenNhanVien = null;
-        if (hoaDon.getNhanVien() != null && hoaDon.getNhanVien().getNguoiDung() != null) {
-            NguoiDung u = hoaDon.getNhanVien().getNguoiDung();
-            tenNhanVien = (u.getHo() != null ? u.getHo() + " " : "") + (u.getTen() != null ? u.getTen() : "");
-        }
+//        String tenNhanVien = null;
+//        if (hoaDon.getNhanVien() != null && hoaDon.getNhanVien().getNguoiDung() != null) {
+//            NguoiDung u = hoaDon.getNhanVien().getNguoiDung();
+//            tenNhanVien = (u.getHo() != null ? u.getHo() + " " : "") + (u.getTen() != null ? u.getTen() : "");
+//        }
 
         return HoaDonResponse.builder()
                 .maHoaDon(hoaDon.getMaHoaDon())
-                .maHoaDonCode(hoaDon.getMaHoaDonCode() != null ? hoaDon.getMaHoaDonCode() : "HD-" + hoaDon.getMaHoaDon())
-                .maChiNhanh(hoaDon.getChiNhanh() != null ? hoaDon.getChiNhanh().getMaChiNhanh() : null)
-                .tenChiNhanh(hoaDon.getChiNhanh() != null ? hoaDon.getChiNhanh().getTenChiNhanh() : "Quận 1")
-                .maBan(hoaDon.getBan() != null ? hoaDon.getBan().getMaBan() : null)
-                .soBan(hoaDon.getBan() != null ? hoaDon.getBan().getSoBan() : null)
-                .maKhachHang(hoaDon.getKhachHang() != null ? hoaDon.getKhachHang().getMaKhachHang() : null)
-                .tenKhachHang(hoaDon.getTenKhachHang())
-                .soDienThoai(hoaDon.getSoDienThoai())
-                .maNhanVien(hoaDon.getNhanVien() != null ? hoaDon.getNhanVien().getMaNhanVien() : null)
-                .tenNhanVien(tenNhanVien)
-                .nguon(hoaDon.getNguon() != null ? hoaDon.getNguon() : "WALK_IN")
-                .trangThai(hoaDon.getTrangThai() != null ? hoaDon.getTrangThai() : "Chờ xử lý")
-                .tongTien(hoaDon.getTongTien() != null ? hoaDon.getTongTien() : BigDecimal.ZERO)
+                .nguon(hoaDon.getNguon())
+                .tongTien(hoaDon.getTongTien())
                 .ngayLapHoaDon(hoaDon.getNgayLapHoaDon())
-                .thoiGianDinhDang(thoiGian)
                 .items(itemDtos)
                 .build();
     }

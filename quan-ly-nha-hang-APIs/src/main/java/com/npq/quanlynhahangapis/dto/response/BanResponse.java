@@ -10,6 +10,6 @@ public record BanResponse(
         Integer maChiNhanh,
         String tenChiNhanh,
         String trangThai,
-        String currentInvoice
+        String currentInvoice //todo ???
 ) {
 }

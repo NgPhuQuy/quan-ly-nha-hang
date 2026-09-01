@@ -15,47 +15,31 @@ function MenuSelection({
   onTiepTuc,
   onQuayLai,
 }) {
-  const [nhom, setNhom] = useState("Tất cả");
+  const [nhom, setNhom] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const kiemTraDanhMucKhop = (itemNhom, currentCategory) => {
-    if (currentCategory === "Tất cả") return true;
-    if (!itemNhom) return false;
-    const cat = itemNhom.toLowerCase();
-    if (
-      currentCategory === "Khai vị" &&
-      (cat.includes("khai vị") || cat.includes("starter"))
-    )
-      return true;
-    if (
-      currentCategory === "Món chính" &&
-      (cat.includes("món chính") ||
-        cat.includes("main") ||
-        cat.includes("mon_an"))
-    )
-      return true;
-    if (
-      currentCategory === "Tráng miệng" &&
-      (cat.includes("tráng miệng") || cat.includes("dessert"))
-    )
-      return true;
-    if (
-      currentCategory === "Đồ uống" &&
-      (cat.includes("uống") ||
-        cat.includes("drink") ||
-        cat.includes("thuc_uong"))
-    )
-      return true;
-    return itemNhom === currentCategory;
-  };
+  const loaiTabs = [
+    { key: "ALL", label: "Tất cả" },
+    { key: "MON_AN", label: "Món ăn" },
+    { key: "THUC_UONG", label: "Thức uống" },
+    { key: "DICH_VU", label: "Dịch vụ" },
+  ];
 
   const filteredItems = menuItems.filter((mon) => {
-    const matchesCat = kiemTraDanhMucKhop(mon.nhom || mon.danhMuc, nhom);
+    const loai =
+      mon.loaiMatHang ||
+      (mon.nhom === "Đồ uống" || mon.danhMuc === "Đồ uống"
+        ? "THUC_UONG"
+        : mon.nhom === "Dịch vụ" || mon.danhMuc === "Dịch vụ"
+          ? "DICH_VU"
+          : "MON_AN");
+
+    const matchesLoai = nhom === "ALL" || loai === nhom;
     const matchesSearch =
       !searchQuery ||
       mon.ten?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       mon.moTa?.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCat && matchesSearch;
+    return matchesLoai && matchesSearch;
   });
 
   const getSoLuong = (id) =>
@@ -64,36 +48,41 @@ function MenuSelection({
   const tangSoLuong = (mon) =>
     setSelectedItems((items) => {
       const daCo = items.find((item) => item.monAnId === mon.id);
-      return daCo
-        ? items.map((item) =>
-            item.monAnId === mon.id
-              ? { ...item, soLuong: item.soLuong + 1 }
-              : item,
-          )
-        : [...items, { monAnId: mon.id, soLuong: 1 }];
+
+      if (daCo) {
+        return items.map((item) =>
+          item.monAnId === mon.id
+            ? { ...item, soLuong: item.soLuong + 1 }
+            : item,
+        );
+      }
+
+      return [
+        ...items,
+        {
+          monAnId: mon.id,
+          soLuong: 1,
+          ten: mon.ten,
+          gia: mon.gia,
+        },
+      ];
     });
 
   const giamSoLuong = (mon) =>
     setSelectedItems((items) =>
-      items.flatMap((item) =>
-        item.monAnId !== mon.id
-          ? [item]
-          : item.soLuong > 1
-            ? [{ ...item, soLuong: item.soLuong - 1 }]
-            : [],
-      ),
+      items
+        .map((item) =>
+          item.monAnId === mon.id
+            ? { ...item, soLuong: item.soLuong - 1 }
+            : item,
+        )
+        .filter((item) => item.soLuong > 0),
     );
-
-  const categories = [
-    "Tất cả",
-    ...new Set(menuItems.map((m) => m.nhom || m.danhMuc).filter(Boolean)),
-  ];
 
   const totalPreorderItems = selectedItems.reduce(
     (sum, item) => sum + item.soLuong,
     0,
   );
-
   return (
     <div className="rounded-3xl p-5 sm:p-8 bg-black/40 border border-amber-500/20 backdrop-blur-md shadow-2xl space-y-6">
       <div>
@@ -101,7 +90,7 @@ function MenuSelection({
           Bước 3 / 4
         </div>
         <h1 className="font-serif text-2xl sm:text-3xl font-bold text-amber-100">
-          Đặt Trước Món Ăn (Tùy chọn)
+          Đặt Trước Món Ăn
         </h1>
         <div className="flex items-center gap-1.5 text-xs text-amber-200/60 mt-1">
           <Info size={13} className="text-amber-400 shrink-0" />
@@ -129,18 +118,18 @@ function MenuSelection({
         </div>
 
         <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-          {categories.map((category) => (
+          {loaiTabs.map((tab) => (
             <button
-              key={category}
+              key={tab.key}
               type="button"
-              onClick={() => setNhom(category)}
-              className={`whitespace-nowrap px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                nhom === category
+              onClick={() => setNhom(tab.key)}
+              className={`whitespace-nowrap px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                nhom === tab.key
                   ? "bg-amber-400 text-black font-bold shadow-md shadow-amber-400/20"
                   : "bg-white/5 text-amber-200/70 border border-white/10 hover:bg-white/10"
               }`}
             >
-              {category}
+              {tab.label}
             </button>
           ))}
         </div>
@@ -168,23 +157,23 @@ function MenuSelection({
               <img
                 src={mon.anh}
                 alt={mon.ten}
-                className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl object-cover shrink-0 bg-[#1a120a]"
+                className="w-16 h-16 object-cover rounded-xl border border-white/10"
               />
 
-              <div className="min-w-0 flex-1">
+              <div className="flex-1 min-w-0">
                 <h4 className="font-serif text-sm sm:text-base font-bold text-amber-100 leading-snug">
                   {mon.ten}
                 </h4>
-                <p className="text-[11px] sm:text-xs text-amber-200/50 line-clamp-1 mt-0.5">
-                  {mon.moTa ||
-                    "Món ngon tinh hoa chế biến từ nguyên liệu cao cấp."}
-                </p>
+                {mon.moTa && (
+                  <p className="text-[11px] sm:text-xs text-amber-200/50 line-clamp-1 mt-0.5">
+                    {mon.moTa}
+                  </p>
+                )}
                 <div className="mt-1.5 font-serif text-xs sm:text-sm font-bold text-amber-300">
                   {Number(mon.gia || 0).toLocaleString("vi-VN")}₫
                 </div>
               </div>
 
-              {/* Stepper Buttons */}
               <div className="flex items-center gap-2 shrink-0 bg-black/40 p-1.5 rounded-xl border border-white/10">
                 <button
                   type="button"

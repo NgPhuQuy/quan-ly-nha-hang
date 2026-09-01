@@ -12,7 +12,6 @@ public record NguoiDungRequest(
         @NotBlank(message = "Mật khẩu không được để trống!")
         @Size(min = 8, message = "Mật khẩu tối thiểu 8 ký tự!")
         String matKhau,
-        MultipartFile avatar,
         String ho,
         String ten,
         @Email(message = "Email không hợp lệ!")

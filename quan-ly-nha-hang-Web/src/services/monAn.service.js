@@ -34,6 +34,14 @@ const normalizeMenuItem = (data, index, defaultCategory = "Món chính") => {
     data.image ||
     DEFAULT_MENU_IMAGES[index % DEFAULT_MENU_IMAGES.length];
 
+  const rawLoai =
+    data.loaiMatHang ||
+    (data.danhMuc === "Đồ uống" || data.category === "Đồ uống" || data.nhom === "Đồ uống"
+      ? "THUC_UONG"
+      : data.danhMuc === "Dịch vụ" || data.category === "Dịch vụ" || data.nhom === "Dịch vụ"
+        ? "DICH_VU"
+        : "MON_AN");
+
   return {
     id: rawId,
     maMatHang: rawId,
@@ -44,6 +52,7 @@ const normalizeMenuItem = (data, index, defaultCategory = "Món chính") => {
     gia: rawGia,
     price: rawGia,
     giaMatHang: rawGia,
+    loaiMatHang: rawLoai,
     anh: rawAnh,
     image: rawAnh,
     anhMinhHoa: rawAnh,

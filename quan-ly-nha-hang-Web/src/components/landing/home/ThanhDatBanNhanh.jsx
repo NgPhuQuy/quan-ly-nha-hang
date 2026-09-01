@@ -66,6 +66,18 @@ function ThanhDatBanNhanh({ onDatBan }) {
   }, []);
 
   const handleQuickBook = () => {
+    try {
+      sessionStorage.setItem(
+        "5s_quick_booking",
+        JSON.stringify({
+          branchId: selectedBranch,
+          date: selectedDate,
+          guestCount,
+        }),
+      );
+    } catch {
+      // ignore
+    }
     onDatBan?.();
   };
 

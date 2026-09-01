@@ -301,21 +301,22 @@ function Branches() {
                   </button>
                 </td>
                 <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1">
                     <button
+                      type="button"
                       onClick={() => handleOpenEdit(b)}
-                      className="text-xs font-600 hover:underline flex items-center gap-1"
-                      style={{
-                        color: "var(--primary)",
-                      }}
+                      className="p-1.5 rounded-lg text-amber-700 hover:bg-amber-100/60 transition-colors cursor-pointer"
+                      title="Sửa chi nhánh"
                     >
-                      <Edit2 size={12} /> Sửa
+                      <Edit2 size={16} strokeWidth={2} />
                     </button>
                     <button
+                      type="button"
                       onClick={() => handleDelete(b)}
-                      className="text-xs font-600 hover:underline flex items-center gap-1 text-red-500"
+                      className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                      title="Xóa chi nhánh"
                     >
-                      <Trash2 size={12} /> Xóa
+                      <Trash2 size={16} strokeWidth={2} />
                     </button>
                   </div>
                 </td>

@@ -23,8 +23,6 @@ public class NguoiDung {
 
     private String matKhau;
 
-    private String avatar;
-
     @Column(length = 30)
     private String ho;
 
@@ -45,4 +43,6 @@ public class NguoiDung {
 
     @Builder.Default
     private Boolean trangThai = true;
+
+    private String vaiTro;
 }

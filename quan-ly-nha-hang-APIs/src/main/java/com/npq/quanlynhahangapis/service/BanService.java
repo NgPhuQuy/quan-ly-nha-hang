@@ -20,13 +20,7 @@ public class BanService {
     private final BanRepository banRepository;
     private final ChiNhanhRepository chiNhanhRepository;
 
-    public List<BanResponse> layDSBan(Integer maChiNhanh) {
-        if (maChiNhanh != null) {
-            return banRepository.findByChiNhanh_MaChiNhanh(maChiNhanh)
-                    .stream()
-                    .map(this::chuyenSangDto)
-                    .toList();
-        }
+    public List<BanResponse> layDSBan() {
         return banRepository.findAll()
                 .stream()
                 .map(this::chuyenSangDto)
@@ -59,16 +53,11 @@ public class BanService {
 
     @Transactional
     public BanResponse taoBan(BanRequest request) {
-        ChiNhanh chiNhanh = null;
-        if (request.maChiNhanh() != null) {
-            chiNhanh = chiNhanhRepository.findById(request.maChiNhanh())
+        ChiNhanh chiNhanh = chiNhanhRepository.findById(request.maChiNhanh())
                     .orElseThrow(() -> new AppException(ErrorCode.BRANCH_NOT_FOUND));
-        }
 
         Ban ban = Ban.builder()
-                .soBan(request.soBan())
-                .sucChua(request.sucChua() != null ? request.sucChua() : 4)
-                .trangThai(request.trangThai() != null ? request.trangThai() : "Trống")
+                .sucChua(request.sucChua())
                 .chiNhanh(chiNhanh)
                 .build();
 
@@ -79,15 +68,15 @@ public class BanService {
     public BanResponse capNhatBan(Integer maBan, BanRequest request) {
         Ban ban = banRepository.findById(maBan)
                 .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
-
-        if (request.soBan() != null) ban.setSoBan(request.soBan());
-        if (request.sucChua() != null) ban.setSucChua(request.sucChua());
-        if (request.trangThai() != null) ban.setTrangThai(request.trangThai());
-        if (request.maChiNhanh() != null) {
-            ChiNhanh chiNhanh = chiNhanhRepository.findById(request.maChiNhanh())
-                    .orElseThrow(() -> new AppException(ErrorCode.BRANCH_NOT_FOUND));
-            ban.setChiNhanh(chiNhanh);
-        }
+//
+//        if (request.soBan() != null) ban.setSoBan(request.soBan());
+//        if (request.sucChua() != null) ban.setSucChua(request.sucChua());
+//        if (request.trangThai() != null) ban.setTrangThai(request.trangThai());
+//        if (request.maChiNhanh() != null) {
+//            ChiNhanh chiNhanh = chiNhanhRepository.findById(request.maChiNhanh())
+//                    .orElseThrow(() -> new AppException(ErrorCode.BRANCH_NOT_FOUND));
+//            ban.setChiNhanh(chiNhanh);
+//        }
 
         return chuyenSangDto(banRepository.save(ban));
     }
@@ -111,11 +100,10 @@ public class BanService {
     public BanResponse chuyenSangDto(Ban ban) {
         return BanResponse.builder()
                 .maBan(ban.getMaBan())
-                .soBan(ban.getSoBan())
                 .sucChua(ban.getSucChua())
-                .maChiNhanh(ban.getChiNhanh() != null ? ban.getChiNhanh().getMaChiNhanh() : null)
-                .tenChiNhanh(ban.getChiNhanh() != null ? ban.getChiNhanh().getTenChiNhanh() : "5S Dining")
-                .trangThai(ban.getTrangThai() != null ? ban.getTrangThai() : "Trống")
+                .maChiNhanh(ban.getChiNhanh().getMaChiNhanh())
+                .tenChiNhanh(ban.getChiNhanh().getTenChiNhanh())
+                .trangThai(ban.getTrangThai())
                 .build();
     }
 }

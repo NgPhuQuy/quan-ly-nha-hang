@@ -15,7 +15,6 @@ const BaoCao = lazy(() => import("../pages/quanLy/BaoCao"));
 const ChiNhanh = lazy(() => import("../pages/quanLy/ChiNhanh"));
 const TaiKhoan = lazy(() => import("../pages/quanLy/TaiKhoan"));
 const KhachHang = lazy(() => import("../pages/quanLy/KhachHang"));
-const DanhMucMon = lazy(() => import("../pages/quanLy/DanhMucMon"));
 const DanhSachBan = lazy(() => import("../pages/quanLy/DanhSachBan"));
 const DatLich = lazy(() => import("../pages/quanLy/DatLich"));
 const KhuyenMai = lazy(() => import("../pages/quanLy/KhuyenMai"));
@@ -26,14 +25,13 @@ const pageTitles = {
   invoices: "Hóa đơn",
   "create-invoice": "Tạo hóa đơn",
   "invoice-detail": "Chi tiết hóa đơn",
-  food: "Món ăn",
+  food: "Mặt hàng & Món ăn",
   "income-expense": "Thu chi",
   reports: "Báo cáo",
   tables: "Bàn",
   branches: "Chi nhánh",
   users: "Tài khoản",
   customers: "Khách hàng",
-  categories: "Danh mục món",
   bookings: "Đặt lịch",
   promotions: "Khuyến mãi",
   settings: "Cài đặt",
@@ -51,7 +49,6 @@ const pages = {
   branches: ChiNhanh,
   users: TaiKhoan,
   customers: KhachHang,
-  categories: DanhMucMon,
   bookings: DatLich,
   promotions: KhuyenMai,
   settings: CaiDat,
@@ -115,8 +112,8 @@ export default function QuanLyApp({
 
   return (
     <div
-      className="flex h-screen overflow-hidden"
-      style={{ background: "var(--background)" }}
+      className="flex h-screen overflow-hidden text-[#2a1a0d]"
+      style={{ background: "var(--background)", color: "var(--foreground)" }}
     >
       <Sidebar
         activePage={page}

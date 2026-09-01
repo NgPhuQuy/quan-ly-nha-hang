@@ -32,10 +32,10 @@ public class DatLichController {
         return ResponseEntity.ok(datLichService.layTheoId(maDatLich));
     }
 
-    @GetMapping("/tra-cuu/{code}")
-    public ResponseEntity<?> traCuuDatLich(@PathVariable String code) {
-        return ResponseEntity.ok(datLichService.traCuu(code));
-    }
+//    @GetMapping("/tra-cuu/{code}")
+//    public ResponseEntity<?> traCuuDatLich(@PathVariable String code) {
+//        return ResponseEntity.ok(datLichService.traCuu(code));
+//    }
 
     @GetMapping("/khung-gio")
     public ResponseEntity<?> layKhungGio(

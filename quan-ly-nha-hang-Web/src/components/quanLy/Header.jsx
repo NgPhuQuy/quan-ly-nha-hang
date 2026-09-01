@@ -1,5 +1,6 @@
 import { Bell, ChevronDown } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
+import { chuanHoaVaiTro } from "../../services/xacThuc.service";
 
 function Header({ title, role }) {
   const { user: nguoiDung } = useAuth();
@@ -16,12 +17,13 @@ function Header({ title, role }) {
     nguoiDung?.taiKhoan ||
     (role === "admin" ? "Admin 5S" : "Quản lý 5S");
   const tenVietTat = tenHienThi.slice(0, 2).toUpperCase();
+  const vRole = chuanHoaVaiTro(nguoiDung?.vaiTro || nguoiDung?.role);
   const tenVaiTro =
-    nguoiDung?.vaiTro === "ADMIN"
+    vRole === "ADMIN"
       ? "Quản trị viên"
-      : nguoiDung?.vaiTro === "QUANLY"
+      : vRole === "QUANLY"
         ? "Quản lý chi nhánh"
-        : nguoiDung?.vaiTro === "NHANVIEN"
+        : vRole === "NHANVIEN"
           ? "Nhân viên POS"
           : role === "admin"
             ? "Quản trị viên"

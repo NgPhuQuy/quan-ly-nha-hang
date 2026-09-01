@@ -3,6 +3,8 @@ package com.npq.quanlynhahangapis.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Entity
 @Builder
 @Getter
@@ -13,9 +15,6 @@ public class Ban {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer maBan;
-
-    @Column(length = 20)
-    private String soBan;
     private Integer sucChua;
 
     @Builder.Default

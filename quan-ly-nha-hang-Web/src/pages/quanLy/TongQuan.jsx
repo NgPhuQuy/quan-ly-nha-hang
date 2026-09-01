@@ -77,10 +77,22 @@ function DashboardKpiCard({ label, value, sub, icon: Icon, color }) {
 
 const PIE_COLORS = ["#D4962B", "#EEC97A"];
 const tooltipStyle = {
-  background: "#fff",
-  border: "1px solid var(--border)",
-  borderRadius: 8,
-  fontSize: 12,
+  backgroundColor: "#18110a",
+  border: "1px solid rgba(212,150,43,0.35)",
+  borderRadius: "10px",
+  fontSize: "12px",
+  color: "#fef3c7",
+  boxShadow: "0 10px 25px rgba(0,0,0,0.45)",
+  padding: "8px 12px",
+};
+const tooltipLabelStyle = {
+  color: "#fbbf24",
+  fontWeight: 700,
+  marginBottom: "4px",
+};
+const tooltipItemStyle = {
+  color: "#fde68a",
+  fontSize: "12px",
 };
 const statusBadge = {
   "Hoàn thành": "var(--success)",
@@ -335,6 +347,8 @@ function Dashboard({ role, onNavigate }) {
               />
               <Tooltip
                 contentStyle={tooltipStyle}
+                labelStyle={tooltipLabelStyle}
+                itemStyle={tooltipItemStyle}
                 formatter={(v) => [dinhDangTien(v), "Doanh thu"]}
               />
               <Area
@@ -406,6 +420,8 @@ function Dashboard({ role, onNavigate }) {
                   />
                   <Tooltip
                     contentStyle={tooltipStyle}
+                    labelStyle={tooltipLabelStyle}
+                    itemStyle={tooltipItemStyle}
                     formatter={(v) => [dinhDangTien(v), "Doanh thu"]}
                   />
                   <Bar dataKey="revenue" fill="#D4962B" radius={[0, 4, 4, 0]} />
@@ -418,7 +434,7 @@ function Dashboard({ role, onNavigate }) {
                 }}
               >
                 {revenueByBranch.map((b) => (
-                  <div className="flex justify-between text-xs">
+                  <div className="flex justify-between text-xs" key={b.branch}>
                     <span
                       style={{
                         color: "var(--foreground)",
@@ -446,7 +462,7 @@ function Dashboard({ role, onNavigate }) {
                   color: "var(--foreground)",
                 }}
               >
-                Theo nguá»“n
+                Theo nguồn
               </div>
               <div
                 className="text-xs mb-2"
@@ -468,11 +484,13 @@ function Dashboard({ role, onNavigate }) {
                     dataKey="value"
                   >
                     {revenueBySource.map((_, i) => (
-                      <Cell fill={PIE_COLORS[i]} />
+                      <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip
                     contentStyle={tooltipStyle}
+                    labelStyle={tooltipLabelStyle}
+                    itemStyle={tooltipItemStyle}
                     formatter={(v) => [dinhDangTien(v)]}
                   />
                 </PieChart>

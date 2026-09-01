@@ -10,13 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DatLichRepository extends JpaRepository<DatLich, Integer> {
-    List<DatLich> findByChiNhanh_MaChiNhanhAndNgay(Integer maChiNhanh, LocalDate ngay);
-
     List<DatLich> findByChiNhanh_MaChiNhanhAndNgayAndTrangThaiNotIn(
             Integer maChiNhanh, LocalDate ngay, Collection<TrangThaiDatLich> excludedStatuses
     );
 
-    Optional<DatLich> findByMaDatLichCode(String maDatLichCode);
 
-    List<DatLich> findByChiNhanh_MaChiNhanh(Integer maChiNhanh);
 }

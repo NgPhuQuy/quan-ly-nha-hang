@@ -20,33 +20,23 @@ public class HoaDon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer maHoaDon;
 
-    @Column(length = 30)
-    private String maHoaDonCode;
+    @ManyToOne
+    @JoinColumn(name = "ma_nhan_vien")
+    private NguoiDung nhanVien;
 
     @ManyToOne
-    @JoinColumn(name = "ma_nhan_vien", nullable = true)
-    private NhanVien nhanVien;
-
-    @ManyToOne
-    @JoinColumn(name = "ma_khach_hang", nullable = true)
-    private KhachHang khachHang;
+    @JoinColumn(name = "ma_khach_hang")
+    private NguoiDung khachHang;
 
     @ManyToOne
     @JoinColumn(name = "ma_ban", nullable = true)
     private Ban ban;
 
-    @ManyToOne
-    @JoinColumn(name = "ma_chi_nhanh", nullable = true)
-    private ChiNhanh chiNhanh;
-
-    private String tenKhachHang;
-    private String soDienThoai;
+    @Builder.Default
+    private String nguon = "WALK_IN";//todo can nhac chinh ve enum hoac bo han
 
     @Builder.Default
-    private String nguon = "WALK_IN"; // "WALK_IN", "ONLINE"
-
-    @Builder.Default
-    private String trangThai = "Chờ xử lý"; // "Hoàn thành", "Chờ xử lý", "Đã hủy"
+    private String trangThai = "Chờ xử lý";
 
     @Column(precision = 14, scale = 2)
     @Builder.Default
@@ -55,7 +45,6 @@ public class HoaDon {
     @CreationTimestamp
     private LocalDateTime ngayLapHoaDon;
 
-    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<ChiTietHoaDon> listChiTietHoaDon = new ArrayList<>();
+    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChiTietHoaDon> listChiTietHoaDon;
 }

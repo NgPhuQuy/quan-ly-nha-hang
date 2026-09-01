@@ -72,9 +72,4 @@ public class JwtUtil {
             return false;
         }
     }
-
-    public String layTaiKhoanTuToken(String token) {
-        Claims claims = layTatCaClaim(token);
-        return claims.getSubject();
-    }
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, TrendingUp, TrendingDown } from "lucide-react";
+import { Plus, TrendingUp, TrendingDown, Trash2 } from "lucide-react";
 import {
   layDanhSachThuChi,
   taoThuChi,
@@ -328,13 +328,12 @@ function IncomeExpense() {
                 </td>
                 <td className="px-4 py-3">
                   <button
-                    className="text-xs hover:underline"
-                    style={{
-                      color: "#DC2626",
-                    }}
+                    type="button"
+                    className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                    title="Xóa giao dịch"
                     onClick={() => handleDelete(t)}
                   >
-                    Xóa
+                    <Trash2 size={16} strokeWidth={2} />
                   </button>
                 </td>
               </tr>

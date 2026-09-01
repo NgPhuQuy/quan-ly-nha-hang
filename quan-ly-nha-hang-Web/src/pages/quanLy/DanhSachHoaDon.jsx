@@ -48,7 +48,7 @@ function Invoices({ role, onNavigate, onSelectInvoice }) {
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const selectStyle =
-    "text-sm border rounded-lg px-3 py-1.5 outline-none bg-white";
+    "text-sm border rounded-lg px-3 py-1.5 outline-none bg-white text-stone-800 focus:border-amber-500 font-medium";
   return (
     <div className="p-5 flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -72,7 +72,7 @@ function Invoices({ role, onNavigate, onSelectInvoice }) {
         </div>
         <button
           onClick={() => onNavigate("create-invoice")}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-600 hover:opacity-90"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-600 hover:opacity-90 cursor-pointer shadow-sm"
           style={{
             background: "var(--primary)",
             color: "white",
@@ -85,10 +85,7 @@ function Invoices({ role, onNavigate, onSelectInvoice }) {
         <div className="relative">
           <Search
             size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2"
-            style={{
-              color: "var(--muted-foreground)",
-            }}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"
           />
           <input
             type="text"
@@ -98,7 +95,7 @@ function Invoices({ role, onNavigate, onSelectInvoice }) {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="text-sm border rounded-lg pl-8 pr-3 py-1.5 w-48 outline-none bg-white"
+            className="text-sm border rounded-lg pl-8 pr-3 py-1.5 w-48 outline-none bg-white text-stone-800 placeholder:text-stone-400 focus:border-amber-500 font-medium"
             style={{
               borderColor: "var(--border)",
             }}

@@ -111,6 +111,17 @@ html {
     font: inherit;
   }
 
+  input,
+  textarea,
+  select {
+    color: var(--foreground);
+  }
+
+  ::placeholder {
+    color: #8c6d48;
+    opacity: 0.65;
+  }
+
   button {
     cursor: pointer;
   }

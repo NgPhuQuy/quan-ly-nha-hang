@@ -27,11 +27,5 @@ public class ChiNhanh {
     private List<GioHoatDong> listGioHoatDong;
 
     @OneToMany(mappedBy = "chiNhanh")
-    private List<QuanLy> quanLy;
-
-    @OneToMany(mappedBy = "chiNhanh")
-    private List<NhanVien> listNhanVien;
-
-    @OneToMany(mappedBy = "chiNhanh")
     private List<Ban> listBan;
 }

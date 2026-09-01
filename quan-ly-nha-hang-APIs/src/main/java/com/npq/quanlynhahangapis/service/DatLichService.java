@@ -3,6 +3,7 @@ package com.npq.quanlynhahangapis.service;
 import com.npq.quanlynhahangapis.dto.request.DatLichRequest;
 import com.npq.quanlynhahangapis.dto.request.DatTruocRequest;
 import com.npq.quanlynhahangapis.dto.response.DatLichResponse;
+import com.npq.quanlynhahangapis.dto.response.DatTruocResponse;
 import com.npq.quanlynhahangapis.dto.response.KhungGioResponse;
 import com.npq.quanlynhahangapis.entity.*;
 import com.npq.quanlynhahangapis.entity.enums.TrangThaiDatLich;
@@ -21,10 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,11 +32,11 @@ public class DatLichService {
     private static final int SLOT_INTERVAL_MINUTES = 30;
     private static final int BOOKING_DURATION_HOURS = 2;
 
+    private final NguoiDungRepository nguoiDungRepository;
     private final DatTruocRepository datTruocRepository;
     private final MatHangRepository matHangRepository;
     private final DatLichRepository datLichRepository;
     private final GioHoatDongRepository gioHoatDongRepository;
-    private final KhachHangRepository khachHangRepository;
     private final BanRepository banRepository;
     private final ChiNhanhService chiNhanhService;
     private final DatTruocService datTruocService;
@@ -46,26 +44,22 @@ public class DatLichService {
 
     @Transactional
     public DatLichResponse datLich(DatLichRequest request) {
-        if (request == null || request.maChiNhanh() == null || request.ngay() == null
-                || request.gio() == null || request.soKhach() == null || request.soKhach() <= 0) {
-            throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
-        }
-
         if (request.ngay().isBefore(LocalDate.now())) {
             throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
         }
 
-        KhachHang khachHang = null;
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null && authentication.isAuthenticated()
-                    && !"anonymousUser".equals(authentication.getPrincipal())) {
-                if (authentication.getPrincipal() instanceof Integer userId) {
-                    khachHang = khachHangRepository.findById(userId).orElse(null);
-                }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        assert authentication != null;
+        String username = Objects.requireNonNull(authentication.getPrincipal()).toString();
+        if (authentication != null && authentication.isAuthenticated()
+                && !"anonymousUser".equals(authentication.getPrincipal())) {
+            if (authentication.getPrincipal() instanceof Integer userId) {
+                NguoiDung nguoiDung = nguoiDungRepository.findById(userId).orElse(null);
             }
-        } catch (Exception ignored) {
         }
+
+        NguoiDung nguoiDung = nguoiDungRepository.findById((Integer) authentication.getPrincipal())
+                .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_FOUND)) ;
 
         ChiNhanh chiNhanh = chiNhanhService.layChiNhanhTheoId(request.maChiNhanh());
 
@@ -97,26 +91,16 @@ public class DatLichService {
             throw new AppException(ErrorCode.CAPACITY_EXCEEDED);
         }
 
-        String dichVuStr = (request.dichVuBoSung() != null && !request.dichVuBoSung().isEmpty())
-                ? String.join(",", request.dichVuBoSung())
-                : null;
+
 
         String maCode = sinhMaDatLichCode(request.ngay().getYear());
 
         DatLich datLich = DatLich.builder()
-                .maDatLichCode(maCode)
-                .khachHang(khachHang)
                 .chiNhanh(chiNhanh)
-                .hoTen(request.hoTen())
-                .soDienThoai(request.soDienThoai())
-                .email(request.email())
-                .dip(request.dip())
-                .dichVuBoSung(dichVuStr)
                 .ngay(request.ngay())
                 .gio(request.gio())
                 .soKhach(request.soKhach())
                 .ghiChu(request.ghiChu())
-                .trangThai(TrangThaiDatLich.CHO_XAC_NHAN)
                 .build();
 
         DatLich savedDatLich = datLichRepository.save(datLich);
@@ -195,22 +179,19 @@ public class DatLichService {
                 .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND)));
     }
 
-    public DatLichResponse traCuu(String codeOrId) {
-        if (codeOrId == null || codeOrId.isBlank()) {
-            throw new AppException(ErrorCode.SOURCE_NOT_FOUND);
-        }
-        return datLichRepository.findByMaDatLichCode(codeOrId.trim())
-                .or(() -> {
-                    try {
-                        Integer id = Integer.parseInt(codeOrId.trim());
-                        return datLichRepository.findById(id);
-                    } catch (NumberFormatException e) {
-                        return java.util.Optional.empty();
-                    }
-                })
-                .map(this::chuyenSangDto)
-                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
-    }
+//    public DatLichResponse traCuu(String codeOrId) {
+//        return datLichRepository.findByMaDatLichCode(codeOrId.trim())
+//                .or(() -> {
+//                    try {
+//                        Integer id = Integer.parseInt(codeOrId.trim());
+//                        return datLichRepository.findById(id);
+//                    } catch (NumberFormatException e) {
+//                        return java.util.Optional.empty();
+//                    }
+//                })
+//                .map(this::chuyenSangDto)
+//                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
+//    }
 
     @Transactional
     public DatLichResponse capNhatTrangThai(Integer maDatLich, TrangThaiDatLich trangThai, Integer maBan) {
@@ -220,11 +201,6 @@ public class DatLichService {
         if (trangThai != null) {
             datLich.setTrangThai(trangThai);
         }
-        if (maBan != null) {
-            Ban ban = banRepository.findById(maBan)
-                    .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
-            datLich.setBan(ban);
-        }
         return chuyenSangDto(datLichRepository.save(datLich));
     }
 
@@ -233,14 +209,10 @@ public class DatLichService {
         DatLich datLich = datLichRepository.findById(maDatLich)
                 .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
 
-        if (request.hoTen() != null) datLich.setHoTen(request.hoTen());
-        if (request.soDienThoai() != null) datLich.setSoDienThoai(request.soDienThoai());
-        if (request.email() != null) datLich.setEmail(request.email());
         if (request.ngay() != null) datLich.setNgay(request.ngay());
         if (request.gio() != null) datLich.setGio(request.gio());
         if (request.soKhach() != null) datLich.setSoKhach(request.soKhach());
         if (request.ghiChu() != null) datLich.setGhiChu(request.ghiChu());
-        if (request.dip() != null) datLich.setDip(request.dip());
 
         return chuyenSangDto(datLichRepository.save(datLich));
     }
@@ -287,33 +259,20 @@ public class DatLichService {
     }
 
     private DatLichResponse chuyenSangDto(DatLich dto) {
-        List<String> dichVuList = (dto.getDichVuBoSung() != null && !dto.getDichVuBoSung().isBlank())
-                ? Arrays.asList(dto.getDichVuBoSung().split(","))
-                : new ArrayList<>();
+        List<DatTruocResponse> listDatTruoc = dto.getListDatTruoc()
+                .stream()
+                .map(datTruocService::chuyenSangDto)
+                .toList();
 
         return DatLichResponse.builder()
                 .maDatLich(dto.getMaDatLich())
-                .maDatLichCode(dto.getMaDatLichCode())
-                .maChiNhanh(dto.getChiNhanh() != null ? dto.getChiNhanh().getMaChiNhanh() : null)
-                .tenChiNhanh(dto.getChiNhanh() != null ? dto.getChiNhanh().getTenChiNhanh() : null)
-                .hoTen(dto.getHoTen())
-                .soDienThoai(dto.getSoDienThoai())
-                .email(dto.getEmail())
-                .dip(dto.getDip())
-                .dichVuBoSung(dichVuList)
+                .maChiNhanh(dto.getChiNhanh().getMaChiNhanh())
                 .ngay(dto.getNgay())
                 .gio(dto.getGio())
                 .soKhach(dto.getSoKhach())
                 .ghiChu(dto.getGhiChu())
                 .trangThai(dto.getTrangThai())
-                .maBan(dto.getBan() != null ? dto.getBan().getMaBan() : null)
-                .soBan(dto.getBan() != null ? dto.getBan().getSoBan() : null)
-                .listDatTruoc(dto.getListDatTruoc() != null
-                        ? dto.getListDatTruoc()
-                        .stream()
-                        .map(datTruocService::chuyenSangDto)
-                        .toList()
-                        : new ArrayList<>())
+                .listDatTruoc(listDatTruoc)
                 .build();
     }
-}
+}

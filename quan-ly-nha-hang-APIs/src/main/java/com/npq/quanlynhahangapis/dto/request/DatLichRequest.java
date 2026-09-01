@@ -21,14 +21,7 @@ public record DatLichRequest(
         @Min(value = 1, message = "Số lượng khách tối thiểu là 1!")
         Integer soKhach,
         String ghiChu,
-        @NotBlank(message = "Họ tên không được để trống!")
-        String hoTen,
-        @NotBlank(message = "Số điện thoại không được để trống!")
-        @Pattern(regexp = "^0\\d{9}$", message = "Số điện thoại không hợp lệ!")
-        String soDienThoai,
-        String email,
         String dip,
-        List<String> dichVuBoSung,
         List<@Valid DatTruocRequest> listDatTruoc
 ) {
 }

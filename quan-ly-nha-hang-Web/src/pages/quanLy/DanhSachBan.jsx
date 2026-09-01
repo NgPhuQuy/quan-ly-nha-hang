@@ -298,18 +298,20 @@ function Tables() {
               {/* Nút Edit & Delete xuất hiện khi hover */}
               <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
+                  type="button"
                   onClick={(e) => handleOpenEdit(table, e)}
-                  className="p-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  className="p-1.5 rounded-lg bg-white/90 hover:bg-amber-100 text-amber-800 shadow-sm transition-all cursor-pointer"
                   title="Sửa bàn"
                 >
-                  <Edit2 size={11} />
+                  <Edit2 size={16} strokeWidth={2} />
                 </button>
                 <button
+                  type="button"
                   onClick={(e) => handleDelete(table, e)}
-                  className="p-1 rounded bg-red-100 hover:bg-red-200 text-red-600"
+                  className="p-1.5 rounded-lg bg-white/90 hover:bg-red-100 text-red-600 shadow-sm transition-all cursor-pointer"
                   title="Xóa bàn"
                 >
-                  <Trash2 size={11} />
+                  <Trash2 size={16} strokeWidth={2} />
                 </button>
               </div>
 

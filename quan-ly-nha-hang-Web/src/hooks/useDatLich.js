@@ -10,10 +10,32 @@ import { useAuth } from "../contexts/AuthContext";
 
 export function useDatLich() {
   const { user } = useAuth();
+
+  const layNgayDiaPhuong = (d = new Date()) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+
+  const homNayStr = layNgayDiaPhuong();
+
+  const savedBooking = (() => {
+    try {
+      const s = sessionStorage.getItem("5s_quick_booking");
+      if (s) return JSON.parse(s);
+    } catch {
+      return null;
+    }
+    return null;
+  })();
+
   const [step, setStep] = useState(1);
-  const [branchId, setBranchId] = useState("");
-  const [date, setDate] = useState("");
-  const [guestCount, setGuestCount] = useState(2);
+  const [branchId, setBranchId] = useState(savedBooking?.branchId || "");
+  const [date, setDate] = useState(savedBooking?.date || homNayStr);
+  const [guestCount, setGuestCount] = useState(
+    savedBooking?.guestCount ? Number(savedBooking.guestCount) : 2,
+  );
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [guestDetails, setGuestDetails] = useState({

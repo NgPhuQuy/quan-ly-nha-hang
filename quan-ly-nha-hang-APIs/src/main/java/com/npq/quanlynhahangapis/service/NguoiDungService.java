@@ -5,7 +5,6 @@ import com.npq.quanlynhahangapis.dto.request.NguoiDungCapNhatRequest;
 import com.npq.quanlynhahangapis.dto.request.NguoiDungRequest;
 import com.npq.quanlynhahangapis.dto.response.DangNhapResponse;
 import com.npq.quanlynhahangapis.dto.response.NguoiDungResponse;
-import com.npq.quanlynhahangapis.entity.KhachHang;
 import com.npq.quanlynhahangapis.entity.NguoiDung;
 import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
@@ -26,10 +25,6 @@ import java.util.List;
 public class NguoiDungService {
     private final PasswordEncoder passwordEncoder;
     private final NguoiDungRepository nguoiDungRepository;
-    private final AdminRepository adminRepository;
-    private final QuanLyRepository quanLyRepository;
-    private final KhachHangRepository khachHangRepository;
-    private final NhanVienRepository nhanVienRepository;
     private final CloudinaryService cloudinaryService;
     private final JwtUtil jwtUtil;
 
@@ -76,12 +71,9 @@ public class NguoiDungService {
         if (nguoiDungRepository.existsBySoDienThoai(dto.soDienThoai()))
             throw new AppException(ErrorCode.PHONE_EXISTED);
 
-        String avatarUrl = cloudinaryService.taiAnhLenCloudinary(dto.avatar());
-
         NguoiDung nguoiDung = NguoiDung.builder()
                 .taiKhoan(dto.taiKhoan())
                 .matKhau(passwordEncoder.encode(dto.matKhau()))
-                .avatar(avatarUrl)
                 .ho(dto.ho())
                 .ten(dto.ten())
                 .email(dto.email())
@@ -90,11 +82,11 @@ public class NguoiDungService {
 
         nguoiDungRepository.save(nguoiDung);
 
-        KhachHang khachHang = KhachHang.builder()
-                .nguoiDung(nguoiDung)
-                .build();
-
-        khachHangRepository.save(khachHang);
+//        KhachHang khachHang = KhachHang.builder()
+//                .nguoiDung(nguoiDung)
+//                .build();
+//
+//        khachHangRepository.save(khachHang);
 
         return chuyenSangDto(nguoiDung);
     }
@@ -105,7 +97,7 @@ public class NguoiDungService {
             String token = jwtUtil.taoToken(
                     nguoiDung.getMaNguoiDung(),
                     nguoiDung.getTaiKhoan(),
-                    this.layVaiTro(nguoiDung.getMaNguoiDung())
+                    nguoiDung.getVaiTro()
             );
             return DangNhapResponse.builder()
                     .token(token)
@@ -119,39 +111,39 @@ public class NguoiDungService {
         return passwordEncoder.matches(matKhau, nguoiDung.getMatKhau());
     }
 
-    public String layVaiTro(Integer maNguoiDung) {
-        if (adminRepository.existsById(maNguoiDung)) return "ADMIN";
-        if (quanLyRepository.existsById(maNguoiDung)) return "QUANLY";
-        if (nhanVienRepository.existsById(maNguoiDung)) return "NHANVIEN";
-        if (khachHangRepository.existsById(maNguoiDung)) return "KHACHHANG";
-        throw new AppException(ErrorCode.ROLE_NOT_FOUND);
-    }
+//    public String layVaiTro(Integer maNguoiDung) {
+//        if (adminRepository.existsById(maNguoiDung)) return "ADMIN";
+//        if (quanLyRepository.existsById(maNguoiDung)) return "QUANLY";
+//        if (nhanVienRepository.existsById(maNguoiDung)) return "NHANVIEN";
+//        if (khachHangRepository.existsById(maNguoiDung)) return "KHACHHANG";
+//        throw new AppException(ErrorCode.ROLE_NOT_FOUND);
+//    }
 
     private NguoiDungResponse chuyenSangDto(NguoiDung nguoiDung) {
 
         // todo check
-        String vaiTro = "KHACHHANG";
-        try {
-            vaiTro = layVaiTro(nguoiDung.getMaNguoiDung());
-        } catch (Exception ignored) {
-        }
+//        String vaiTro = "KHACHHANG";
+//        try {
+//            vaiTro = layVaiTro(nguoiDung.getMaNguoiDung());
+//        } catch (Exception ignored) {
+//        }
+//
+//        String vaiTroHienThi = "ADMIN".equals(vaiTro) ? "Admin"
+//                : "QUANLY".equals(vaiTro) ? "Quản lý"
+//                  : "NHANVIEN".equals(vaiTro) ? "Nhân viên" : "Khách hàng";
 
-        String vaiTroHienThi = "ADMIN".equals(vaiTro) ? "Admin"
-                : "QUANLY".equals(vaiTro) ? "Quản lý"
-                  : "NHANVIEN".equals(vaiTro) ? "Nhân viên" : "Khách hàng";
-
-        String chiNhanh = "Quận 1";
-        if ("QUANLY".equals(vaiTro)) {
-            var ql = quanLyRepository.findById(nguoiDung.getMaNguoiDung()).orElse(null);
-            if (ql != null && ql.getChiNhanh() != null) {
-                chiNhanh = ql.getChiNhanh().getTenChiNhanh();
-            }
-        } else if ("NHANVIEN".equals(vaiTro)) {
-            var nv = nhanVienRepository.findById(nguoiDung.getMaNguoiDung()).orElse(null);
-            if (nv != null && nv.getChiNhanh() != null) {
-                chiNhanh = nv.getChiNhanh().getTenChiNhanh();
-            }
-        }
+//        String chiNhanh = "Quận 1";
+//        if ("QUANLY".equals(vaiTro)) {
+//            var ql = quanLyRepository.findById(nguoiDung.getMaNguoiDung()).orElse(null);
+//            if (ql != null && ql.getChiNhanh() != null) {
+//                chiNhanh = ql.getChiNhanh().getTenChiNhanh();
+//            }
+//        } else if ("NHANVIEN".equals(vaiTro)) {
+//            var nv = nhanVienRepository.findById(nguoiDung.getMaNguoiDung()).orElse(null);
+//            if (nv != null && nv.getChiNhanh() != null) {
+//                chiNhanh = nv.getChiNhanh().getTenChiNhanh();
+//            }
+//        }
 
         String hoTen = ((nguoiDung.getHo() != null ? nguoiDung.getHo() + " " : "")
                 + (nguoiDung.getTen() != null ? nguoiDung.getTen() : "")).trim();
@@ -160,17 +152,15 @@ public class NguoiDungService {
         return NguoiDungResponse.builder()
                 .maNguoiDung(nguoiDung.getMaNguoiDung())
                 .taiKhoan(nguoiDung.getTaiKhoan())
-                .avatar(nguoiDung.getAvatar())
                 .ho(nguoiDung.getHo())
                 .ten(nguoiDung.getTen())
                 .hoTen(hoTen)
                 .email(nguoiDung.getEmail())
                 .soDienThoai(nguoiDung.getSoDienThoai())
-                .vaiTro(vaiTroHienThi)
-                .chiNhanh(chiNhanh)
+                .vaiTro(nguoiDung.getVaiTro())
                 .ngayTao(nguoiDung.getNgayTao())
                 .ngayCapNhat(nguoiDung.getNgayCapNhat())
-                .trangThai(nguoiDung.getTrangThai() != null && nguoiDung.getTrangThai())
+                .trangThai(nguoiDung.getTrangThai())
                 .build();
     }
 

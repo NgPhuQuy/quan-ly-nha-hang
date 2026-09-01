@@ -10,21 +10,13 @@ import java.util.List;
 @Builder
 public record DatLichResponse(
         Integer maDatLich,
-        String maDatLichCode,
         Integer maChiNhanh,
-        String tenChiNhanh,
-        String hoTen,
-        String soDienThoai,
-        String email,
-        String dip,
-        List<String> dichVuBoSung,
+        Integer maKhachHang,
         LocalDate ngay,
         LocalTime gio,
         Integer soKhach,
         String ghiChu,
         TrangThaiDatLich trangThai,
-        Integer maBan,
-        String soBan,
         List<DatTruocResponse> listDatTruoc
 ) {
 }

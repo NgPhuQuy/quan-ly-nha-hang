@@ -10,7 +10,6 @@ import {
   Building2,
   Users,
   UserCircle,
-  LayoutGrid,
   CalendarDays,
   Ticket,
   TableProperties,
@@ -77,11 +76,6 @@ const adminNav = [
     id: "food",
     label: "Món ăn",
     icon: Utensils,
-  },
-  {
-    id: "categories",
-    label: "Danh mục món",
-    icon: LayoutGrid,
   },
   {
     id: "tables",

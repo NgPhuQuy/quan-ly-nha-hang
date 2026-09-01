@@ -357,21 +357,22 @@ function Users() {
                     </button>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1">
                       <button
+                        type="button"
                         onClick={() => handleOpenEdit(u)}
-                        className="text-xs font-600 hover:underline flex items-center gap-1"
-                        style={{
-                          color: "var(--primary)",
-                        }}
+                        className="p-1.5 rounded-lg text-amber-700 hover:bg-amber-100/60 transition-colors cursor-pointer"
+                        title="Sửa tài khoản"
                       >
-                        <Edit2 size={12} /> Sửa
+                        <Edit2 size={16} strokeWidth={2} />
                       </button>
                       <button
-                        className="text-xs font-600 hover:underline flex items-center gap-1 text-red-500"
+                        type="button"
+                        className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                        title="Xóa tài khoản"
                         onClick={() => handleDelete(u)}
                       >
-                        <Trash2 size={12} /> Xóa
+                        <Trash2 size={16} strokeWidth={2} />
                       </button>
                     </div>
                   </td>

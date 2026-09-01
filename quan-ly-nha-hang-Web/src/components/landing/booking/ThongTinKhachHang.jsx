@@ -9,7 +9,19 @@ import {
   ArrowLeft,
   Check,
   Gift,
+  Flower2,
+  Cake,
+  Wine,
+  Camera,
 } from "lucide-react";
+
+const getServiceIcon = (id, bieuTuong) => {
+  if (id === "hoa" || (bieuTuong && bieuTuong.includes("🌷"))) return Flower2;
+  if (id === "banh" || (bieuTuong && bieuTuong.includes("🎂"))) return Cake;
+  if (id === "ruou" || (bieuTuong && bieuTuong.includes("🍷"))) return Wine;
+  if (id === "anh" || (bieuTuong && bieuTuong.includes("📸"))) return Camera;
+  return Sparkles;
+};
 
 function GuestDetails({
   additionalServices,
@@ -176,6 +188,10 @@ function GuestDetails({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {additionalServices.map((service) => {
                 const isSelected = selectedServices.includes(service.id);
+                const ServiceIcon = getServiceIcon(
+                  service.id,
+                  service.bieuTuong,
+                );
                 return (
                   <div
                     key={service.id}
@@ -196,8 +212,9 @@ function GuestDetails({
                       >
                         {isSelected && <Check size={12} strokeWidth={3} />}
                       </div>
+                      <ServiceIcon size={14} className="text-amber-400 shrink-0" />
                       <span className="text-xs font-medium">
-                        {service.bieuTuong} {service.ten}
+                        {service.ten}
                       </span>
                     </div>
                     <span className="font-serif text-xs font-bold text-amber-300">

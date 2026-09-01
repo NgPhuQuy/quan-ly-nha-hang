@@ -41,11 +41,10 @@ function CreateInvoice({ onNavigate }) {
   const [selectedPromo, setSelectedPromo] = useState("");
 
   const [search, setSearch] = useState("");
-  const [catFilter, setCatFilter] = useState("Tất cả");
+  const [catFilter, setCatFilter] = useState("ALL");
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
-
   // Load Chi nhánh & Khuyến mãi ban đầu
   useEffect(() => {
     layDanhSachChiNhanh().then((res) => {
@@ -75,13 +74,15 @@ function CreateInvoice({ onNavigate }) {
     }
   }, [selectedBranchId]);
 
-  const categories = [
-    "Tất cả",
-    ...new Set(allFoods.map((f) => f.category).filter(Boolean)),
+  const loaiTabs = [
+    { key: "ALL", label: "Tất cả" },
+    { key: "MON_AN", label: "Món ăn" },
+    { key: "THUC_UONG", label: "Thức uống" },
+    { key: "DICH_VU", label: "Dịch vụ" },
   ];
 
   const foods = allFoods.filter((f) => {
-    if (catFilter !== "Tất cả" && f.category !== catFilter) return false;
+    if (catFilter !== "ALL" && f.loaiMatHang !== catFilter) return false;
     if (search && !f.name.toLowerCase().includes(search.toLowerCase()))
       return false;
     return true;
@@ -252,19 +253,23 @@ function CreateInvoice({ onNavigate }) {
             />
           </div>
           <div className="flex items-center gap-1.5 flex-wrap">
-            {categories.map((cat) => (
+            {loaiTabs.map((tab) => (
               <button
-                key={cat}
-                onClick={() => setCatFilter(cat)}
-                className="px-3 py-1 rounded-full text-xs font-500 transition-colors"
+                key={tab.key}
+                onClick={() => setCatFilter(tab.key)}
+                className="px-3 py-1 rounded-full text-xs font-500 transition-colors cursor-pointer"
                 style={{
                   background:
-                    catFilter === cat ? "var(--primary)" : "var(--secondary)",
+                    catFilter === tab.key
+                      ? "var(--primary)"
+                      : "var(--secondary)",
                   color:
-                    catFilter === cat ? "white" : "var(--secondary-foreground)",
+                    catFilter === tab.key
+                      ? "white"
+                      : "var(--secondary-foreground)",
                 }}
               >
-                {cat}
+                {tab.label}
               </button>
             ))}
           </div>
