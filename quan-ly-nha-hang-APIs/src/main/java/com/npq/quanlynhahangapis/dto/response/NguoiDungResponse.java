@@ -1,6 +1,7 @@
 package com.npq.quanlynhahangapis.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.npq.quanlynhahangapis.entity.enums.VaiTro;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -10,14 +11,11 @@ import java.time.LocalDateTime;
 public record NguoiDungResponse(
         Integer maNguoiDung,
         String taiKhoan,
-        String avatar,
         String ho,
         String ten,
-        String hoTen, //todo bo?
         String email,
         String soDienThoai,
-        String vaiTro,
-        String chiNhanh,
+        VaiTro vaiTro,
         LocalDateTime ngayTao,
         LocalDateTime ngayCapNhat,
         boolean trangThai

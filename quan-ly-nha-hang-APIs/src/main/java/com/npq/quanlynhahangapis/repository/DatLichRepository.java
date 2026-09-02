@@ -19,7 +19,7 @@ public interface DatLichRepository extends JpaRepository<DatLich, Integer> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT d FROM DatLich d WHERE d.chiNhanh.maChiNhanh = :maChiNhanh " +
-           "AND d.ngay = :ngay AND d.trangThai NOT IN :trangThaiLoaiTru")
+            "AND d.ngay = :ngay AND d.trangThai NOT IN :trangThaiLoaiTru")
     List<DatLich> findByChiNhanh_MaChiNhanhAndNgayAndTrangThaiNotInForUpdate(
             @Param("maChiNhanh") Integer maChiNhanh,
             @Param("ngay") LocalDate ngay,

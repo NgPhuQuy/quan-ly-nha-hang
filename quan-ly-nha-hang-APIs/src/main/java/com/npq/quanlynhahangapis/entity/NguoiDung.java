@@ -1,5 +1,6 @@
 package com.npq.quanlynhahangapis.entity;
 
+import com.npq.quanlynhahangapis.entity.enums.VaiTro;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -44,5 +45,7 @@ public class NguoiDung {
     @Builder.Default
     private Boolean trangThai = true;
 
-    private String vaiTro;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private VaiTro vaiTro = VaiTro.KHACH_HANG;
 }

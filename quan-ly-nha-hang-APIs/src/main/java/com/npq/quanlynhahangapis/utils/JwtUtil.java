@@ -1,5 +1,6 @@
 package com.npq.quanlynhahangapis.utils;
 
+import com.npq.quanlynhahangapis.entity.enums.VaiTro;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -26,7 +27,7 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String taoToken(Integer maNguoiDung, String taiKhoan, String vaiTro) {
+    public String taoToken(Integer maNguoiDung, String taiKhoan, VaiTro vaiTro) {
         return Jwts.builder()
                 .subject(taiKhoan)
                 .claim("maNguoiDung", maNguoiDung)

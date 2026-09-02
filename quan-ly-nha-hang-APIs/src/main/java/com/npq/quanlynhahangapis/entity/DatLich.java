@@ -34,7 +34,7 @@ public class DatLich {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private TrangThaiDatLich trangThai = TrangThaiDatLich.THANH_CONG;
+    private TrangThaiDatLich trangThai = TrangThaiDatLich.CHO_XAC_NHAN;
 
     @OneToMany(mappedBy = "datLich", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DatTruoc> listDatTruoc;

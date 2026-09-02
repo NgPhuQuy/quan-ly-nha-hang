@@ -2,6 +2,7 @@ package com.npq.quanlynhahangapis.service;
 
 import com.npq.quanlynhahangapis.dto.request.DatLichRequest;
 import com.npq.quanlynhahangapis.dto.request.DatTruocRequest;
+import com.npq.quanlynhahangapis.dto.request.TrangThaiDatLichRequest;
 import com.npq.quanlynhahangapis.dto.response.DatLichResponse;
 import com.npq.quanlynhahangapis.dto.response.DatTruocResponse;
 import com.npq.quanlynhahangapis.dto.response.KhungGioResponse;
@@ -9,7 +10,7 @@ import com.npq.quanlynhahangapis.entity.*;
 import com.npq.quanlynhahangapis.entity.enums.TrangThaiDatLich;
 import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
-import com.npq.quanlynhahangapis.repository.*;
+import com.npq.quanlynhahangapis.repository.DatLichRepository;
 import com.npq.quanlynhahangapis.utils.JwtUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -33,28 +33,21 @@ public class DatLichService {
     private static final int BOOKING_DURATION_HOURS = 2;
 
     private final NguoiDungService nguoiDungService;
-    private final NguoiDungRepository nguoiDungRepository;
-    private final DatTruocRepository datTruocRepository;
-    private final MatHangRepository matHangRepository;
     private final DatLichRepository datLichRepository;
-    private final GioHoatDongRepository gioHoatDongRepository;
-    private final BanRepository banRepository;
     private final ChiNhanhService chiNhanhService;
     private final DatTruocService datTruocService;
     private final JwtUtil jwtUtil;
 
     @Transactional
     public DatLichResponse datLich(DatLichRequest request, Integer maNguoiDung) {
-        // Giai doan 1: validate dau vao
         validateThoiGianDat(request.ngay(), request.gio());
-
-        // Giai doan 2: lay du lieu tham chieu
         NguoiDung nguoiDung = nguoiDungService.layNguoiDungTheoId(maNguoiDung);
         ChiNhanh chiNhanh = chiNhanhService.layChiNhanhTheoId(request.maChiNhanh());
-        GioHoatDong gioHoatDong = layGioHoatDong(request.maChiNhanh(), request.ngay());
 
         // Giai doan 3: validate nghiep vu
-        validateSucChuaToiDa(chiNhanh, request.soKhach());
+        if (request.soKhach() > chiNhanh.getSucChua()) {
+            throw new AppException(ErrorCode.CAPACITY_EXCEEDED);
+        }
         LocalTime gioKetThuc = validateKhungGioHoatDong(gioHoatDong, request.gio());
 
         // Giai doan 4: kiem tra va giu cho
@@ -73,13 +66,6 @@ public class DatLichService {
         }
         if (ngay.isEqual(LocalDate.now()) && gio.isBefore(LocalTime.now())) {
             throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
-        }
-    }
-
-    private void validateSucChuaToiDa(ChiNhanh chiNhanh, Integer soKhach) {
-        if (chiNhanh.getSucChua() == null || chiNhanh.getSucChua() <= 0
-                || soKhach > chiNhanh.getSucChua()) {
-            throw new AppException(ErrorCode.CAPACITY_EXCEEDED);
         }
     }
 
@@ -116,7 +102,6 @@ public class DatLichService {
                 .gio(request.gio())
                 .soKhach(request.soKhach())
                 .ghiChu(request.ghiChu())
-                .trangThai(TrangThaiDatLich.THANH_CONG)
                 .build();
 
         return datLichRepository.save(datLich);
@@ -205,14 +190,15 @@ public class DatLichService {
 //                .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
 //    }
 
-    @Transactional
-    public DatLichResponse capNhatTrangThai(Integer maDatLich, TrangThaiDatLich trangThai, Integer maBan) {
-        DatLich datLich = datLichRepository.findById(maDatLich)
+    public DatLich layDatLichTheoId(Integer maDatLich) {
+        return datLichRepository.findById(maDatLich)
                 .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
+    }
 
-        if (trangThai != null) {
-            datLich.setTrangThai(trangThai);
-        }
+    @Transactional
+    public DatLichResponse capNhatTrangThai(Integer maDatLich, TrangThaiDatLichRequest trangThai) {
+        DatLich datLich = layDatLichTheoId(maDatLich);
+        datLich.setTrangThai(trangThai.trangThai());
         return chuyenSangDto(datLichRepository.save(datLich));
     }
 
@@ -229,13 +215,6 @@ public class DatLichService {
         return chuyenSangDto(datLichRepository.save(datLich));
     }
 
-    @Transactional
-    public void xoaDatLich(Integer maDatLich) {
-        if (!datLichRepository.existsById(maDatLich)) {
-            throw new AppException(ErrorCode.SOURCE_NOT_FOUND);
-        }
-        datLichRepository.deleteById(maDatLich);
-    }
 
     private GioHoatDong layGioHoatDong(Integer maChiNhanh, LocalDate ngay) {
         DayOfWeek thu = ngay.getDayOfWeek();

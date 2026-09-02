@@ -12,7 +12,6 @@ public record MatHangResponse(
         String anhMinhHoa,
         BigDecimal giaMatHang,
         LoaiMatHang loaiMatHang,
-        String trangThai,
-        String danhMuc
+        String trangThai
 ) {
 }

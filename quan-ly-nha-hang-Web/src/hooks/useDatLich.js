@@ -114,36 +114,45 @@ export function useDatLich() {
     );
 
   const handleDatLich = async () => {
+    const preorderedItems = [
+      ...(selectedItems || []).map((item) => ({
+        maMatHang: Number(String(item.monAnId || item.id).replace(/\D/g, "")),
+        soLuong: Number(item.soLuong) || 1,
+      })),
+      ...(selectedServices || []).map((serviceId) => ({
+        maMatHang: Number(String(serviceId).replace(/\D/g, "")),
+        soLuong: 1,
+      })),
+    ].filter((item) => item.maMatHang && item.soLuong > 0);
+
     const payload = {
       maChiNhanh: Number(String(branchId).replace(/\D/g, "")) || 1,
       ngay: date,
       gio: selectedTime.length === 5 ? `${selectedTime}:00` : selectedTime,
-      soKhach: guestCount,
-      ghiChu: guestDetails.ghiChu,
-      hoTen: guestDetails.hoTen,
-      soDienThoai: guestDetails.soDienThoai,
-      email: guestDetails.email,
-      dip: guestDetails.dip,
-      dichVuBoSung: selectedServices,
-      listDatTruoc: selectedItems.map((item) => ({
-        maMatHang: Number(String(item.monAnId).replace(/\D/g, "")),
-        soLuong: item.soLuong,
-      })),
+      soKhach: Number(guestCount) || 2,
+      ghiChu: guestDetails.ghiChu ? guestDetails.ghiChu.trim() : "",
+      dip: guestDetails.dip || "khong",
+      listDatTruoc: preorderedItems.length > 0 ? preorderedItems : null,
     };
 
     try {
       const result = await taoDatLich(payload);
       setBookingCode(
         result.maDatLichCode ||
-          result.maDatLich ||
+          (result.maDatLich ? `BK-${result.maDatLich}` : null) ||
           result.maDatBan ||
           `5S-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
       );
       setStep(5);
     } catch (error) {
       console.error("Lỗi đặt bàn:", error);
+      const serverMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message;
       window.alert(
-        "Đặt bàn chưa thành công. Vui lòng kiểm tra lại thông tin và thử lại!",
+        serverMessage ||
+          "Đặt bàn chưa thành công. Vui lòng kiểm tra lại thông tin và thử lại!",
       );
     }
   };

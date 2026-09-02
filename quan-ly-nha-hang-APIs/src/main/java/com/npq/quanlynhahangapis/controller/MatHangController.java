@@ -22,7 +22,7 @@ public class MatHangController {
 
     @GetMapping("/mat-hang/{maMatHang}")
     public ResponseEntity<?> chiTietMatHang(@PathVariable Integer maMatHang) {
-        return ResponseEntity.ok(matHangService.layMatHangTheoId(maMatHang));
+        return ResponseEntity.ok(matHangService.chiTietMatHang(maMatHang));
     }
 
     @PostMapping(path = "/mat-hang", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -31,17 +31,9 @@ public class MatHangController {
     }
 
     @PutMapping(path = "/mat-hang/{maMatHang}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> capNhatMatHang(
-            @PathVariable Integer maMatHang,
-            @ModelAttribute @Valid MatHangRequest request
-    ) {
+    public ResponseEntity<?> capNhatMatHang(@PathVariable Integer maMatHang,
+                                            @ModelAttribute @Valid MatHangRequest request) {
         return ResponseEntity.ok(matHangService.capNhatMatHang(maMatHang, request));
-    }
-
-    @DeleteMapping("/mat-hang/{maMatHang}")
-    public ResponseEntity<?> xoaMatHang(@PathVariable Integer maMatHang) {
-        matHangService.xoaMatHang(maMatHang);
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/chi-nhanh/{maChiNhanh}/mon-an")

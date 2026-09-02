@@ -1,7 +1,7 @@
 package com.npq.quanlynhahangapis.controller;
 
-import com.npq.quanlynhahangapis.dto.request.CapNhatTrangThaiDatLichRequest;
 import com.npq.quanlynhahangapis.dto.request.DatLichRequest;
+import com.npq.quanlynhahangapis.dto.request.TrangThaiDatLichRequest;
 import com.npq.quanlynhahangapis.service.DatLichService;
 import jakarta.validation.Valid;
 import lombok.Getter;
@@ -54,15 +54,9 @@ public class DatLichController {
     }
 
     @PatchMapping("/{maDatLich}/trang-thai")
-    public ResponseEntity<?> capNhatTrangThai(
-            @PathVariable Integer maDatLich,
-            @RequestBody @Valid CapNhatTrangThaiDatLichRequest request
-    ) {
-        return ResponseEntity.ok(datLichService.capNhatTrangThai(
-                maDatLich,
-                request.trangThai(),
-                request.maBan()
-        ));
+    public ResponseEntity<?> capNhatTrangThai(@PathVariable Integer maDatLich,
+                                              @RequestBody @Valid TrangThaiDatLichRequest request) {
+        return ResponseEntity.ok(datLichService.capNhatTrangThai(maDatLich, request));
     }
 
     @PutMapping("/{maDatLich}")
@@ -73,9 +67,4 @@ public class DatLichController {
         return ResponseEntity.ok(datLichService.capNhatDatLich(maDatLich, request));
     }
 
-    @DeleteMapping("/{maDatLich}")
-    public ResponseEntity<?> xoaDatLich(@PathVariable Integer maDatLich) {
-        datLichService.xoaDatLich(maDatLich);
-        return ResponseEntity.noContent().build();
-    }
 }

@@ -101,18 +101,12 @@ function TrangXacThuc({
       });
 
       if (ketQua.thanhCong) {
-        setThongBaoThanhCong("Đăng ký thành công! Đang tự động đăng nhập...");
-        // Auto login after register
+        // Tu dong dang nhap truc tiep
         const loginRes = await dangNhap(regTaiKhoan, regMatKhau);
-        if (loginRes.thanhCong) {
-          setTimeout(() => {
-            onDangNhapThanhCong?.(loginRes.user);
-          }, 1000);
-        } else {
-          setTab("login");
-          setTaiKhoan(regTaiKhoan);
-        }
+        onDangNhapThanhCong?.(loginRes.user);
       } else {
+        setTab("login");
+        setTaiKhoan(regTaiKhoan);
         setThongBaoLoi(
           ketQua.thongBao || "Đăng ký thất bại, vui lòng thử lại!",
         );
