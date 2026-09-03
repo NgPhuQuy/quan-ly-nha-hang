@@ -11,8 +11,7 @@ public record ChiTietHoaDonResponse(
         String tenMatHang,
         String anhMinhHoa,
         Integer soLuong,
-        BigDecimal donGia,
-        BigDecimal thanhTien
+        BigDecimal donGia
 ) {
 }
 

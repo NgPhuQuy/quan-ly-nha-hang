@@ -16,18 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChiNhanhService {
     private final ChiNhanhRepository chiNhanhRepository;
-    private final GioHoatDongService gioHoatDongService;
     private final TrangThaiMatHangChiNhanhService trangThaiMatHangChiNhanhService;
     private final CloudinaryService cloudinaryService;
-
-    public List<ChiNhanhResponse> layDSChiNhanh() {
-        return chiNhanhRepository
-                .findAll()
-                .stream()
-                .filter(ChiNhanh::isTrangThai)
-                .map(this::chuyenSangDto)
-                .toList();
-    }
 
     public List<ChiNhanhResponse> layTatCaChiNhanh() {
         return chiNhanhRepository
@@ -51,7 +41,7 @@ public class ChiNhanhService {
                 .maChiNhanh(chiNhanh.getMaChiNhanh())
                 .tenChiNhanh(chiNhanh.getTenChiNhanh())
                 .trangThaiChiNhanh(chiNhanh.isTrangThai())
-                .sucChua(chiNhanh.getSucChua())
+                .soLuongDon(chiNhanh.getSoLuongDon())
                 .soDienThoai(chiNhanh.getSoDienThoai())
                 .diaChi(chiNhanh.getDiaChi())
                 .anhChiNhanh(chiNhanh.getAnhChiNhanh())
@@ -64,14 +54,13 @@ public class ChiNhanhService {
 
         ChiNhanh chiNhanh = ChiNhanh.builder()
                 .tenChiNhanh(request.tenChiNhanh())
-                .sucChua(request.sucChua())
+                .soLuongDon(request.soLuongDon())
                 .soDienThoai(request.soDienThoai())
                 .diaChi(request.diaChi())
                 .anhChiNhanh(url)
                 .build();
         chiNhanh = chiNhanhRepository.save(chiNhanh);
 
-        gioHoatDongService.thoiGianMacDinh(chiNhanh);
         trangThaiMatHangChiNhanhService.sinhTrangThaiMatHangMacDinh(chiNhanh);
 
         return chuyenSangDto(chiNhanh);
@@ -82,7 +71,7 @@ public class ChiNhanhService {
         ChiNhanh chiNhanh = layChiNhanhTheoId(maChiNhanh);
 
         chiNhanh.setTenChiNhanh(request.tenChiNhanh());
-        chiNhanh.setSucChua(request.sucChua());
+        chiNhanh.setSoLuongDon(request.soLuongDon());
         chiNhanh.setSoDienThoai(request.soDienThoai());
         chiNhanh.setDiaChi(request.diaChi());
 

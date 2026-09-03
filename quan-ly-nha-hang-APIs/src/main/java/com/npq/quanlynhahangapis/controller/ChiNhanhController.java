@@ -17,15 +17,7 @@ public class ChiNhanhController {
     private final ChiNhanhService chiNhanhService;
 
     @GetMapping
-    public ResponseEntity<?> danhSachChiNhanh(@RequestParam(required = false, defaultValue = "false") boolean all) {
-        if (all) {
-            return ResponseEntity.ok(chiNhanhService.layTatCaChiNhanh());
-        }
-        return ResponseEntity.ok(chiNhanhService.layDSChiNhanh());
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<?> danhSachTatCaChiNhanh() {
+    public ResponseEntity<?> danhSachChiNhanh() {
         return ResponseEntity.ok(chiNhanhService.layTatCaChiNhanh());
     }
 

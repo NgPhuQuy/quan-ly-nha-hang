@@ -19,7 +19,6 @@ public record DatLichRequest(
         @Min(value = 1, message = "Số lượng khách tối thiểu là 1!")
         Integer soKhach,
         String ghiChu,
-        String dip,
         List<@Valid DatTruocRequest> listDatTruoc
 ) {
 }

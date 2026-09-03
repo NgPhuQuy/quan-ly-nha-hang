@@ -16,7 +16,7 @@ public class Ban {
     private Integer sucChua;
 
     @Builder.Default
-    private String trangThai = "Trống";
+    private Boolean trangThai = true;
 
     @ManyToOne()
     @JoinColumn(name = "ma_chi_nhanh", nullable = false)

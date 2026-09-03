@@ -9,7 +9,7 @@ public record BanResponse(
         Integer sucChua,
         Integer maChiNhanh,
         String tenChiNhanh,
-        String trangThai,
+        Boolean trangThai,
         String currentInvoice //todo ???
 ) {
 }

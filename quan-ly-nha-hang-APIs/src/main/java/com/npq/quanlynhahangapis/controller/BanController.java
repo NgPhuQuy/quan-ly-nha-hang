@@ -8,8 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
@@ -19,6 +17,11 @@ public class BanController {
     @GetMapping("/ban")
     public ResponseEntity<?> danhSachTatCaBan() {
         return ResponseEntity.ok(banService.layDSBan());
+    }
+
+    @GetMapping("/chi-nhanh/{maChiNhanh}/ban")
+    public ResponseEntity<?> danhSachBanCuaChiNhanh(@PathVariable Integer maChinhanh) {
+        return ResponseEntity.ok(banService.layDSBanCuaChiNhanh(maChinhanh));
     }
 
     @GetMapping("/ban/{maBan}")
@@ -37,17 +40,7 @@ public class BanController {
     }
 
     @PatchMapping("/ban/{maBan}/trang-thai")
-    public ResponseEntity<?> doiTrangThaiBan(
-            @PathVariable Integer maBan,
-            @RequestBody Map<String, String> body
-    ) {
-        String trangThai = body.getOrDefault("trangThai", body.get("status"));
-        return ResponseEntity.ok(banService.doiTrangThaiBan(maBan, trangThai));
-    }
-
-    @DeleteMapping("/ban/{maBan}")
-    public ResponseEntity<?> xoaBan(@PathVariable Integer maBan) {
-        banService.xoaBan(maBan);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> doiTrangThaiBan(@PathVariable Integer maBan) {
+        return ResponseEntity.ok(banService.doiTrangThaiBan(maBan));
     }
 }

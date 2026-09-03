@@ -17,53 +17,53 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @RestController
-@RequestMapping("/dat-lich")
+@RequestMapping
 @RequiredArgsConstructor
 public class DatLichController {
 
     private final DatLichService datLichService;
 
-    @GetMapping
+    @GetMapping("/dat-lich")
     public ResponseEntity<?> danhSachDatLich() {
         return ResponseEntity.ok(datLichService.layDSDatLich());
     }
 
-    @GetMapping("/{maDatLich}")
+    @GetMapping("/chi-nhanh/{maChiNhanh}/dat-lich")
+    public ResponseEntity<?> danhSachDatLichTheoChiNhanh(@PathVariable Integer maChiNhanh) {
+        return ResponseEntity.ok(datLichService.layDSDatLichTheoChiNhanh(maChiNhanh));
+    }
+
+    @GetMapping("/dat-lich/{maDatLich}")
     public ResponseEntity<?> chiTietDatLich(@PathVariable Integer maDatLich) {
         return ResponseEntity.ok(datLichService.layTheoId(maDatLich));
     }
 
-//    @GetMapping("/tra-cuu/{code}")
-//    public ResponseEntity<?> traCuuDatLich(@PathVariable String code) {
-//        return ResponseEntity.ok(datLichService.traCuu(code));
-//    }
-
-    @GetMapping("/khung-gio")
-    public ResponseEntity<?> layKhungGio(
-            @RequestParam Integer maChiNhanh,
-            @RequestParam LocalDate ngay,
-            @RequestParam Integer soKhach
-    ) {
-        return ResponseEntity.ok(datLichService.layKhungGio(maChiNhanh, ngay, soKhach));
+    @GetMapping("/dat-lich/me")
+    public ResponseEntity<?> danhSachDatLichCuaToi(@AuthenticationPrincipal Integer maNguoiDung) {
+        return ResponseEntity.ok(datLichService.danhSachDatLichCuaToi(maNguoiDung));
     }
 
-    @PostMapping
+    @GetMapping("/dat-lich/khung-gio")
+    public ResponseEntity<?> layKhungGio(@RequestParam Integer maChiNhanh,
+                                         @RequestParam LocalDate ngay) {
+        return ResponseEntity.ok(datLichService.layKhungGio(maChiNhanh, ngay));
+    }
+
+    @PostMapping("/dat-lich")
     public ResponseEntity<?> datLich(@RequestBody @Valid DatLichRequest request,
                                      @AuthenticationPrincipal Integer maNguoiDung) {
         return ResponseEntity.status(HttpStatus.CREATED).body(datLichService.datLich(request, maNguoiDung));
     }
 
-    @PatchMapping("/{maDatLich}/trang-thai")
+    @PatchMapping("/dat-lich/{maDatLich}/trang-thai")
     public ResponseEntity<?> capNhatTrangThai(@PathVariable Integer maDatLich,
                                               @RequestBody @Valid TrangThaiDatLichRequest request) {
         return ResponseEntity.ok(datLichService.capNhatTrangThai(maDatLich, request));
     }
 
-    @PutMapping("/{maDatLich}")
-    public ResponseEntity<?> capNhatDatLich(
-            @PathVariable Integer maDatLich,
-            @RequestBody @Valid DatLichRequest request
-    ) {
+    @PutMapping("/dat-lich/{maDatLich}")
+    public ResponseEntity<?> capNhatDatLich(@PathVariable Integer maDatLich,
+                                            @RequestBody @Valid DatLichRequest request) {
         return ResponseEntity.ok(datLichService.capNhatDatLich(maDatLich, request));
     }
 

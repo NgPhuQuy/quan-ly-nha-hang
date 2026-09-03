@@ -24,7 +24,8 @@ public enum ErrorCode {
     CAPACITY_EXCEEDED(400, "Chi nhánh không đủ chỗ cho khung giờ này"),
     INVALID_BOOKING_TIME(400, "Thời gian đặt lịch hoặc kết thúc vượt quá giờ hoạt động"),
     FILE_MUST_BE_IMAGE(400, "File tải lên phải là hình ảnh"),
-    FAIL_TO_UPLOAD(400, "Tải ảnh lên thất bại");
+    FAIL_TO_UPLOAD(400, "Tải ảnh lên thất bại"),
+    INVALID_TABLE(400, "Bàn đang đang được phục vụ");
 
     private final int status;
     private final String message;

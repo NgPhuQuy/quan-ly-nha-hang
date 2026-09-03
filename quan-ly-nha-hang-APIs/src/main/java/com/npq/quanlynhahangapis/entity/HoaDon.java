@@ -1,5 +1,6 @@
 package com.npq.quanlynhahangapis.entity;
 
+import com.npq.quanlynhahangapis.entity.enums.TrangThaiHoaDon;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,21 +22,18 @@ public class HoaDon {
 
     @ManyToOne
     @JoinColumn(name = "ma_nhan_vien")
-    private NguoiDung nhanVien;
+    private NguoiDung nguoiLapHoaDon;
 
     @ManyToOne
     @JoinColumn(name = "ma_khach_hang")
     private NguoiDung khachHang;
 
     @ManyToOne
-    @JoinColumn(name = "ma_ban", nullable = true)
+    @JoinColumn(name = "ma_ban")
     private Ban ban;
 
     @Builder.Default
-    private String nguon = "WALK_IN";//todo can nhac chinh ve enum hoac bo han
-
-    @Builder.Default
-    private String trangThai = "Chờ xử lý";
+    private TrangThaiHoaDon trangThai = TrangThaiHoaDon.DANG_PHUC_VU;
 
     @Column(precision = 14, scale = 2)
     @Builder.Default

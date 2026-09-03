@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,29 +25,20 @@ public class HoaDonController {
 //        return ResponseEntity.ok(hoaDonService.layDSHoaDon(maChiNhanh, nguon, trangThai, search));
 //    }
 
-//    @GetMapping("/{idOrCode}")
-//    public ResponseEntity<?> chiTietHoaDon(@PathVariable String idOrCode) {
-//        try {
-//            int id = Integer.parseInt(idOrCode);
-//            return ResponseEntity.ok(hoaDonService.layChiTietHoaDon(id));
-//        } catch (NumberFormatException e) {
-//            return ResponseEntity.ok(hoaDonService.layTheoCode(idOrCode));
-//        }
-//    }
+    @GetMapping("/{maHoaDon}")
+    public ResponseEntity<?> chiTietHoaDon(@PathVariable Integer maHoaDon) {
+        return ResponseEntity.ok(hoaDonService.layChiTietHoaDon(maHoaDon));
+    }
 
     @PostMapping
-    public ResponseEntity<?> taoHoaDon(@RequestBody @Valid HoaDonRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(hoaDonService.taoHoaDon(request));
+    public ResponseEntity<?> taoHoaDon(@AuthenticationPrincipal Integer maQuanLy,
+                                       @RequestBody @Valid HoaDonRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(hoaDonService.taoHoaDon(maQuanLy, request));
     }
 
     @PostMapping("/{maHoaDon}/thanh-toan")
     public ResponseEntity<?> thanhToanHoaDon(@PathVariable Integer maHoaDon) {
         return ResponseEntity.ok(hoaDonService.thanhToanHoaDon(maHoaDon));
-    }
-
-    @PostMapping("/{maHoaDon}/huy")
-    public ResponseEntity<?> huyHoaDon(@PathVariable Integer maHoaDon) {
-        return ResponseEntity.ok(hoaDonService.huyHoaDon(maHoaDon));
     }
 
     @DeleteMapping("/{maHoaDon}")

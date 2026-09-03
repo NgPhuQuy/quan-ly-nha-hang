@@ -8,6 +8,7 @@ import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
 import com.npq.quanlynhahangapis.repository.BanRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,13 @@ public class BanService {
                 .orElseThrow(() -> new AppException(ErrorCode.SOURCE_NOT_FOUND));
     }
 
+    public List<BanResponse> layDSBanCuaChiNhanh(Integer maChinhanh) {
+        ChiNhanh chiNhanh = chiNhanhService.layChiNhanhTheoId(maChinhanh);
+        Ban ban = Ban.builder().chiNhanh(chiNhanh).build();
+
+        return banRepository.findAll(Example.of(ban)).stream().map(this::chuyenSangDto).toList();
+    }
+
     public BanResponse chiTietBan(Integer maBan) {
         Ban ban = layBanTheoId(maBan);
         return chuyenSangDto(ban);
@@ -40,7 +48,6 @@ public class BanService {
     public BanResponse taoBan(BanRequest request) {
         ChiNhanh chiNhanh = chiNhanhService.layChiNhanhTheoId(request.maChiNhanh());
         Ban ban = Ban.builder()
-                .sucChua(request.sucChua())
                 .chiNhanh(chiNhanh)
                 .build();
 
@@ -50,24 +57,15 @@ public class BanService {
     @Transactional
     public BanResponse capNhatBan(Integer maBan, BanRequest request) {
         Ban ban = layBanTheoId(maBan);
-        ban.setSucChua(request.sucChua());
-        ban.setTrangThai(request.trangThai());
+        ban.setChiNhanh(chiNhanhService.layChiNhanhTheoId(request.maChiNhanh()));
         return chuyenSangDto(banRepository.save(ban));
     }
 
     @Transactional
-    public BanResponse doiTrangThaiBan(Integer maBan, String trangThai) {
+    public BanResponse doiTrangThaiBan(Integer maBan) {
         Ban ban = layBanTheoId(maBan);
-        ban.setTrangThai(trangThai);
+        ban.setTrangThai(!ban.getTrangThai());
         return chuyenSangDto(banRepository.save(ban));
-    }
-
-    @Transactional
-    public void xoaBan(Integer maBan) {
-        if (!banRepository.existsById(maBan)) {
-            throw new AppException(ErrorCode.SOURCE_NOT_FOUND);
-        }
-        banRepository.deleteById(maBan);
     }
 
     public BanResponse chuyenSangDto(Ban ban) {
@@ -78,5 +76,12 @@ public class BanService {
                 .tenChiNhanh(ban.getChiNhanh().getTenChiNhanh())
                 .trangThai(ban.getTrangThai())
                 .build();
+    }
+
+
+    public Ban layBanTrangThaiOK(Integer maBan) {
+        Ban ban = layBanTheoId(maBan);
+        if (!ban.getTrangThai()) throw new AppException(ErrorCode.INVALID_TABLE);
+        return ban;
     }
 }

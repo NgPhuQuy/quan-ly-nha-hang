@@ -5,6 +5,7 @@ import com.npq.quanlynhahangapis.dto.request.NguoiDungRequest;
 import com.npq.quanlynhahangapis.dto.response.DangNhapResponse;
 import com.npq.quanlynhahangapis.dto.response.NguoiDungResponse;
 import com.npq.quanlynhahangapis.entity.NguoiDung;
+import com.npq.quanlynhahangapis.entity.enums.VaiTro;
 import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
 import com.npq.quanlynhahangapis.repository.NguoiDungRepository;
@@ -47,6 +48,24 @@ public class NguoiDungService {
 
     @Transactional
     public NguoiDungResponse dangKy(NguoiDungRequest request) {
+        NguoiDung nguoiDung = taoNguoiDung(request);
+        return chuyenSangDto(nguoiDung);
+    }
+
+    @Transactional
+    public NguoiDungResponse taoQuanLy(NguoiDungRequest request) {
+        NguoiDung ql = taoNguoiDung(request);
+        ql.setVaiTro(VaiTro.QUAN_LY);
+        return chuyenSangDto(ql);
+    }
+
+    public NguoiDungResponse taoAdmin(NguoiDungRequest request) {
+        NguoiDung admin = taoNguoiDung(request);
+        admin.setVaiTro(VaiTro.ADMIN);
+        return chuyenSangDto(admin);
+    }
+
+    public NguoiDung taoNguoiDung(NguoiDungRequest request) {
         if (nguoiDungRepository.existsByTaiKhoan(request.taiKhoan()))
             throw new AppException(ErrorCode.USER_EXISTED);
 
@@ -65,7 +84,7 @@ public class NguoiDungService {
                 .soDienThoai(request.soDienThoai())
                 .build();
         nguoiDungRepository.save(nguoiDung);
-        return chuyenSangDto(nguoiDung);
+        return nguoiDungRepository.save(nguoiDung);
     }
 
     public DangNhapResponse dangNhap(@Valid DangNhapRequest dto) {
@@ -110,4 +129,8 @@ public class NguoiDungService {
         return chuyenSangDto(nguoiDungRepository.save(nguoiDung));
     }
 
+    public NguoiDung layNguoiDungTheoSDT(String soDienThoai) {
+        return nguoiDungRepository.findBySoDienThoai(soDienThoai)
+                .orElse(null);
+    }
 }

@@ -4,7 +4,6 @@ import java.time.LocalTime;
 
 public record KhungGioResponse(
         LocalTime gio,
-        Integer conCho,
-        Boolean coTheDat
+        Long soLuongConLai
 ) {
 }
