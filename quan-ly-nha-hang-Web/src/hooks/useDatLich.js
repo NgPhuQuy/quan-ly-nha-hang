@@ -22,7 +22,9 @@ export function useDatLich() {
 
   const savedBooking = (() => {
     try {
-      const s = sessionStorage.getItem("5s_quick_booking");
+      const s =
+        sessionStorage.getItem("ldelice_quick_booking") ||
+        sessionStorage.getItem("5s_quick_booking");
       if (s) return JSON.parse(s);
     } catch {
       return null;
@@ -141,7 +143,7 @@ export function useDatLich() {
         result.maDatLichCode ||
           (result.maDatLich ? `BK-${result.maDatLich}` : null) ||
           result.maDatBan ||
-          `5S-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
+          `LDELICE-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
       );
       setStep(5);
     } catch (error) {

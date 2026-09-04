@@ -13,6 +13,7 @@
   --color-cream: #faf3e0;
   --animate-fade-in-up: fadeInUp 0.6s ease-out both;
   --animate-shimmer: shimmer 3s linear infinite;
+  --animate-float-dust: floatDrift 9s ease-in-out infinite;
 
   @keyframes fadeInUp {
     from {
@@ -31,6 +32,23 @@
     }
     100% {
       background-position: 200% center;
+    }
+  }
+
+  @keyframes floatDrift {
+    0% {
+      transform: translateY(0) translateX(0);
+      opacity: 0;
+    }
+    20% {
+      opacity: 0.7;
+    }
+    80% {
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateY(-160px) translateX(25px);
+      opacity: 0;
     }
   }
 }
@@ -371,3 +389,20 @@ html {
   text-decoration: line-through;
   cursor: not-allowed;
 }
+
+/* Hiệu ứng chuyển bước mượt mà Fine Dining (60fps smooth step transition) */
+@keyframes stepFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.step-transition {
+  animation: stepFadeSlide 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+

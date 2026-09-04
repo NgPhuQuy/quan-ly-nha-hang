@@ -70,8 +70,8 @@ export const MON_AN = [
   },
   {
     id: "m6",
-    ten: "Lẩu hoàng gia 5S đặc biệt",
-    moTa: "Hải sản tươi sống, bò Mỹ và các loại nấm quý",
+    ten: "Bouillabaisse Hoàng Gia L'Délice Đặc Biệt",
+    moTa: "Súp hải sản truyền thống Pháp, saffron hảo hạng và thảo mộc Provençal",
     gia: 680000,
     anh: ANH.monAn3,
     nhom: "Món chính",

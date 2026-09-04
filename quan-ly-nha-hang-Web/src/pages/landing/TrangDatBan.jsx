@@ -27,13 +27,18 @@ function TrangDatBan({ onQuayLai }) {
             <span>Quay lại trang chủ</span>
           </button>
 
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-amber-500/20 border border-amber-500/40 text-amber-400">
-              <Sparkles size={14} />
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-amber-500/15 border border-amber-500/30 text-amber-400 shadow-md">
+              <Sparkles size={15} />
             </div>
-            <span className="font-serif text-base sm:text-lg font-bold tracking-wide text-amber-200">
-              5S DINING
-            </span>
+            <div>
+              <span className="font-serif text-base sm:text-lg font-bold tracking-wider text-amber-100 block">
+                L'DÉLICE
+              </span>
+              <span className="text-[9px] uppercase tracking-[0.25em] text-amber-400/80 font-serif block -mt-1">
+                Haute Gastronomie
+              </span>
+            </div>
           </div>
 
           <div className="hidden sm:flex items-center gap-2 text-xs text-amber-200/60 font-mono">
@@ -52,47 +57,49 @@ function TrangDatBan({ onQuayLai }) {
         {booking.step < 5 ? (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] items-start">
             <div className="w-full">
-              {booking.step === 1 && (
-                <ChonChiNhanh
-                  branches={booking.branches}
-                  branchId={booking.branchId}
-                  setBranchId={booking.setBranchId}
-                  date={booking.date}
-                  setDate={booking.setDate}
-                  guestCount={booking.guestCount}
-                  setGuestCount={booking.setGuestCount}
-                  onTiepTuc={() => booking.setStep(2)}
-                />
-              )}
-              {booking.step === 2 && (
-                <ChonKhungGio
-                  timeSlots={booking.timeSlots}
-                  selectedTime={booking.selectedTime}
-                  setSelectedTime={booking.setSelectedTime}
-                  onTiepTuc={() => booking.setStep(3)}
-                  onQuayLai={() => booking.setStep(1)}
-                />
-              )}
-              {booking.step === 3 && (
-                <ChonMonAn
-                  menuItems={booking.menuItems}
-                  selectedItems={booking.selectedItems}
-                  setSelectedItems={booking.setSelectedItems}
-                  onTiepTuc={() => booking.setStep(4)}
-                  onQuayLai={() => booking.setStep(2)}
-                />
-              )}
-              {booking.step === 4 && (
-                <ThongTinKhachHang
-                  additionalServices={booking.additionalServices}
-                  guestDetails={booking.guestDetails}
-                  setGuestDetails={booking.setGuestDetails}
-                  selectedServices={booking.selectedServices}
-                  setSelectedServices={booking.setSelectedServices}
-                  onXacNhan={booking.handleDatLich}
-                  onQuayLai={() => booking.setStep(3)}
-                />
-              )}
+              <div key={booking.step} className="step-transition">
+                {booking.step === 1 && (
+                  <ChonChiNhanh
+                    branches={booking.branches}
+                    branchId={booking.branchId}
+                    setBranchId={booking.setBranchId}
+                    date={booking.date}
+                    setDate={booking.setDate}
+                    guestCount={booking.guestCount}
+                    setGuestCount={booking.setGuestCount}
+                    onTiepTuc={() => booking.setStep(2)}
+                  />
+                )}
+                {booking.step === 2 && (
+                  <ChonKhungGio
+                    timeSlots={booking.timeSlots}
+                    selectedTime={booking.selectedTime}
+                    setSelectedTime={booking.setSelectedTime}
+                    onTiepTuc={() => booking.setStep(3)}
+                    onQuayLai={() => booking.setStep(1)}
+                  />
+                )}
+                {booking.step === 3 && (
+                  <ChonMonAn
+                    menuItems={booking.menuItems}
+                    selectedItems={booking.selectedItems}
+                    setSelectedItems={booking.setSelectedItems}
+                    onTiepTuc={() => booking.setStep(4)}
+                    onQuayLai={() => booking.setStep(2)}
+                  />
+                )}
+                {booking.step === 4 && (
+                  <ThongTinKhachHang
+                    additionalServices={booking.additionalServices}
+                    guestDetails={booking.guestDetails}
+                    setGuestDetails={booking.setGuestDetails}
+                    selectedServices={booking.selectedServices}
+                    setSelectedServices={booking.setSelectedServices}
+                    onXacNhan={booking.handleDatLich}
+                    onQuayLai={() => booking.setStep(3)}
+                  />
+                )}
+              </div>
             </div>
 
             {/* Sidebar Summary */}
@@ -108,17 +115,19 @@ function TrangDatBan({ onQuayLai }) {
             />
           </div>
         ) : (
-          <XacNhanDatBan
-            bookingCode={booking.bookingCode}
-            branch={booking.selectedBranch}
-            time={booking.selectedTime}
-            date={booking.date}
-            guestCount={booking.guestCount}
-            guestDetails={booking.guestDetails}
-            totalAmount={booking.totalAmount}
-            onDatLai={booking.handleDatLai}
-            onVeTrangChu={onQuayLai}
-          />
+          <div key="step-5-confirmation" className="step-transition">
+            <XacNhanDatBan
+              bookingCode={booking.bookingCode}
+              branch={booking.selectedBranch}
+              time={booking.selectedTime}
+              date={booking.date}
+              guestCount={booking.guestCount}
+              guestDetails={booking.guestDetails}
+              totalAmount={booking.totalAmount}
+              onDatLai={booking.handleDatLai}
+              onVeTrangChu={onQuayLai}
+            />
+          </div>
         )}
       </main>
 
@@ -129,7 +138,7 @@ function TrangDatBan({ onQuayLai }) {
             <ShieldCheck size={14} className="text-emerald-400" />
             <span>Thông tin đặt bàn của quý khách được bảo mật tuyệt đối.</span>
           </div>
-          <p>© {new Date().getFullYear()} 5S Dining Restaurant Chain.</p>
+          <p>© {new Date().getFullYear()} L'Délice Restaurant Group.</p>
         </div>
       </footer>
     </div>

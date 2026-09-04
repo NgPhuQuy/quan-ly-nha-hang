@@ -140,7 +140,7 @@ function BranchSelection({
     <div className="rounded-3xl p-5 sm:p-8 bg-black/40 border border-amber-500/20 backdrop-blur-md shadow-2xl space-y-6">
       <div>
         <div className="inline-block text-[11px] font-bold uppercase tracking-[0.2em] text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20 mb-2">
-          Bước 1 / 4
+          Giai đoạn I / V
         </div>
         <h1 className="font-serif text-2xl sm:text-3xl font-bold text-amber-100">
           Chọn Chi Nhánh & Ngày Đặt Bàn
@@ -153,7 +153,7 @@ function BranchSelection({
       {/* 1. Branch Cards */}
       <div className="space-y-3">
         <label className="block text-xs font-bold uppercase tracking-wider text-amber-300">
-          1. Chọn Chi Nhánh 5S Dining:
+          1. Chọn Chi Nhánh L'Délice:
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
           {branches.map((b) => {

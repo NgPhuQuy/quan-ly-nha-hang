@@ -46,13 +46,18 @@ function TrangTraCuu({ onQuayLai }) {
             <span>Quay lại trang chủ</span>
           </button>
 
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-amber-500/20 border border-amber-500/40 text-amber-400">
-              <Sparkles size={14} />
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-amber-500/15 border border-amber-500/30 text-amber-400 shadow-md">
+              <Sparkles size={15} />
             </div>
-            <span className="font-serif text-base sm:text-lg font-bold text-amber-200">
-              5S DINING
-            </span>
+            <div>
+              <span className="font-serif text-base sm:text-lg font-bold tracking-wider text-amber-100 block">
+                L'DÉLICE
+              </span>
+              <span className="text-[9px] uppercase tracking-[0.25em] text-amber-400/80 font-serif block -mt-1">
+                Haute Gastronomie
+              </span>
+            </div>
           </div>
         </div>
       </header>
@@ -80,7 +85,7 @@ function TrangTraCuu({ onQuayLai }) {
             value={bookingCode}
             onChange={(e) => setBookingCode(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleTraCuu()}
-            placeholder="Ví dụ: 5S-2026-1234 hoặc BK-1"
+            placeholder="Ví dụ: LDELICE-2026-1234 hoặc BK-1"
           />
           <button
             onClick={handleTraCuu}
@@ -265,7 +270,7 @@ function TrangTraCuu({ onQuayLai }) {
       {/* Footer */}
       <footer className="border-t border-amber-500/10 bg-[#080503] py-4 text-center text-xs text-amber-200/40">
         <p>
-          © {new Date().getFullYear()} 5S Dining Restaurant Chain. Hotline CSKH:
+          © {new Date().getFullYear()} L'Délice Restaurant Group. Hotline CSKH:
           1800 5678
         </p>
       </footer>

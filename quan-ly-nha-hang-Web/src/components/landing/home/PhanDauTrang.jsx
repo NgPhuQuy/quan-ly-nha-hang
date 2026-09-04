@@ -1,93 +1,76 @@
-import { useEffect, useRef } from "react";
-import { ANH } from "../../../assets/anh";
 import { Sparkles, Star } from "lucide-react";
 import ThanhDatBanNhanh from "./ThanhDatBanNhanh";
 
 function Hero({ onDatBan }) {
-  const heroRef = useRef(null);
-  const imageRef = useRef(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!imageRef.current || !heroRef.current) return;
-      const rect = heroRef.current.getBoundingClientRect();
-      const progress = Math.max(0, Math.min(1, -rect.top / rect.height));
-      imageRef.current.style.transform = `scale(1.08) translateY(${progress * 40}px)`;
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
     <section
-      ref={heroRef}
-      className="relative min-h-[100dvh] h-screen w-full flex flex-col justify-center items-center bg-[#0c0905] pt-16 sm:pt-20 pb-6 sm:pb-8 z-10 overflow-hidden"
+      className="relative min-h-[100dvh] w-full flex flex-col justify-center items-center bg-transparent pt-24 sm:pt-32 pb-14 sm:pb-20 z-10 overflow-hidden"
     >
-      {/* Background Image with Overlay */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <img
-          ref={imageRef}
-          src={ANH.hero}
-          alt="Không gian ẩm thực 5S Dining"
-          className="h-full w-full object-cover brightness-[0.45] transition-transform duration-700"
-          style={{ transform: "scale(1.08)" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0c0905] via-black/40 to-black/80" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(200,136,42,0.12)_0,transparent_70%)]" />
-      </div>
+      {/* Subtle top glow spotlight */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at 50% 30%, rgba(245, 158, 11, 0.08) 0%, transparent 60%)",
+        }}
+      />
 
       {/* Main Hero Content */}
       <div className="relative z-20 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center my-auto w-full">
-        {/* Floating Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold tracking-wider uppercase mb-4 sm:mb-5 backdrop-blur-md shadow-lg shadow-amber-900/20">
+        {/* Floating Accolade Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold tracking-wider uppercase mb-5 backdrop-blur-md shadow-lg shadow-amber-900/20">
           <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-          <span>Tinh Hoa Ẩm Thực Đương Đại & Đẳng Cấp 5 Sao</span>
+          <span>Michelin Guide Selected &bull; Haute Gastronomie Française</span>
         </div>
 
         {/* Hero Heading */}
-        <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-amber-100 leading-[1.15] mb-3 sm:mb-4">
-          Một Bàn Tiệc Sang Trọng,
+        <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-amber-100 leading-[1.12] mb-4 sm:mb-5">
+          Nơi Ẩm Thực Pháp
           <br />
           <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-100 bg-clip-text text-transparent italic font-normal">
-            Trọn Vẹn Từng Khoảnh Khắc
+            Thăng Hoa Thành Nghệ Thuật
           </span>
         </h1>
 
-        <p className="mx-auto max-w-2xl text-xs sm:text-sm md:text-base text-amber-200/70 font-light leading-relaxed mb-6 sm:mb-8">
-          Hơn 15 năm nâng tầm trải nghiệm ẩm thực thượng hạng tại Việt Nam.
-          Không gian tinh tế, dịch vụ chuẩn mực và thực đơn được sáng tạo bởi
-          các bếp trưởng hàng đầu.
+        <p className="mx-auto max-w-2xl text-xs sm:text-sm md:text-base text-amber-200/75 font-light leading-relaxed mb-8 sm:mb-10">
+          Chào mừng quý khách đến với <strong className="text-amber-200 font-medium">L'Délice</strong>. Không gian sang trọng thầm lặng (Quiet Luxury), dịch vụ đón tiếp chuẩn mực đài các và thực đơn được chế tác tỉ mỉ từ những nguyên liệu mùa thượng hạng.
         </p>
 
         {/* Quick Booking Interactive Widget on Hero */}
         <ThanhDatBanNhanh onDatBan={onDatBan} />
 
         {/* Key Highlight Accolades */}
-        <div className="grid grid-cols-3 gap-4 max-w-xl mx-auto pt-3 sm:pt-4 border-t border-amber-500/20 text-center">
+        <div className="grid grid-cols-3 gap-6 max-w-xl mx-auto pt-6 border-t border-amber-500/20 text-center">
           <div>
-            <div className="font-serif text-lg sm:text-2xl font-bold text-amber-300">
+            <div className="font-serif text-xl sm:text-3xl font-bold text-amber-300">
               15+
             </div>
-            <div className="text-[10px] sm:text-[11px] text-amber-200/60 font-medium">
-              Năm kinh nghiệm
+            <div className="text-[10px] sm:text-xs text-amber-200/65 font-medium mt-0.5">
+              Năm tôn vinh ẩm thực Pháp
             </div>
           </div>
           <div>
-            <div className="font-serif text-lg sm:text-2xl font-bold text-amber-300">
-              50K+
+            <div className="font-serif text-xl sm:text-3xl font-bold text-amber-300">
+              50.000+
             </div>
-            <div className="text-[10px] sm:text-[11px] text-amber-200/60 font-medium">
-              Thực khách hài lòng
+            <div className="text-[10px] sm:text-xs text-amber-200/65 font-medium mt-0.5">
+              Bữa tiệc đáng nhớ
             </div>
           </div>
           <div>
-            <div className="font-serif text-lg sm:text-2xl font-bold text-amber-300 flex items-center justify-center gap-1">
+            <div className="font-serif text-xl sm:text-3xl font-bold text-amber-300 flex items-center justify-center gap-1">
               4.9 <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-amber-400 text-amber-400" />
             </div>
-            <div className="text-[10px] sm:text-[11px] text-amber-200/60 font-medium">
-              Đánh giá xuất sắc
+            <div className="text-[10px] sm:text-xs text-amber-200/65 font-medium mt-0.5">
+              Đánh giá từ thực khách
             </div>
           </div>
+        </div>
+
+        {/* Subtle Downward Scroll Indicator */}
+        <div className="pt-8 flex flex-col items-center justify-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
+          <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-amber-300/70">Khám phá câu chuyện</span>
+          <div className="w-px h-8 bg-gradient-to-b from-amber-400 to-transparent animate-pulse" />
         </div>
       </div>
     </section>

@@ -27,8 +27,8 @@ function BookingConfirmation({
 }) {
   const [copied, setCopied] = useState(false);
   const branchName =
-    branch?.tenChiNhanh || branch?.ten || "5S Dining Fine Cuisine";
-  const branchAddress = branch?.diaChi || "Hệ thống nhà hàng 5S Dining";
+    branch?.tenChiNhanh || branch?.ten || "L'Délice Haute Gastronomie";
+  const branchAddress = branch?.diaChi || "Hệ thống nhà hàng L'Délice";
 
   const handleCopyCode = () => {
     if (bookingCode) {
@@ -53,29 +53,38 @@ function BookingConfirmation({
         <div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-2">
             <Sparkles size={12} />
-            <span>Xác Nhận Thành Công</span>
+            <span>Giai đoạn V / V · Xác Nhận Thành Công</span>
           </div>
 
           <h1 className="font-serif text-2xl sm:text-4xl font-bold text-amber-100">
             Đặt Bàn Thành Công!
           </h1>
           <p className="text-xs sm:text-sm text-amber-200/60 mt-1 max-w-md mx-auto">
-            Nhà hàng 5S Dining đã ghi nhận lịch hẹn của quý khách và đang chuẩn
-            bị tiếp đón.
+            Nhà hàng L'Délice đã ghi nhận lịch hẹn của quý khách và hân hạnh chuẩn
+            bị đón tiếp.
           </p>
         </div>
       </div>
 
-      {/* Digital VIP Voucher Card */}
+      {/* Digital VIP Voucher Card / Billet de Réservation */}
       <div className="rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-[#18110a] via-[#100b05] to-[#0a0704] border-2 border-amber-500/40 backdrop-blur-md shadow-2xl relative overflow-hidden">
+        {/* French Wax Seal Stamp (Sceau de Cire) Decorative Effect */}
+        <div className="absolute -bottom-8 -right-8 w-36 h-36 rounded-full border-2 border-amber-400/25 bg-gradient-to-br from-amber-900/30 via-[#3a1d0f]/40 to-black/60 backdrop-blur-sm pointer-events-none flex items-center justify-center rotate-12 select-none shadow-2xl">
+          <div className="w-28 h-28 rounded-full border border-dashed border-amber-400/40 flex flex-col items-center justify-center text-center p-2">
+            <span className="text-[7px] uppercase tracking-[0.25em] text-amber-300/60 font-serif">HAUTE GASTRONOMIE</span>
+            <span className="text-xl font-serif font-bold text-amber-300/80 tracking-widest my-0.5">L'D</span>
+            <span className="text-[7px] uppercase tracking-[0.2em] text-amber-300/60 font-serif">CONFIRMÉ</span>
+          </div>
+        </div>
+
         {/* Top Gold Ribbon Banner */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-amber-500/20">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-amber-500/20 relative z-10">
           <div>
             <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-amber-400/70 block">
-              Phiếu Đặt Bàn Điện Tử
+              Phiếu Đặt Bàn Điện Tử · Billet de Réservation
             </span>
             <h3 className="font-serif text-xl sm:text-2xl font-bold text-amber-200 mt-0.5">
-              5S DINING VIP PASS
+              L'DÉLICE VIP PASS
             </h3>
           </div>
 
@@ -86,12 +95,12 @@ function BookingConfirmation({
                 Mã đặt bàn
               </span>
               <span className="font-mono text-base sm:text-lg font-bold text-amber-300 tracking-wider">
-                {bookingCode || "5S-VIP"}
+                {bookingCode || "LDELICE-VIP"}
               </span>
             </div>
             <button
               onClick={handleCopyCode}
-              className="p-2 rounded-xl bg-white/5 hover:bg-amber-500/20 text-amber-400 transition-colors ml-2"
+              className="p-2 rounded-xl bg-white/5 hover:bg-amber-500/20 text-amber-400 transition-colors ml-2 cursor-pointer"
               title="Sao chép mã"
             >
               {copied ? (

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { CAM_NHAN_KHACH_HANG } from "../../../data/camNhanKhachHang";
-import { Star, Quote, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, Quote, Sparkles, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
 
 function CustomerTestimonials() {
   const [viTriHienTai, setViTriHienTai] = useState(0);
@@ -28,21 +28,8 @@ function CustomerTestimonials() {
   return (
     <section
       id="reviews"
-      className="px-4 py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-[#0c0804] via-[#150e07] to-[#0e0905] relative overflow-hidden scroll-mt-16"
+      className="px-4 py-24 sm:px-6 lg:px-8 bg-transparent relative overflow-hidden scroll-mt-16"
     >
-      {/* Atmosphere Texture Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-15 mix-blend-luminosity overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1544025162-d76694265947?w=1920&q=80"
-          alt="Không gian tiệc tối ấm cúng"
-          className="w-full h-full object-cover scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0c0804] via-[#150e07]/90 to-[#0e0905]" />
-      </div>
-
-      {/* Luxury Golden Ambient Glows */}
-      <div className="absolute top-1/4 right-10 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-10 left-10 w-[500px] h-[500px] bg-amber-600/10 rounded-full blur-[130px] pointer-events-none" />
 
       <div className="mx-auto max-w-5xl relative z-10">
         {/* Awards strip */}
@@ -129,11 +116,16 @@ function CustomerTestimonials() {
               </blockquote>
 
               <div>
-                <p className="font-serif text-base font-bold text-amber-300">
-                  {camNhan.ten}
-                </p>
+                <div className="flex items-center justify-center md:justify-start gap-2">
+                  <p className="font-serif text-base font-bold text-amber-300">
+                    {camNhan.ten}
+                  </p>
+                  <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-medium">
+                    <CheckCircle2 size={10} /> Đã trải nghiệm
+                  </span>
+                </div>
                 <p className="text-xs text-amber-200/60 mt-0.5">
-                  {camNhan.chucDanh} • Chi nhánh {camNhan.chiNhanh}
+                  {camNhan.chucDanh} &bull; Chi nhánh {camNhan.chiNhanh}
                 </p>
               </div>
             </div>

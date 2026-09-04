@@ -147,7 +147,7 @@ function TrangXacThuc({
             )}
           </div>
           <h1 className="font-serif text-2xl text-amber-100 font-bold">
-            5S Dining Experience
+            L'Délice Haute Gastronomie
           </h1>
           <p className="text-xs text-[rgba(240,216,144,0.5)] mt-1">
             {tab === "login"
@@ -442,7 +442,7 @@ function TrangXacThuc({
               onClick={onQuayVeTrangChu}
               className="text-xs text-[rgba(200,136,42,0.6)] hover:text-amber-300 transition-colors"
             >
-              ← Về trang chủ 5S Dining
+              ← Về trang chủ L'Délice
             </button>
           </div>
         )}

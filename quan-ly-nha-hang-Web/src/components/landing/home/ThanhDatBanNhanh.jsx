@@ -67,14 +67,13 @@ function ThanhDatBanNhanh({ onDatBan }) {
 
   const handleQuickBook = () => {
     try {
-      sessionStorage.setItem(
-        "5s_quick_booking",
-        JSON.stringify({
-          branchId: selectedBranch,
-          date: selectedDate,
-          guestCount,
-        }),
-      );
+      const bookingData = JSON.stringify({
+        branchId: selectedBranch,
+        date: selectedDate,
+        guestCount,
+      });
+      sessionStorage.setItem("ldelice_quick_booking", bookingData);
+      sessionStorage.setItem("5s_quick_booking", bookingData);
     } catch {
       // ignore
     }
@@ -172,7 +171,7 @@ function ThanhDatBanNhanh({ onDatBan }) {
   };
 
   return (
-    <div className="relative z-30 mx-auto max-w-4xl p-3 sm:p-4 rounded-2xl bg-black/85 backdrop-blur-md border border-amber-500/30 shadow-2xl shadow-black/95 mb-6 sm:mb-8">
+    <div className="relative z-30 mx-auto max-w-4xl p-2.5 sm:p-3 rounded-2xl sm:rounded-3xl bg-[#140e08]/90 backdrop-blur-xl border border-amber-500/35 shadow-[0_20px_50px_rgba(0,0,0,0.95)] mb-6 sm:mb-8">
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 sm:gap-3 text-left items-stretch">
         {/* Custom Branch Dropdown (4 cols) */}
         <div
@@ -185,7 +184,7 @@ function ThanhDatBanNhanh({ onDatBan }) {
               setIsMoDropdownChiNhanh(!isMoDropdownChiNhanh);
               setIsMoDatePicker(false);
             }}
-            className="w-full h-full text-left p-2.5 sm:p-3 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/50 focus:border-amber-400 transition-all flex flex-col justify-between gap-1 group cursor-pointer"
+            className="w-full h-full text-left p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-white/[0.04] border border-white/10 hover:border-amber-500/50 focus:border-amber-400 transition-all flex flex-col justify-between gap-1 group cursor-pointer"
           >
             <span className="flex items-center gap-1.5 text-[11px] font-semibold text-amber-400 uppercase tracking-wider">
               <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" /> Chi
@@ -206,9 +205,9 @@ function ThanhDatBanNhanh({ onDatBan }) {
             </div>
           </button>
 
-          {/* Branch Dropdown Menu - mở lên trên */}
+          {/* Branch Dropdown Menu - mở xuống tự nhiên */}
           {isMoDropdownChiNhanh && (
-            <div className="absolute bottom-full left-0 right-0 mb-2.5 py-1.5 rounded-xl bg-[#18110a] border border-amber-500/50 shadow-[0_20px_50px_rgba(0,0,0,0.95)] backdrop-blur-2xl z-50 max-h-60 overflow-y-auto">
+            <div className="absolute top-full left-0 right-0 mt-2 py-1.5 rounded-2xl bg-[#140e08]/98 border border-amber-500/50 shadow-[0_20px_50px_rgba(0,0,0,0.95)] backdrop-blur-2xl z-50 max-h-60 overflow-y-auto">
               {branches.length > 0 ? (
                 branches.map((b) => {
                   const isSelected = selectedBranch === b.maChiNhanh;
@@ -220,14 +219,14 @@ function ThanhDatBanNhanh({ onDatBan }) {
                         setSelectedBranch(b.maChiNhanh);
                         setIsMoDropdownChiNhanh(false);
                       }}
-                      className={`w-full text-left px-3 py-2 text-xs sm:text-sm flex items-center justify-between gap-2 transition-colors ${
+                      className={`w-full text-left px-3.5 py-2.5 text-xs sm:text-sm flex items-center justify-between gap-2 transition-colors ${
                         isSelected
                           ? "bg-amber-400/20 text-amber-300 font-semibold"
                           : "text-amber-100/90 hover:bg-white/10 hover:text-amber-200"
                       }`}
                     >
                       <div className="flex flex-col truncate">
-                        <span className="truncate">{b.tenChiNhanh}</span>
+                        <span className="truncate font-medium">{b.tenChiNhanh}</span>
                         {b.diaChi && (
                           <span className="text-[10px] text-amber-200/50 truncate">
                             {b.diaChi}
@@ -260,7 +259,7 @@ function ThanhDatBanNhanh({ onDatBan }) {
               setIsMoDatePicker(!isMoDatePicker);
               setIsMoDropdownChiNhanh(false);
             }}
-            className="w-full h-full text-left p-2.5 sm:p-3 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/50 focus:border-amber-400 transition-all flex flex-col justify-between gap-1 group cursor-pointer"
+            className="w-full h-full text-left p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-white/[0.04] border border-white/10 hover:border-amber-500/50 focus:border-amber-400 transition-all flex flex-col justify-between gap-1 group cursor-pointer"
           >
             <span className="flex items-center gap-1.5 text-[11px] font-semibold text-amber-400 uppercase tracking-wider">
               <Calendar className="w-3.5 h-3.5 text-amber-400 shrink-0" /> Ngày
@@ -278,9 +277,9 @@ function ThanhDatBanNhanh({ onDatBan }) {
             </div>
           </button>
 
-          {/* Custom Date Picker Popover - mở lên trên không che section dưới */}
+          {/* Custom Date Picker Popover - mở xuống tự nhiên */}
           {isMoDatePicker && (
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 mb-2.5 p-3.5 rounded-2xl bg-[#18110a] border border-amber-500/50 shadow-[0_20px_50px_rgba(0,0,0,0.95)] backdrop-blur-2xl z-50 w-[290px] sm:w-[310px]">
+            <div className="absolute top-full left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 mt-2 p-3.5 rounded-2xl bg-[#140e08]/98 border border-amber-500/50 shadow-[0_20px_50px_rgba(0,0,0,0.95)] backdrop-blur-2xl z-50 w-[290px] sm:w-[310px]">
               {/* Quick Select Buttons */}
               <div className="flex items-center justify-between gap-1.5 mb-3 pb-2.5 border-b border-amber-500/20">
                 <button

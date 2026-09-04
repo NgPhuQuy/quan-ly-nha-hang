@@ -1,7 +1,6 @@
-import anhHero from "./hero-image.webp";
-
 export const ANH = {
-  hero: anhHero,
+  hero:
+    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=80&fit=crop&auto=format",
   monAn1:
     "https://images.unsplash.com/photo-1750943036999-81e666b2296c?w=700&h=700&fit=crop&auto=format",
   monAn2:

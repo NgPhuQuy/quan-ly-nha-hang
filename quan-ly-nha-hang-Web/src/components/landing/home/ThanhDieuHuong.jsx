@@ -66,16 +66,22 @@ function ThanhDieuHuong({ onDatBan, onTraCuuDatBan, onDangNhap }) {
               </div>
               <div className="flex flex-col">
                 <span className="font-serif text-lg sm:text-xl font-bold tracking-wider text-amber-200 group-hover:text-amber-300 transition-colors">
-                  5S DINING
+                  L'DÉLICE
                 </span>
                 <span className="text-[9px] uppercase tracking-[0.25em] text-amber-500/70 font-semibold -mt-1">
-                  Fine Dining & Cuisine
+                  Haute Gastronomie
                 </span>
               </div>
             </a>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden lg:flex items-center gap-8 text-sm font-medium text-amber-100/75">
+            <div className="hidden lg:flex items-center gap-7 text-sm font-medium text-amber-100/75">
+              <a
+                href="#story"
+                className="hover:text-amber-300 transition-colors relative py-1 hover:after:w-full after:w-0 after:h-0.5 after:bg-amber-400 after:absolute after:bottom-0 after:left-0 after:transition-all"
+              >
+                Câu chuyện
+              </a>
               <a
                 href="#menu"
                 className="hover:text-amber-300 transition-colors relative py-1 hover:after:w-full after:w-0 after:h-0.5 after:bg-amber-400 after:absolute after:bottom-0 after:left-0 after:transition-all"
@@ -94,9 +100,15 @@ function ThanhDieuHuong({ onDatBan, onTraCuuDatBan, onDangNhap }) {
               >
                 Đánh giá
               </a>
+              <a
+                href="#faq"
+                className="hover:text-amber-300 transition-colors relative py-1 hover:after:w-full after:w-0 after:h-0.5 after:bg-amber-400 after:absolute after:bottom-0 after:left-0 after:transition-all"
+              >
+                Hỏi đáp
+              </a>
               <button
                 onClick={handleTraCuuDatBan}
-                className="flex items-center gap-1.5 hover:text-amber-300 transition-colors text-amber-200/90"
+                className="flex items-center gap-1.5 hover:text-amber-300 transition-colors text-amber-200/90 cursor-pointer"
               >
                 <Search size={14} className="text-amber-400" />
                 Tra cứu đặt bàn
@@ -175,7 +187,7 @@ function ThanhDieuHuong({ onDatBan, onTraCuuDatBan, onDangNhap }) {
                 <div className="flex items-center gap-2">
                   <Sparkles size={16} className="text-amber-400" />
                   <span className="font-serif font-bold text-amber-200">
-                    5S Dining
+                    L'Délice
                   </span>
                 </div>
                 <button
@@ -202,6 +214,13 @@ function ThanhDieuHuong({ onDatBan, onTraCuuDatBan, onDangNhap }) {
 
               <nav className="flex flex-col gap-4 text-sm font-medium text-amber-100/80">
                 <a
+                  href="#story"
+                  onClick={handleDongMenu}
+                  className="py-2 hover:text-amber-300 transition-colors border-b border-white/5"
+                >
+                  Câu chuyện thương hiệu
+                </a>
+                <a
                   href="#menu"
                   onClick={handleDongMenu}
                   className="py-2 hover:text-amber-300 transition-colors border-b border-white/5"
@@ -221,6 +240,13 @@ function ThanhDieuHuong({ onDatBan, onTraCuuDatBan, onDangNhap }) {
                   className="py-2 hover:text-amber-300 transition-colors border-b border-white/5"
                 >
                   Đánh giá từ thực khách
+                </a>
+                <a
+                  href="#faq"
+                  onClick={handleDongMenu}
+                  className="py-2 hover:text-amber-300 transition-colors border-b border-white/5"
+                >
+                  Những điều quan tâm (FAQ)
                 </a>
                 <button
                   onClick={handleTraCuuDatBan}

@@ -1,7 +1,7 @@
 export const CAM_NHAN_KHACH_HANG = [
   {
     noiDung:
-      "Không gian riêng tư và ấm cúng tuyệt đối. Chúng tôi đã có một kỷ niệm 10 năm ngày cưới vô cùng đáng nhớ tại 5S Dining.",
+      "Không gian riêng tư và ấm cúng tuyệt đối. Chúng tôi đã có một kỷ niệm 10 năm ngày cưới vô cùng đáng nhớ tại L'Délice.",
     ten: "Minh Anh & Tuấn Khoa",
     vaiTro: "Kỷ niệm ngày cưới",
   },

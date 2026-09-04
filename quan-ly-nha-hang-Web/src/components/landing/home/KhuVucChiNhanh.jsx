@@ -23,22 +23,8 @@ function BranchSection({ onDatBan }) {
   return (
     <section
       id="branches"
-      className="px-4 py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-[#0c0905] via-[#140e08] to-[#0a0704] relative overflow-hidden scroll-mt-16"
+      className="px-4 py-24 sm:px-6 lg:px-8 bg-transparent relative overflow-hidden scroll-mt-16"
     >
-      {/* Atmosphere Texture Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-20 mix-blend-luminosity overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=80"
-          alt="Kiến trúc không gian nhà hàng"
-          className="w-full h-full object-cover scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0c0905] via-[#140e08]/90 to-[#0a0704]" />
-      </div>
-
-      {/* Luxury Golden Ambient Glows */}
-      <div className="absolute top-10 right-1/4 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-10 left-1/4 w-[500px] h-[500px] bg-amber-600/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(212,150,43,0.12),_transparent_70%)] pointer-events-none" />
 
       <div className="mx-auto max-w-6xl relative z-10">
         {/* Section Header */}
@@ -53,7 +39,7 @@ function BranchSection({ onDatBan }) {
           </h2>
 
           <p className="text-sm sm:text-base text-amber-200/70 font-light leading-relaxed">
-            Tọa lạc tại các vị trí đắc địa nhất, mỗi không gian của 5S Dining
+            Tọa lạc tại các vị trí đắc địa nhất, mỗi không gian của L'Délice
             mang đến một trải nghiệm kiến trúc và ẩm thực độc bản.
           </p>
 
@@ -68,7 +54,7 @@ function BranchSection({ onDatBan }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch">
           {branches.map((branch) => {
             const bId = branch.maChiNhanh ?? branch.id;
-            const bName = branch.tenChiNhanh ?? branch.ten ?? "5S Dining";
+            const bName = branch.tenChiNhanh ?? branch.ten ?? "L'Délice Haute Gastronomie";
             const bAddress = branch.diaChi ?? "TP. Hồ Chí Minh";
             const bPhone = branch.soDienThoai ?? "028 3822 9999";
             const bImage = branch.anhChiNhanh ?? branch.anh;
@@ -103,9 +89,22 @@ function BranchSection({ onDatBan }) {
                 {/* Branch Details */}
                 <div className="p-6 flex flex-1 flex-col justify-between space-y-4">
                   <div>
-                    <h3 className="font-serif text-xl font-bold text-amber-100 group-hover:text-amber-300 transition-colors mb-3">
+                    <h3 className="font-serif text-xl font-bold text-amber-100 group-hover:text-amber-300 transition-colors mb-2.5">
                       {bName}
                     </h3>
+
+                    {/* Amenities tags */}
+                    <div className="flex flex-wrap gap-1.5 mb-3.5">
+                      <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/25 font-medium">
+                        Phòng VIP tiệc riêng
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/25 font-medium">
+                        Hầm rượu Sommelier
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/25 font-medium">
+                        Đỗ xe Valet
+                      </span>
+                    </div>
 
                     <div className="space-y-2 text-xs text-amber-200/70">
                       <div className="flex items-start gap-2.5">

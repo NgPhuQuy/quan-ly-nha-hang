@@ -60,7 +60,7 @@ function GuestDetails({
     <div className="rounded-3xl p-5 sm:p-8 bg-black/40 border border-amber-500/20 backdrop-blur-md shadow-2xl space-y-6">
       <div>
         <div className="inline-block text-[11px] font-bold uppercase tracking-[0.2em] text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20 mb-2">
-          Bước 4 / 4
+          Giai đoạn IV / V
         </div>
         <h1 className="font-serif text-2xl sm:text-3xl font-bold text-amber-100">
           Thông Tin Người Đặt Bàn

@@ -50,7 +50,7 @@ function TrangKhongCoQuyen({ onQuayVeTrangChu, onDangNhapKhac }) {
             ""
           )}{" "}
           không có thẩm quyền truy cập vào phân hệ Quản lý / Điểm bán (POS) của
-          hệ thống 5S Dining.
+          hệ thống L'Délice.
         </p>
 
         {/* User Role Tag */}

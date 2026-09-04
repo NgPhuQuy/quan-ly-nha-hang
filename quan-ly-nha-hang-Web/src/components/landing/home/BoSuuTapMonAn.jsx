@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { ANH } from "../../../assets/anh";
 import { layTatCaMonAn } from "../../../services/monAn.service";
+import { dinhDangTien } from "../../../utils/dinhDang";
 import {
   Utensils,
   Sparkles,
   ChevronLeft,
   ChevronRight,
   ArrowRight,
+  MapPin,
 } from "lucide-react";
 
 const SIGNATURE_FALLBACK = [
@@ -17,6 +19,7 @@ const SIGNATURE_FALLBACK = [
     gia: 1250000,
     anh: ANH.monAn1,
     nhom: "Hải sản",
+    xuatXu: "Alaska, Hoa Kỳ",
     isSignature: true,
   },
   {
@@ -26,15 +29,17 @@ const SIGNATURE_FALLBACK = [
     gia: 1850000,
     anh: ANH.monAn2,
     nhom: "Món chính",
+    xuatXu: "Miyazaki, Nhật Bản",
     isSignature: true,
   },
   {
     id: 3,
-    ten: "Lẩu Nấm Hoàng Gia 5S",
-    moTa: "Nước cốt xương hầm 24 giờ cùng các loại nấm quý tự nhiên bồi bổ sức khỏe.",
+    ten: "Bouillabaisse Hoàng Gia L'Délice",
+    moTa: "Súp hải sản kiểu Marseille nấu cùng saffron thượng hạng, tôm hùm và thảo mộc Pháp.",
     gia: 890000,
     anh: ANH.monAn3,
     nhom: "Món chính",
+    xuatXu: "Marseille, Pháp",
     isSignature: false,
   },
   {
@@ -44,6 +49,7 @@ const SIGNATURE_FALLBACK = [
     gia: 650000,
     anh: ANH.monAn4,
     nhom: "Hải sản",
+    xuatXu: "Hokkaido & New Zealand",
     isSignature: false,
   },
   {
@@ -53,6 +59,7 @@ const SIGNATURE_FALLBACK = [
     gia: 980000,
     anh: ANH.monAn5,
     nhom: "Khai vị",
+    xuatXu: "Bergen, Na Uy",
     isSignature: true,
   },
   {
@@ -62,6 +69,7 @@ const SIGNATURE_FALLBACK = [
     gia: 320000,
     anh: ANH.monMenu1,
     nhom: "Khai vị",
+    xuatXu: "Nông trại hữu cơ",
     isSignature: false,
   },
   {
@@ -71,6 +79,7 @@ const SIGNATURE_FALLBACK = [
     gia: 2450000,
     anh: ANH.monMenu5,
     nhom: "Thức uống",
+    xuatXu: "Bordeaux, Pháp",
     isSignature: true,
   },
 ];
@@ -89,6 +98,11 @@ function DishCollection({ onDatBan }) {
             ten: m.tenMatHang || m.name || "Món ăn",
             moTa: m.moTa || m.description || "Món ngon tinh hoa ẩm thực 5 sao",
             gia: Number(m.gia ?? m.price ?? 0),
+            xuatXu:
+              m.xuatXu ||
+              m.nguonGoc ||
+              SIGNATURE_FALLBACK[idx % SIGNATURE_FALLBACK.length]?.xuatXu ||
+              "Tuyển chọn thượng hạng",
             anh:
               m.anh ||
               m.image ||
@@ -128,22 +142,8 @@ function DishCollection({ onDatBan }) {
   return (
     <section
       id="menu"
-      className="px-4 py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-[#0a0704] via-[#130d07] to-[#0c0804] relative overflow-hidden scroll-mt-16"
+      className="px-4 py-24 sm:px-6 lg:px-8 bg-transparent relative overflow-hidden scroll-mt-16"
     >
-      {/* Atmosphere Texture Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-15 mix-blend-luminosity overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=1920&q=80"
-          alt="Nghệ thuật ẩm thực cao cấp"
-          className="w-full h-full object-cover scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0704] via-[#130d07]/90 to-[#0c0804]" />
-      </div>
-
-      {/* Luxury Golden Ambient Glows */}
-      <div className="absolute top-1/3 left-10 w-[550px] h-[550px] bg-amber-500/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-amber-600/10 rounded-full blur-[130px] pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(212,150,43,0.1),_transparent_75%)] pointer-events-none" />
 
       <div className="mx-auto max-w-6xl relative z-10">
         {/* Section Header */}
@@ -245,9 +245,15 @@ function DishCollection({ onDatBan }) {
                 {/* Dish Content */}
                 <div className="p-5 flex flex-1 flex-col justify-between space-y-3">
                   <div>
-                    <h3 className="font-serif text-base sm:text-lg font-bold text-amber-100 group-hover:text-amber-300 transition-colors line-clamp-1 mb-1.5">
+                    <h3 className="font-serif text-base sm:text-lg font-bold text-amber-100 group-hover:text-amber-300 transition-colors line-clamp-1 mb-1">
                       {dish.ten}
                     </h3>
+                    {dish.xuatXu && (
+                      <div className="flex items-center gap-1 text-[11px] text-amber-400/80 mb-1.5 font-medium">
+                        <MapPin size={11} className="shrink-0 text-amber-400" />
+                        <span className="truncate">{dish.xuatXu}</span>
+                      </div>
+                    )}
                     <p className="text-xs text-amber-200/60 font-light line-clamp-2 leading-relaxed">
                       {dish.moTa}
                     </p>
@@ -259,7 +265,7 @@ function DishCollection({ onDatBan }) {
                         Giá phục vụ
                       </span>
                       <span className="font-serif text-base font-bold text-amber-300">
-                        {dish.gia.toLocaleString("vi-VN")} đ
+                        {dinhDangTien(dish.gia)}
                       </span>
                     </div>
 

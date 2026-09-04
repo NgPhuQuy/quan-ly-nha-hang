@@ -4,7 +4,7 @@ function Footer() {
   return (
     <footer
       id="contact"
-      className="border-t border-amber-500/20 bg-[#080503] pt-16 pb-12 px-4 sm:px-6 lg:px-8 text-amber-200/60 snap-start"
+      className="border-t border-amber-500/20 bg-[#080604]/95 backdrop-blur-md pt-16 pb-12 px-4 sm:px-6 lg:px-8 text-amber-200/60 snap-start"
     >
       <div className="mx-auto max-w-6xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-amber-500/10">
@@ -14,9 +14,14 @@ function Footer() {
               <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-amber-500/20 border border-amber-500/40 text-amber-400">
                 <Sparkles size={16} />
               </div>
-              <span className="font-serif text-lg font-bold text-amber-100">
-                5S DINING
-              </span>
+              <div>
+                <span className="font-serif text-lg font-bold tracking-wider text-amber-100 block">
+                  L'DÉLICE
+                </span>
+                <span className="text-[9px] uppercase tracking-[0.25em] text-amber-400/80 font-serif block -mt-1">
+                  Haute Gastronomie Française
+                </span>
+              </div>
             </div>
             <p className="text-xs leading-relaxed text-amber-200/60">
               Kiến tạo những chuẩn mực mới trong thế giới ẩm thực Fine Dining.
@@ -111,7 +116,7 @@ function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Mail size={13} className="text-amber-400 shrink-0" />
-                <span>reservation@5sdining.vn</span>
+                <span>reservation@ldelice.vn</span>
               </div>
               <p className="text-[11px] text-amber-200/50 pt-2">
                 Hỗ trợ đặt bàn tiệc hội nghị, sinh nhật, tiệc rượu & sự kiện VIP
@@ -124,7 +129,7 @@ function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-amber-200/40 gap-4">
           <p>
-            © {new Date().getFullYear()} 5S Dining Restaurant Chain. All rights
+            © {new Date().getFullYear()} L'Délice Restaurant Group. All rights
             reserved.
           </p>
           <div className="flex items-center gap-6">
