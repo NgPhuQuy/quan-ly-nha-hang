@@ -60,18 +60,13 @@ function ThanhDieuHuong({ onDatBan, onTraCuuDatBan, onDangNhap }) {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href="#" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-amber-400/20 to-amber-700/30 border border-amber-500/40 shadow-inner group-hover:scale-105 transition-transform">
-                <Sparkles size={18} className="text-amber-400" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-serif text-lg sm:text-xl font-bold tracking-wider text-amber-200 group-hover:text-amber-300 transition-colors">
-                  L'DÉLICE
-                </span>
-                <span className="text-[9px] uppercase tracking-[0.25em] text-amber-500/70 font-semibold -mt-1">
-                  Haute Gastronomie
-                </span>
-              </div>
+            <a href="#" className="flex flex-col group">
+              <span className="font-serif text-xl sm:text-2xl font-bold tracking-wider text-amber-200 group-hover:text-amber-300 transition-colors">
+                L'DÉLICE
+              </span>
+              <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-amber-500/70 font-semibold -mt-1">
+                Haute Gastronomie
+              </span>
             </a>
 
             {/* Desktop Navigation Links */}

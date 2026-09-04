@@ -2,22 +2,80 @@ import { useEffect, useState } from "react";
 import {
   MapPin,
   Phone,
-  Users,
   Clock,
   ChevronRight,
   Sparkles,
 } from "lucide-react";
 import { layDanhSachChiNhanh } from "../../../services/chiNhanh.service";
+import { layKhungGio } from "../../../services/monAn.service";
+
+const layThongTinTrangThai = (trangThai) => {
+  if (trangThai === "het") {
+    return {
+      nhan: "Hết chỗ",
+      mauDot: "bg-rose-500 shadow-xs shadow-rose-500",
+      mauChu: "text-rose-300",
+      borderBg: "border-rose-500/40 bg-rose-950/80 shadow-rose-950/50",
+    };
+  }
+  if (trangThai === "it") {
+    return {
+      nhan: "Sắp hết chỗ",
+      mauDot: "bg-amber-400 animate-pulse shadow-xs shadow-amber-400",
+      mauChu: "text-amber-300",
+      borderBg: "border-amber-500/40 bg-amber-950/80 shadow-amber-950/50",
+    };
+  }
+  return {
+    nhan: "Còn chỗ",
+    mauDot: "bg-emerald-400 shadow-xs shadow-emerald-400",
+    mauChu: "text-emerald-300",
+    borderBg: "border-emerald-500/30 bg-black/75 shadow-black/50",
+  };
+};
 
 function BranchSection({ onDatBan }) {
-  const [branches, setBranches] = useState([]);
+  const [chiNhanhs, setChiNhanhs] = useState([]);
+  const [trangThaiMap, setTrangThaiMap] = useState({});
 
   useEffect(() => {
     layDanhSachChiNhanh()
-      .then((data) => {
-        if (data && data.length) setBranches(data);
+      .then(async (data) => {
+        const danhSach = data || [];
+        setChiNhanhs(danhSach);
+
+        const today = new Date().toLocaleDateString("en-CA");
+        const map = {};
+
+        await Promise.all(
+          danhSach.map(async (cn) => {
+            const id = cn.maChiNhanh ?? cn.id;
+            try {
+              const slots = await layKhungGio(id, today);
+              // Mặc định mỗi chi nhánh có 50 đơn có thể đặt
+              if (!slots || slots.length === 0) {
+                map[id] = "con";
+              } else {
+                const allFull = slots.every((s) => s.trangThai === "het");
+                const hasScarce = slots.some(
+                  (s) => s.trangThai === "it" || s.trangThai === "het",
+                );
+                if (allFull) {
+                  map[id] = "het";
+                } else if (hasScarce) {
+                  map[id] = "it";
+                } else {
+                  map[id] = "con";
+                }
+              }
+            } catch {
+              map[id] = "con";
+            }
+          }),
+        );
+        setTrangThaiMap(map);
       })
-      .catch(() => {});
+      .catch(console.error);
   }, []);
 
   return (
@@ -25,7 +83,6 @@ function BranchSection({ onDatBan }) {
       id="branches"
       className="px-4 py-24 sm:px-6 lg:px-8 bg-transparent relative overflow-hidden scroll-mt-16"
     >
-
       <div className="mx-auto max-w-6xl relative z-10">
         {/* Section Header */}
         <div className="mb-16 text-center max-w-2xl mx-auto">
@@ -52,24 +109,17 @@ function BranchSection({ onDatBan }) {
 
         {/* Responsive Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch">
-          {branches.map((branch) => {
-            const bId = branch.maChiNhanh ?? branch.id;
-            const bName = branch.tenChiNhanh ?? branch.ten ?? "L'Délice Haute Gastronomie";
-            const bAddress = branch.diaChi ?? "TP. Hồ Chí Minh";
-            const bPhone = branch.soDienThoai ?? "028 3822 9999";
-            const bImage = branch.anhChiNhanh ?? branch.anh;
-            const bSeats = branch.sucChua ?? 50;
-
+          {chiNhanhs.map((chiNhanh) => {
             return (
               <article
-                key={bId}
+                key={chiNhanh.maChiNhanh}
                 className="group flex flex-col rounded-3xl overflow-hidden bg-gradient-to-b from-[#181109]/90 to-[#0e0904]/95 border border-amber-500/25 hover:border-amber-400/60 shadow-[0_10px_30px_rgba(0,0,0,0.6)] hover:shadow-[0_20px_45px_rgba(212,150,43,0.18)] transition-all duration-300 backdrop-blur-md"
               >
                 {/* Branch Image */}
                 <div className="relative h-52 sm:h-56 overflow-hidden bg-[#1a120a]">
                   <img
-                    src={bImage}
-                    alt={bName}
+                    src={chiNhanh.anhChiNhanh}
+                    alt={chiNhanh.tenChiNhanh}
                     className="h-full w-full object-cover group-hover:scale-108 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#181109] via-transparent to-black/30" />
@@ -79,18 +129,29 @@ function BranchSection({ onDatBan }) {
                     Đang mở cửa
                   </span>
 
-                  {/* Seat capacity badge */}
-                  <div className="absolute bottom-3.5 left-3.5 flex items-center gap-1.5 text-xs text-amber-200 bg-black/75 px-3 py-1 rounded-xl backdrop-blur-md border border-amber-500/30 shadow-md">
-                    <Users className="w-3.5 h-3.5 text-amber-400" />
-                    <span>{bSeats} chỗ ngồi</span>
-                  </div>
+                  {/* Booking Availability Badge */}
+                  {(() => {
+                    const statusInfo = layThongTinTrangThai(
+                      trangThaiMap[chiNhanh.maChiNhanh] || "con",
+                    );
+                    return (
+                      <div
+                        className={`absolute bottom-3.5 left-3.5 flex items-center gap-2 text-xs px-3 py-1 rounded-xl backdrop-blur-md border shadow-md transition-colors ${statusInfo.borderBg} ${statusInfo.mauChu}`}
+                      >
+                        <span
+                          className={`w-2 h-2 rounded-full ${statusInfo.mauDot}`}
+                        />
+                        <span className="font-medium">{statusInfo.nhan}</span>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Branch Details */}
                 <div className="p-6 flex flex-1 flex-col justify-between space-y-4">
                   <div>
                     <h3 className="font-serif text-xl font-bold text-amber-100 group-hover:text-amber-300 transition-colors mb-2.5">
-                      {bName}
+                      {chiNhanh.tenChiNhanh}
                     </h3>
 
                     {/* Amenities tags */}
@@ -109,12 +170,12 @@ function BranchSection({ onDatBan }) {
                     <div className="space-y-2 text-xs text-amber-200/70">
                       <div className="flex items-start gap-2.5">
                         <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                        <span className="leading-snug">{bAddress}</span>
+                        <span className="leading-snug">{chiNhanh.diaChi}</span>
                       </div>
 
                       <div className="flex items-center gap-2.5">
                         <Phone className="w-4 h-4 text-amber-400 shrink-0" />
-                        <span className="font-mono">{bPhone}</span>
+                        <span className="font-mono">{chiNhanh.soDienThoai}</span>
                       </div>
 
                       <div className="flex items-center gap-2.5">

@@ -1,5 +1,6 @@
 import apis, { endpoints } from "./apis";
 import { ANH } from "../assets/anh";
+import { KHUNG_GIO } from "../data/datBan";
 
 const DEFAULT_MENU_IMAGES = [
   ANH.monMenu1,
@@ -158,13 +159,46 @@ export const layDanhSachDichVuBoSung = async (branchId) => {
 };
 
 export const layKhungGio = async (branchId, date, guestCount) => {
-  const response = await apis.get(
-    endpoints.khung_gio(branchId, date, guestCount),
-  );
-  return (response.data || []).map((slot) => ({
-    gio: String(slot.gio).slice(0, 5),
-    conCho: slot.conCho,
-    trangThai:
-      slot.coTheDat === false ? "het" : slot.conCho <= 2 ? "it" : "con",
-  }));
+  try {
+    const response = await apis.get(
+      endpoints.khung_gio(branchId, date, guestCount),
+    );
+    const slotsFromApi = response.data || [];
+    const apiMap = new Map();
+    slotsFromApi.forEach((s) => {
+      const g = String(s.gio).slice(0, 5);
+      apiMap.set(g, Number(s.soLuongConLai));
+    });
+
+    // Gom danh sách khung giờ từ KHUNG_GIO chuẩn và các giờ từ API (nếu có)
+    const allGios = Array.from(
+      new Set([...KHUNG_GIO.map((k) => k.gio), ...apiMap.keys()]),
+    ).sort();
+
+    return allGios.map((gio) => {
+      // Mặc định mỗi chi nhánh có 50 đơn có thể đặt
+      const soLuongConLai = apiMap.has(gio) ? apiMap.get(gio) : 50;
+      let trangThai = "con";
+      if (soLuongConLai <= 0) {
+        trangThai = "het";
+      } else if (soLuongConLai <= 15) {
+        trangThai = "it";
+      }
+
+      return {
+        gio,
+        soLuongConLai,
+        conCho: soLuongConLai,
+        trangThai,
+      };
+    });
+  } catch (error) {
+    console.error("Could not load time slots:", error);
+    return KHUNG_GIO.map((k) => ({
+      gio: k.gio,
+      soLuongConLai: 50,
+      conCho: 50,
+      trangThai: "con",
+    }));
+  }
 };

@@ -25,7 +25,7 @@ function TimeSelection({
       <div className="space-y-3 pt-2">
         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-300">
           <Clock className="w-4 h-4 text-amber-400" />
-          <span>Khung Giờ Phục Vụ (10:30 – 22:00)</span>
+          <span>Khung Giờ Phục Vụ (08:00 – 22:00)</span>
         </div>
 
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2.5">

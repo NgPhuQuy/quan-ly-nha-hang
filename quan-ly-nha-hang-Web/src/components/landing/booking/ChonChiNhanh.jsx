@@ -189,8 +189,11 @@ function BranchSelection({
                 </div>
 
                 <div className="mt-3.5 pt-2 border-t border-amber-500/10 flex items-center justify-between text-[11px] text-amber-200/50">
-                  <span>Sức chứa: {b.sucChua ?? 50} chỗ</span>
-                  <span className="text-emerald-400 font-semibold">Mở cửa</span>
+                  <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    Còn chỗ nhận đặt
+                  </span>
+                  <span className="text-emerald-400/80 font-semibold">Đang mở cửa</span>
                 </div>
               </div>
             );

@@ -1,46 +1,8 @@
 import apis, { endpoints } from "./apis";
-import { ANH } from "../assets/anh";
 
-const DEFAULT_BRANCH_IMAGES = [ANH.chiNhanh1, ANH.chiNhanh2, ANH.chiNhanh3];
-
-export const layDanhSachChiNhanh = async (tatCa = false) => {
-  try {
-    const res = await apis.get(
-      tatCa ? endpoints.chi_nhanh_all : endpoints.chi_nhanh,
-    );
-    const list = res.data || [];
-    return list.map((b, idx) => ({
-      ...b,
-      maChiNhanh: b.maChiNhanh ?? b.id ?? idx + 1,
-      id: b.maChiNhanh ?? b.id ?? idx + 1,
-      tenChiNhanh: b.tenChiNhanh ?? b.ten ?? "L'Délice",
-      ten: b.tenChiNhanh ?? b.ten ?? "L'Délice",
-      name: b.tenChiNhanh ?? b.ten ?? "L'Délice",
-      diaChi: b.diaChi ?? "TP. Hồ Chí Minh",
-      address: b.diaChi ?? "TP. Hồ Chí Minh",
-      soDienThoai: b.soDienThoai ?? "028 3822 9999",
-      phone: b.soDienThoai ?? "028 3822 9999",
-      sucChua: b.sucChua ?? 50,
-      anhChiNhanh:
-        b.anhChiNhanh ||
-        b.hinhAnh ||
-        b.anh ||
-        DEFAULT_BRANCH_IMAGES[idx % DEFAULT_BRANCH_IMAGES.length],
-      anh:
-        b.anhChiNhanh ||
-        b.hinhAnh ||
-        b.anh ||
-        DEFAULT_BRANCH_IMAGES[idx % DEFAULT_BRANCH_IMAGES.length],
-      image:
-        b.anhChiNhanh ||
-        b.hinhAnh ||
-        b.anh ||
-        DEFAULT_BRANCH_IMAGES[idx % DEFAULT_BRANCH_IMAGES.length],
-    }));
-  } catch (error) {
-    console.warn("Could not fetch branches from API, using fallback:", error);
-    return [];
-  }
+export const layDanhSachChiNhanh = async () => {
+  const chiNhanhs = await apis.get(endpoints.chi_nhanh);
+  return chiNhanhs;
 };
 
 export const layChiTietChiNhanh = async (id) => {

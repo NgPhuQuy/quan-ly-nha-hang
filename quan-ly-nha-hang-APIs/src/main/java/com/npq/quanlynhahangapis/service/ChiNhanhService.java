@@ -54,7 +54,6 @@ public class ChiNhanhService {
 
         ChiNhanh chiNhanh = ChiNhanh.builder()
                 .tenChiNhanh(request.tenChiNhanh())
-                .soLuongDon(request.soLuongDon())
                 .soDienThoai(request.soDienThoai())
                 .diaChi(request.diaChi())
                 .anhChiNhanh(url)
@@ -71,7 +70,6 @@ public class ChiNhanhService {
         ChiNhanh chiNhanh = layChiNhanhTheoId(maChiNhanh);
 
         chiNhanh.setTenChiNhanh(request.tenChiNhanh());
-        chiNhanh.setSoLuongDon(request.soLuongDon());
         chiNhanh.setSoDienThoai(request.soDienThoai());
         chiNhanh.setDiaChi(request.diaChi());
 

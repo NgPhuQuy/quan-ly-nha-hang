@@ -10,9 +10,6 @@ public record ChiNhanhRequest(
         Integer maChiNhanh,
         @NotBlank(message = "Tên chi nhánh không được để trống!")
         String tenChiNhanh,
-        @NotNull(message = "Sức chứa không được để trống!")
-        @Min(value = 1, message = "Số lượng đơn phải lớn hơn 0!")
-        Integer soLuongDon,
         Boolean trangThaiChiNhanh,
         @NotBlank(message = "Số điện thoại không được để trống!")
         @Pattern(regexp = "^0\\d{9}$", message = "Số điện thoại không hợp lệ!")

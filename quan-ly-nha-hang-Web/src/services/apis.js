@@ -46,7 +46,6 @@ export const endpoints = {
 
   // Chi nhánh
   chi_nhanh: "/chi-nhanh",
-  chi_nhanh_all: "/chi-nhanh/all",
   chi_tiet_chi_nhanh: (id) => `/chi-nhanh/${id}`,
   cap_nhat_chi_nhanh: (id) => `/chi-nhanh/${id}`,
   doi_trang_thai_chi_nhanh: (id) => `/chi-nhanh/${id}/trang-thai`,
@@ -77,7 +76,7 @@ export const endpoints = {
   cap_nhat_trang_thai_dat_lich: (id) => `/dat-lich/${id}/trang-thai`,
   xoa_dat_lich: (id) => `/dat-lich/${id}`,
   khung_gio: (maChiNhanh, ngay, soKhach) =>
-    `/dat-lich/khung-gio?maChiNhanh=${maChiNhanh}&ngay=${ngay}&soKhach=${soKhach}`,
+    `/dat-lich/khung-gio?maChiNhanh=${maChiNhanh}&ngay=${ngay}${soKhach ? `&soKhach=${soKhach}` : ""}`,
 
   // Hóa đơn & POS
   invoices: "/hoa-don",
