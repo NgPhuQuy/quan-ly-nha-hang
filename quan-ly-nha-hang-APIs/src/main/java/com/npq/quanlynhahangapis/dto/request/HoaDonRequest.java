@@ -6,4 +6,3 @@ public record HoaDonRequest(
         Integer maDatLich
 ) {
 }
-

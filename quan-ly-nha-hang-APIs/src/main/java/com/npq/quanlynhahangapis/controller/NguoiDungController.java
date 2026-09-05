@@ -45,6 +45,7 @@ public class NguoiDungController {
     }
 
     @GetMapping("/users")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<NguoiDungResponse>> layDSNguoiDung() {
         return ResponseEntity.ok(nguoiDungService.layDSNguoiDung());
     }
@@ -55,18 +56,19 @@ public class NguoiDungController {
     }
 
     @PatchMapping("/users/{maNguoiDung}/trang-thai")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> doiTrangThaiNguoiDung(@PathVariable Integer maNguoiDung) {
         return ResponseEntity.ok(nguoiDungService.doiTrangThaiNguoiDung(maNguoiDung));
     }
 
     @PostMapping("/users/quan-ly")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> taoQuanLy(@RequestBody NguoiDungRequest quanly) {
         return ResponseEntity.status(HttpStatus.CREATED).body(nguoiDungService.taoQuanLy(quanly));
     }
 
     @PostMapping("/users/admin")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> taoAdmin(@RequestBody NguoiDungRequest admin) {
         return ResponseEntity.status(HttpStatus.CREATED).body(nguoiDungService.taoAdmin(admin));
     }

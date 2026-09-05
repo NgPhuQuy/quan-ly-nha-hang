@@ -56,13 +56,13 @@ public class NguoiDungService {
     public NguoiDungResponse taoQuanLy(NguoiDungRequest request) {
         NguoiDung ql = taoNguoiDung(request);
         ql.setVaiTro(VaiTro.QUAN_LY);
-        return chuyenSangDto(ql);
+        return chuyenSangDto(nguoiDungRepository.save(ql));
     }
 
     public NguoiDungResponse taoAdmin(NguoiDungRequest request) {
         NguoiDung admin = taoNguoiDung(request);
         admin.setVaiTro(VaiTro.ADMIN);
-        return chuyenSangDto(admin);
+        return chuyenSangDto(nguoiDungRepository.save(admin));
     }
 
     public NguoiDung taoNguoiDung(NguoiDungRequest request) {

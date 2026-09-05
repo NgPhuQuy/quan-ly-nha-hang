@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class HoaDonController {
     private final HoaDonService hoaDonService;
-//
+
+    @PostMapping
+    public ResponseEntity<?> taoHoaDon(@AuthenticationPrincipal Integer maQuanLy,
+                                       @RequestBody @Valid HoaDonRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(hoaDonService.taoHoaDon(maQuanLy, request));
+    }
+
+
 //    @GetMapping
 //    public ResponseEntity<?> danhSachHoaDon(
 //            @RequestParam(required = false) Integer maChiNhanh,
@@ -25,15 +33,10 @@ public class HoaDonController {
 //        return ResponseEntity.ok(hoaDonService.layDSHoaDon(maChiNhanh, nguon, trangThai, search));
 //    }
 
+
     @GetMapping("/{maHoaDon}")
     public ResponseEntity<?> chiTietHoaDon(@PathVariable Integer maHoaDon) {
         return ResponseEntity.ok(hoaDonService.layChiTietHoaDon(maHoaDon));
-    }
-
-    @PostMapping
-    public ResponseEntity<?> taoHoaDon(@AuthenticationPrincipal Integer maQuanLy,
-                                       @RequestBody @Valid HoaDonRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(hoaDonService.taoHoaDon(maQuanLy, request));
     }
 
     @PostMapping("/{maHoaDon}/thanh-toan")
@@ -42,6 +45,7 @@ public class HoaDonController {
     }
 
     @DeleteMapping("/{maHoaDon}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> xoaHoaDon(@PathVariable Integer maHoaDon) {
         hoaDonService.xoaHoaDon(maHoaDon);
         return ResponseEntity.noContent().build();

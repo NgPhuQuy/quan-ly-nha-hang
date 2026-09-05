@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 public record HoaDonResponse(
         Integer maHoaDon,
+        Integer maNhanVien,
         Integer maChiNhanh,
         Integer maKhachHang,
         TrangThaiHoaDon trangThai,

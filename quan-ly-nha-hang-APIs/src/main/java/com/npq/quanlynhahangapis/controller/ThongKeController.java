@@ -1,6 +1,6 @@
 //package com.npq.quanlynhahangapis.controller;
 //
-//import com.npq.quanlynhahangapis.service.DashboardService;
+//import com.npq.quanlynhahangapis.service.ThongKeService;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.http.ResponseEntity;
 //import org.springframework.web.bind.annotation.GetMapping;
@@ -9,29 +9,29 @@
 //import org.springframework.web.bind.annotation.RestController;
 //
 //@RestController
-//@RequestMapping("/dashboard")
+//@RequestMapping("/thong-ke")
 //@RequiredArgsConstructor
-//public class DashboardController {
-//    private final DashboardService dashboardService;
+//public class ThongKeController {
+//    private final ThongKeService thongKeService;
 //
-//    @GetMapping("/overview")
+//    @GetMapping
 //    public ResponseEntity<?> layTongQuan(@RequestParam(required = false) Integer maChiNhanh) {
-//        return ResponseEntity.ok(dashboardService.layTongQuan(maChiNhanh));
+//        return ResponseEntity.ok(thongKeService.layTongQuan(maChiNhanh));
 //    }
 //
 //    @GetMapping("/revenue-by-day")
 //    public ResponseEntity<?> layDoanhThuTheoNgay(@RequestParam(required = false) Integer maChiNhanh) {
-//        return ResponseEntity.ok(dashboardService.layDoanhThuTheoNgay(maChiNhanh));
+//        return ResponseEntity.ok(thongKeService.layDoanhThuTheoNgay(maChiNhanh));
 //    }
 //
 //    @GetMapping("/revenue-by-branch")
 //    public ResponseEntity<?> layDoanhThuTheoChiNhanh() {
-//        return ResponseEntity.ok(dashboardService.layDoanhThuTheoChiNhanh());
+//        return ResponseEntity.ok(thongKeService.layDoanhThuTheoChiNhanh());
 //    }
 //
 //    @GetMapping("/revenue-by-source")
 //    public ResponseEntity<?> layDoanhThuTheoNguon(@RequestParam(required = false) Integer maChiNhanh) {
-//        return ResponseEntity.ok(dashboardService.layDoanhThuTheoNguon(maChiNhanh));
+//        return ResponseEntity.ok(thongKeService.layDoanhThuTheoNguon(maChiNhanh));
 //    }
 //}
 //

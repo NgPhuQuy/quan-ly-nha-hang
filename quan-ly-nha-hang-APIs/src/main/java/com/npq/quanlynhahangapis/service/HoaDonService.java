@@ -16,9 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -121,7 +119,7 @@ public class HoaDonService {
     public HoaDonResponse chuyenSangDto(HoaDon hoaDon) {
         int maKhachHang = 0;
         NguoiDung khachHang = hoaDon.getKhachHang();
-        if (khachHang!=null) maKhachHang = khachHang.getMaNguoiDung();
+        if (khachHang != null) maKhachHang = khachHang.getMaNguoiDung();
         List<ChiTietHoaDonResponse> listChiTiet = chiTietHoaDonService.danhSachChiTietHoaDon(hoaDon);
         return HoaDonResponse.builder()
                 .maHoaDon(hoaDon.getMaHoaDon())

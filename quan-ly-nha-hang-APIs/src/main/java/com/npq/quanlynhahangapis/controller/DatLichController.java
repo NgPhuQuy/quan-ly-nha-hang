@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,11 +25,13 @@ public class DatLichController {
     private final DatLichService datLichService;
 
     @GetMapping("/dat-lich")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> danhSachDatLich() {
         return ResponseEntity.ok(datLichService.layDSDatLich());
     }
 
     @GetMapping("/chi-nhanh/{maChiNhanh}/dat-lich")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('QUAN_LY')")
     public ResponseEntity<?> danhSachDatLichTheoChiNhanh(@PathVariable Integer maChiNhanh) {
         return ResponseEntity.ok(datLichService.layDSDatLichTheoChiNhanh(maChiNhanh));
     }
@@ -56,12 +59,14 @@ public class DatLichController {
     }
 
     @PatchMapping("/dat-lich/{maDatLich}/trang-thai")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('QUAN_LY')")
     public ResponseEntity<?> capNhatTrangThai(@PathVariable Integer maDatLich,
                                               @RequestBody @Valid TrangThaiDatLichRequest request) {
         return ResponseEntity.ok(datLichService.capNhatTrangThai(maDatLich, request));
     }
 
     @PutMapping("/dat-lich/{maDatLich}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('QUAN_LY')")
     public ResponseEntity<?> capNhatDatLich(@PathVariable Integer maDatLich,
                                             @RequestBody @Valid DatLichRequest request) {
         return ResponseEntity.ok(datLichService.capNhatDatLich(maDatLich, request));

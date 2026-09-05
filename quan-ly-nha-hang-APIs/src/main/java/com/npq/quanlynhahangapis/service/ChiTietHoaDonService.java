@@ -21,7 +21,7 @@ public class ChiTietHoaDonService {
         return chiTietHoaDonRepository.tinhTienTongHoaDon(maHoaDon);
     }
 
-    public List<ChiTietHoaDonResponse> danhSachChiTietHoaDon(HoaDon hoaDon){
+    public List<ChiTietHoaDonResponse> danhSachChiTietHoaDon(HoaDon hoaDon) {
         return chiTietHoaDonRepository
                 .findByHoaDon_MaHoaDon(hoaDon.getMaHoaDon())
                 .stream()
@@ -29,7 +29,7 @@ public class ChiTietHoaDonService {
                 .toList();
     }
 
-    public ChiTietHoaDonResponse chuyenSangDto(ChiTietHoaDon chiTietHoaDon){
+    public ChiTietHoaDonResponse chuyenSangDto(ChiTietHoaDon chiTietHoaDon) {
         MatHang matHang = matHangService.layMatHangTheoId(chiTietHoaDon.getMatHang().getMaMatHang());
         return ChiTietHoaDonResponse.builder()
                 .maChiTietHoaDon(chiTietHoaDon.getMaChiTietHoaDon())

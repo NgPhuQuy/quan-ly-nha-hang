@@ -1,9 +1,6 @@
 //package com.npq.quanlynhahangapis.service;
 //
-//import com.npq.quanlynhahangapis.dto.response.DashboardOverviewResponse;
-//import com.npq.quanlynhahangapis.dto.response.DoanhThuTheoChiNhanhResponse;
-//import com.npq.quanlynhahangapis.dto.response.DoanhThuTheoNgayResponse;
-//import com.npq.quanlynhahangapis.dto.response.DoanhThuTheoNguonResponse;
+//import com.npq.quanlynhahangapis.dto.response.*;
 //import com.npq.quanlynhahangapis.entity.ChiNhanh;
 //import com.npq.quanlynhahangapis.entity.HoaDon;
 //import com.npq.quanlynhahangapis.repository.ChiNhanhRepository;
@@ -21,13 +18,20 @@
 //
 //@Service
 //@RequiredArgsConstructor
-//public class DashboardService {
+//public class ThongKeService {
 //    private static final DateTimeFormatter DAY_FORMAT = DateTimeFormatter.ofPattern("dd/MM");
 //    private final HoaDonRepository hoaDonRepository;
 //    private final ChiNhanhRepository chiNhanhRepository;
+//    private final HoaDonService hoaDonService;
 //
 //    public DashboardOverviewResponse layTongQuan(Integer maChiNhanh) {
-//        List<HoaDon> hoaDons = hoaDonRepository.findAll();
+//        List<HoaDonResponse> listHoaDon = new ArrayList<>();
+//        if (maChiNhanh != null) listHoaDon = hoaDonRepository
+//                .findByChiNhanh_MaChiNhanh(maChiNhanh).stream()
+//                .map(hoaDonService::chuyenSangDto)
+//                .toList();
+//        else listHoaDon =
+//                List < HoaDon > hoaDons = hoaDonRepository.findAll();
 //        if (maChiNhanh != null) {
 //            hoaDons = hoaDons.stream()
 //                    .filter(h -> h.getChiNhanh() != null && h.getChiNhanh().getMaChiNhanh().equals(maChiNhanh))
