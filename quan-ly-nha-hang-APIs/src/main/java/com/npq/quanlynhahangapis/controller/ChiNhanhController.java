@@ -14,12 +14,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/chi-nhanh")
 @RequiredArgsConstructor
 public class ChiNhanhController {
-
     private final ChiNhanhService chiNhanhService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> danhSachChiNhanh() {
         return ResponseEntity.ok(chiNhanhService.layTatCaChiNhanh());
+    }
+
+    @GetMapping("/public")
+    public ResponseEntity<?> danhSachChiNhanhPublic() {
+        return ResponseEntity.ok(chiNhanhService.layDanhSachChiNhanhHoatDong());
     }
 
     @GetMapping("/{maChiNhanh}")

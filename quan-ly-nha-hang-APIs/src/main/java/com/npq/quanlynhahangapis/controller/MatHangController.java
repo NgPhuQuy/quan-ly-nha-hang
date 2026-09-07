@@ -17,7 +17,6 @@ public class MatHangController {
     private final MatHangService matHangService;
 
     @GetMapping("/mat-hang")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('QUAN_LY')")
     public ResponseEntity<?> danhSachTatCaMatHang() {
         return ResponseEntity.ok(matHangService.layTatCaMatHang());
     }
@@ -39,6 +38,11 @@ public class MatHangController {
     public ResponseEntity<?> capNhatMatHang(@PathVariable Integer maMatHang,
                                             @ModelAttribute @Valid MatHangRequest request) {
         return ResponseEntity.ok(matHangService.capNhatMatHang(maMatHang, request));
+    }
+
+    @GetMapping("/chi-nhanh/{maChiNhanh}/mat-hang")
+    public ResponseEntity<?> danhSachMatHangPublic(@PathVariable Integer maChiNhanh) {
+        return ResponseEntity.ok(matHangService.layDanhSachMatHangOK(maChiNhanh));
     }
 
     @GetMapping("/chi-nhanh/{maChiNhanh}/mon-an")

@@ -10,6 +10,9 @@ import com.npq.quanlynhahangapis.repository.TrangThaiMatHangChiNhanhRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TrangThaiMatHangChiNhanhService {
@@ -18,28 +21,30 @@ public class TrangThaiMatHangChiNhanhService {
     private final ChiNhanhRepository chiNhanhRepository;
 
     public void sinhTrangThaiMatHangMacDinh(ChiNhanh chiNhanh) {
-        trangThaiMatHangChiNhanhRepository
-                .saveAll(matHangRepository
-                        .findAll()
-                        .stream()
-                        .map(matHang -> TrangThaiMatHangChiNhanh.builder()
-                                .matHang(matHang)
-                                .chiNhanh(chiNhanh)
-                                .trangThaiMatHang(TrangThaiMatHang.DANG_BAN)
-                                .build())
-                        .toList());
+        List<MatHang> listMatHang = matHangRepository.findAll();
+        for (MatHang matHang:listMatHang){
+            trangThaiMatHangChiNhanhRepository.save(TrangThaiMatHangChiNhanh.builder()
+                    .matHang(matHang)
+                    .chiNhanh(chiNhanh)
+                    .trangThaiMatHang(TrangThaiMatHang.DANG_BAN)
+                    .build());
+        }
     }
 
     public void sinhMonAnChiNhanhMacDinh(MatHang matHang) {
-        trangThaiMatHangChiNhanhRepository
-                .saveAll(chiNhanhRepository
-                        .findAll()
-                        .stream()
-                        .map(chiNhanh -> TrangThaiMatHangChiNhanh.builder()
-                                .matHang(matHang)
-                                .chiNhanh(chiNhanh)
-                                .trangThaiMatHang(TrangThaiMatHang.DANG_BAN)
-                                .build())
-                        .toList());
+        List<ChiNhanh> listChiNhanh = chiNhanhRepository.findAll();
+        for (ChiNhanh chiNhanh:listChiNhanh){
+            trangThaiMatHangChiNhanhRepository.save(TrangThaiMatHangChiNhanh.builder()
+                    .matHang(matHang)
+                    .chiNhanh(chiNhanh)
+                    .trangThaiMatHang(TrangThaiMatHang.DANG_BAN)
+                    .build());
+        }
+    }
+
+    public List<TrangThaiMatHangChiNhanh> layDSMatHangDangBanTaiChiNhanh(Integer maChiNhanh, Integer maMatHang) {
+        return trangThaiMatHangChiNhanhRepository
+                .findByChiNhanh_MaChiNhanhAndMatHang_MaMatHangAndTrangThaiMatHang
+                        (maChiNhanh, maMatHang, TrangThaiMatHang.DANG_BAN);
     }
 }

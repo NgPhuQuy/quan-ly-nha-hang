@@ -1,9 +1,11 @@
 package com.npq.quanlynhahangapis.service;
 
+import com.npq.quanlynhahangapis.dto.request.ChiTietHoaDonRequest;
 import com.npq.quanlynhahangapis.dto.request.HoaDonRequest;
 import com.npq.quanlynhahangapis.dto.response.ChiTietHoaDonResponse;
 import com.npq.quanlynhahangapis.dto.response.HoaDonResponse;
 import com.npq.quanlynhahangapis.entity.*;
+import com.npq.quanlynhahangapis.entity.enums.Nguon;
 import com.npq.quanlynhahangapis.entity.enums.TrangThaiHoaDon;
 import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
@@ -17,17 +19,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class HoaDonService {
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final HoaDonRepository hoaDonRepository;
-    private final ChiTietHoaDonRepository chiTietHoaDonRepository;
-    private final MatHangRepository matHangRepository;
     private final BanRepository banRepository;
-    private final ChiNhanhService chiNhanhService;
     private final NguoiDungService nguoiDungService;
     private final BanService banService;
     private final DatLichService datLichService;
@@ -63,42 +62,36 @@ public class HoaDonService {
         ban.setTrangThai(!ban.getTrangThai());
         banRepository.save(ban);
 
-        if (request.maDatLich() != null) ganDatLich(hoaDon, request.maDatLich());
+        if (request.maDatLich() != null){
+            hoaDon.setNguon(Nguon.DAT_LICH);
+            ganDatLich(hoaDon, request.maDatLich());
+        }
+
+        if (request.listChiTiet()!= null)
+            savedHoaDon.setListChiTietHoaDon(chiTietHoaDonService.goiMon(hoaDon, request.listChiTiet()));
 
         return chuyenSangDto(hoaDonRepository.save(savedHoaDon));
     }
 
-    private void ganDatLich(HoaDon hoaDon, Integer maDatLich) {
-        DatLich datLich = datLichService.layDatLichTheoId(maDatLich);
-        List<ChiTietHoaDon> listChiTiet = datLich
-                .getListDatTruoc()
-                .stream()
-                .map(datTruoc -> chuyenDatTruoc_ChiTietHD(datTruoc, hoaDon))
-                .toList();
-
-        hoaDon.setListChiTietHoaDon(listChiTiet);
-        hoaDonRepository.save(hoaDon);
+    public HoaDonResponse chinhSuaHoaDon(Integer maHoaDon, HoaDonRequest request) {
+        HoaDon hoaDon = layHoaDonTheoId(maHoaDon);
+        return chuyenSangDto(hoaDon);
     }
 
-    private ChiTietHoaDon chuyenDatTruoc_ChiTietHD(DatTruoc datTruoc, HoaDon hoaDon) {
-        return ChiTietHoaDon.builder()
-                .matHang(datTruoc.getMatHang())
-                .hoaDon(hoaDon)
-                .soLuong(datTruoc.getSoLuong())
-                .donGia(datTruoc.getDonGia())
-                .build();
+    private void ganDatLich(HoaDon hoaDon, Integer maDatLich) {
+        DatLich datLich = datLichService.layDatLichTheoId(maDatLich);
+        List<ChiTietHoaDon> listChiTiet = new ArrayList<>();
+
+        for (DatTruoc datTruoc : datLich.getListDatTruoc()){
+            listChiTiet.add(chiTietHoaDonService.chuyenDatTruoc_ChiTietHD(datTruoc, hoaDon));
+        }
+        hoaDon.setListChiTietHoaDon(listChiTiet);
+        hoaDonRepository.save(hoaDon);
     }
 
     @Transactional
     public HoaDonResponse thanhToanHoaDon(Integer maHoaDon) {
         BigDecimal tongTien = chiTietHoaDonService.layTongTien(maHoaDon);
-//        if (hoaDon.getKhachHang() != null && hoaDon.getTongTien() != null) {
-//            KhachHang kh = hoaDon.getKhachHang();
-//            int diemThem = hoaDon.getTongTien().divide(BigDecimal.valueOf(10000), java.math.RoundingMode.HALF_UP).intValue();
-//            int currentDiem = kh.getDiemTichLuy() != null ? kh.getDiemTichLuy() : 0;
-//            kh.setDiemTichLuy(currentDiem + diemThem);
-//            khachHangRepository.save(kh);
-//        }
 
         HoaDon hoaDon = layHoaDonTheoId(maHoaDon);
         hoaDon.setTrangThai(TrangThaiHoaDon.HOAN_THANH);
@@ -131,5 +124,7 @@ public class HoaDonService {
                 .listChiTietHoaDon(listChiTiet)
                 .build();
     }
+
+
 }
 

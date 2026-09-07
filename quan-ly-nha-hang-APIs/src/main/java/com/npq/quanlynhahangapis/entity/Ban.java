@@ -13,7 +13,6 @@ public class Ban {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer maBan;
-    private Integer sucChua;
 
     @Builder.Default
     private Boolean trangThai = true;

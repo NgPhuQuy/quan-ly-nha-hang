@@ -1,6 +1,8 @@
 package com.npq.quanlynhahangapis.service;
 
+import com.npq.quanlynhahangapis.dto.request.DatTruocRequest;
 import com.npq.quanlynhahangapis.dto.response.DatTruocResponse;
+import com.npq.quanlynhahangapis.entity.DatLich;
 import com.npq.quanlynhahangapis.entity.DatTruoc;
 import com.npq.quanlynhahangapis.entity.MatHang;
 import com.npq.quanlynhahangapis.repository.DatTruocRepository;
@@ -16,6 +18,17 @@ import org.springframework.stereotype.Service;
 public class DatTruocService {
     private final DatTruocRepository datTruocRepository;
     private final MatHangService matHangService;
+
+    public DatTruoc chuyenSangObj(DatTruocRequest request, DatLich datLich) {
+        MatHang matHang = matHangService.layMatHangTheoId(request.maMatHang());
+        DatTruoc datTruoc = DatTruoc.builder()
+                .datLich(datLich)
+                .matHang(matHang)
+                .soLuong(request.soLuong())
+                .donGia(matHang.getGiaMatHang())
+                .build();
+        return datTruocRepository.save(datTruoc);
+    }
 
     public DatTruocResponse chuyenSangDto(DatTruoc dto) {
         MatHang matHang = dto.getMatHang();

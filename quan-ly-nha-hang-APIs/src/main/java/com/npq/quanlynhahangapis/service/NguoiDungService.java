@@ -59,11 +59,11 @@ public class NguoiDungService {
         return chuyenSangDto(nguoiDungRepository.save(ql));
     }
 
-    public NguoiDungResponse taoAdmin(NguoiDungRequest request) {
-        NguoiDung admin = taoNguoiDung(request);
-        admin.setVaiTro(VaiTro.ADMIN);
-        return chuyenSangDto(nguoiDungRepository.save(admin));
-    }
+//    public NguoiDungResponse taoAdmin(NguoiDungRequest request) {
+//        NguoiDung admin = taoNguoiDung(request);
+//        admin.setVaiTro(VaiTro.ADMIN);
+//        return chuyenSangDto(nguoiDungRepository.save(admin));
+//    }
 
     public NguoiDung taoNguoiDung(NguoiDungRequest request) {
         if (nguoiDungRepository.existsByTaiKhoan(request.taiKhoan()))

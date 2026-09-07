@@ -87,4 +87,15 @@ public class ChiNhanhService {
         return chuyenSangDto(chiNhanhRepository.save(chiNhanh));
     }
 
+    public List<ChiNhanhResponse> layDanhSachChiNhanhHoatDong() {
+        return chiNhanhRepository
+                .findByTrangThaiTrue()
+                .stream()
+                .map(this::chuyenSangDto)
+                .toList();
+    }
+
+    public List<ChiNhanh> layDanhSachChiNhanh() {
+        return chiNhanhRepository.findAll();
+    }
 }

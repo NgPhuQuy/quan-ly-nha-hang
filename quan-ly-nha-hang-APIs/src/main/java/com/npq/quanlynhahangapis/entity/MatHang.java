@@ -1,10 +1,12 @@
 package com.npq.quanlynhahangapis.entity;
 
 import com.npq.quanlynhahangapis.entity.enums.LoaiMatHang;
+import com.npq.quanlynhahangapis.entity.enums.TrangThaiMatHang;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Builder
@@ -24,4 +26,7 @@ public class MatHang {
 
     @Enumerated(EnumType.STRING)
     private LoaiMatHang loaiMatHang;
+
+    @OneToMany(mappedBy = "matHang")
+    private List<TrangThaiMatHangChiNhanh> listTrangThai;
 }

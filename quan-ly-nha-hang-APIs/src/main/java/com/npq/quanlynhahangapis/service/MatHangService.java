@@ -2,7 +2,9 @@ package com.npq.quanlynhahangapis.service;
 
 import com.npq.quanlynhahangapis.dto.request.MatHangRequest;
 import com.npq.quanlynhahangapis.dto.response.MatHangResponse;
+import com.npq.quanlynhahangapis.entity.ChiNhanh;
 import com.npq.quanlynhahangapis.entity.MatHang;
+import com.npq.quanlynhahangapis.entity.TrangThaiMatHangChiNhanh;
 import com.npq.quanlynhahangapis.entity.enums.LoaiMatHang;
 import com.npq.quanlynhahangapis.entity.enums.TrangThaiMatHang;
 import com.npq.quanlynhahangapis.exception.AppException;
@@ -44,8 +46,12 @@ public class MatHangService {
         return chuyenSangDto(saved);
     }
 
+    public List<MatHang> layDanhSachMatHang() {
+        return matHangRepository.findAll();
+    }
+
     public List<MatHangResponse> layTatCaMatHang() {
-        return matHangRepository.findAll().stream()
+        return layDanhSachMatHang().stream()
                 .map(this::chuyenSangDto)
                 .toList();
     }
@@ -120,4 +126,13 @@ public class MatHangService {
                 .loaiMatHang(matHang.getLoaiMatHang())
                 .build();
     }
+
+    public List<MatHangResponse> layDanhSachMatHangOK(Integer maChiNhanh) {
+        return matHangRepository.layDanhSachMatHangOKChiNhanh(maChiNhanh)
+                .stream()
+                .map(this::chuyenSangDto)
+                .toList();
+    }
+
+
 }

@@ -15,9 +15,6 @@ public record DatLichRequest(
         LocalDate ngay,
         @NotNull(message = "Giờ đến không được để trống!")
         LocalTime gio,
-        @NotNull(message = "Số lượng khách không được để trống!")
-        @Min(value = 1, message = "Số lượng khách tối thiểu là 1!")
-        Integer soKhach,
         String ghiChu,
         List<@Valid DatTruocRequest> listDatTruoc
 ) {

@@ -71,7 +71,6 @@ public class BanService {
     public BanResponse chuyenSangDto(Ban ban) {
         return BanResponse.builder()
                 .maBan(ban.getMaBan())
-                .sucChua(ban.getSucChua())
                 .maChiNhanh(ban.getChiNhanh().getMaChiNhanh())
                 .tenChiNhanh(ban.getChiNhanh().getTenChiNhanh())
                 .trangThai(ban.getTrangThai())

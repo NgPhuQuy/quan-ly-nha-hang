@@ -1,5 +1,6 @@
 package com.npq.quanlynhahangapis.entity;
 
+import com.npq.quanlynhahangapis.entity.enums.Nguon;
 import com.npq.quanlynhahangapis.entity.enums.TrangThaiHoaDon;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,11 +29,15 @@ public class HoaDon {
     @JoinColumn(name = "ma_khach_hang")
     private NguoiDung khachHang;
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private Nguon nguon = Nguon.VANG_LAI;
     @ManyToOne
     @JoinColumn(name = "ma_ban")
     private Ban ban;
 
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     private TrangThaiHoaDon trangThai = TrangThaiHoaDon.DANG_PHUC_VU;
 
     @Column(precision = 14, scale = 2)

@@ -67,9 +67,4 @@ public class NguoiDungController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nguoiDungService.taoQuanLy(quanly));
     }
 
-    @PostMapping("/users/admin")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> taoAdmin(@RequestBody NguoiDungRequest admin) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(nguoiDungService.taoAdmin(admin));
-    }
 }

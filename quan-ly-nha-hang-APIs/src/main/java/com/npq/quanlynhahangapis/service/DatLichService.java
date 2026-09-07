@@ -30,8 +30,6 @@ import java.util.List;
 @Getter
 @Setter
 public class DatLichService {
-    private static final int SLOT_INTERVAL_MINUTES = 30;
-
     private final NguoiDungService nguoiDungService;
     private final DatLichRepository datLichRepository;
     private final DatTruocRepository datTruocRepository;
@@ -54,7 +52,6 @@ public class DatLichService {
                 .chiNhanh(chiNhanh)
                 .ngay(request.ngay())
                 .gio(request.gio())
-                .soKhach(request.soKhach())
                 .ghiChu(request.ghiChu())
                 .trangThai(TrangThaiDatLich.DA_XAC_NHAN)
                 .build();
@@ -64,7 +61,7 @@ public class DatLichService {
         if (request.listDatTruoc() != null && !request.listDatTruoc().isEmpty()) {
             List<DatTruoc> listDatTruoc = new ArrayList<>();
             for (DatTruocRequest r : request.listDatTruoc()) {
-                listDatTruoc.add(chuyenSangObj(r, savedDatLich));
+                listDatTruoc.add(datTruocService.chuyenSangObj(r, savedDatLich));
             }
             savedDatLich.setListDatTruoc(listDatTruoc);
             datTruocRepository.saveAll(listDatTruoc);
@@ -88,15 +85,7 @@ public class DatLichService {
     }
 
 
-    private DatTruoc chuyenSangObj(DatTruocRequest request, DatLich datLich) {
-        MatHang matHang = matHangService.layMatHangTheoId(request.maMatHang());
-        return DatTruoc.builder()
-                .datLich(datLich)
-                .matHang(matHang)
-                .soLuong(request.soLuong())
-                .donGia(matHang.getGiaMatHang())
-                .build();
-    }
+
 
 //    public List<KhungGio> laySoLuongDonTrenGio(Integer maChiNhanh, LocalDate ngay){
 //        List<KhungGio> listKhungGio = new ArrayList<>();
@@ -158,7 +147,6 @@ public class DatLichService {
         validateNgayGioDatLich(request, chiNhanh);
         datLich.setNgay(request.ngay());
         datLich.setGio(request.gio());
-        datLich.setSoKhach(request.soKhach());
         datLich.setGhiChu(request.ghiChu());
 
         return chuyenSangDto(datLichRepository.save(datLich));

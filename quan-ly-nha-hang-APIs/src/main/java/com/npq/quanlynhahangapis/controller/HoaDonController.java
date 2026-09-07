@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/hoa-don")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('QUAN_LY')")
 public class HoaDonController {
     private final HoaDonService hoaDonService;
 
@@ -37,6 +38,11 @@ public class HoaDonController {
     @GetMapping("/{maHoaDon}")
     public ResponseEntity<?> chiTietHoaDon(@PathVariable Integer maHoaDon) {
         return ResponseEntity.ok(hoaDonService.layChiTietHoaDon(maHoaDon));
+    }
+
+    @PatchMapping("/{maHoaDon}")
+    public ResponseEntity<?> chinhSuaHoaDon(@PathVariable Integer maHoaDon, HoaDonRequest request) {
+        return ResponseEntity.ok(hoaDonService.chinhSuaHoaDon(maHoaDon, request));
     }
 
     @PostMapping("/{maHoaDon}/thanh-toan")
