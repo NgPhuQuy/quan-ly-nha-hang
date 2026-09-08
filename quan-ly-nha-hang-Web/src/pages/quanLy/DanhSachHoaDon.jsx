@@ -3,13 +3,8 @@ import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { layDanhSachHoaDon } from "../../services/hoaDon.service";
 import { dinhDangTien } from "../../utils/dinhDang";
 
-const statusColor = {
+const mauTrangThaiHoaDon = {
   HOAN_THANH: {
-    bg: "var(--success-bg)",
-    text: "var(--success)",
-    label: "Hoàn thành",
-  },
-  "Hoàn thành": {
     bg: "var(--success-bg)",
     text: "var(--success)",
     label: "Hoàn thành",
@@ -19,17 +14,7 @@ const statusColor = {
     text: "var(--warning)",
     label: "Chờ xử lý",
   },
-  "Chờ xử lý": {
-    bg: "var(--warning-bg)",
-    text: "var(--warning)",
-    label: "Chờ xử lý",
-  },
   DA_HUY: {
-    bg: "var(--danger-bg)",
-    text: "var(--danger)",
-    label: "Đã hủy",
-  },
-  "Đã hủy": {
     bg: "var(--danger-bg)",
     text: "var(--danger)",
     label: "Đã hủy",
@@ -38,8 +23,8 @@ const statusColor = {
 
 const PAGE_SIZE = 10;
 
-function Invoices({ branches = [], onNavigate, onSelectInvoice }) {
-  const [invoices, setInvoices] = useState([]);
+function DanhSachHoaDon({ chiNhanh = [], onNavigate, onSelectInvoice }) {
+  const [danh_sach_hoa_don, setdanh_sach_hoa_don] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [branchFilter, setBranchFilter] = useState("");
@@ -48,14 +33,14 @@ function Invoices({ branches = [], onNavigate, onSelectInvoice }) {
   useEffect(() => {
     layDanhSachHoaDon()
       .then((data) => {
-        setInvoices(Array.isArray(data) ? data : []);
+        setdanh_sach_hoa_don(data);
       })
       .catch(() => {
-        setInvoices([]);
+        setdanh_sach_hoa_don([]);
       });
   }, []);
 
-  const filtered = invoices.filter((inv) => {
+  const filtered = danh_sach_hoa_don.filter((inv) => {
     if (search && !String(inv.maHoaDon).includes(search.toLowerCase()))
       return false;
     if (statusFilter && inv.trangThai !== statusFilter) return false;
@@ -89,7 +74,7 @@ function Invoices({ branches = [], onNavigate, onSelectInvoice }) {
           </p>
         </div>
         <button
-          onClick={() => onNavigate("create-invoice")}
+          onClick={() => onNavigate("tao_hoa_don")}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-600 hover:opacity-90 cursor-pointer shadow-sm"
           style={{
             background: "var(--primary)",
@@ -131,7 +116,7 @@ function Invoices({ branches = [], onNavigate, onSelectInvoice }) {
           }}
         >
           <option value="">Tất cả chi nhánh</option>
-          {branches.map((b) => (
+          {chiNhanh.map((b) => (
             <option key={b.maChiNhanh} value={b.maChiNhanh}>
               {b.tenChiNhanh}
             </option>
@@ -203,9 +188,11 @@ function Invoices({ branches = [], onNavigate, onSelectInvoice }) {
               </tr>
             )}
             {paged.map((inv) => {
-              const sColor = statusColor[inv.trangThai] || statusColor.CHO_XU_LY;
+              const sColor =
+                mauTrangThaiHoaDon[inv.trangThai] ||
+                mauTrangThaiHoaDon.CHO_XU_LY;
               const tenCn =
-                branches.find((b) => b.maChiNhanh === inv.maChiNhanh)
+                chiNhanh.find((b) => b.maChiNhanh === inv.maChiNhanh)
                   ?.tenChiNhanh || `Chi nhánh #${inv.maChiNhanh}`;
               return (
                 <tr
@@ -216,7 +203,7 @@ function Invoices({ branches = [], onNavigate, onSelectInvoice }) {
                   }}
                   onClick={() => {
                     onSelectInvoice(inv.maHoaDon);
-                    onNavigate("invoice-detail");
+                    onNavigate("chi_tiet_hoa_don");
                   }}
                 >
                   <td
@@ -270,7 +257,10 @@ function Invoices({ branches = [], onNavigate, onSelectInvoice }) {
                       {sColor.label || inv.trangThai}
                     </span>
                   </td>
-                  <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                  <td
+                    className="px-4 py-3"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <button
                       className="text-xs font-500 hover:underline cursor-pointer"
                       style={{
@@ -278,7 +268,7 @@ function Invoices({ branches = [], onNavigate, onSelectInvoice }) {
                       }}
                       onClick={() => {
                         onSelectInvoice(inv.maHoaDon);
-                        onNavigate("invoice-detail");
+                        onNavigate("chi_tiet_hoa_don");
                       }}
                     >
                       Chi tiết
@@ -326,4 +316,4 @@ function Invoices({ branches = [], onNavigate, onSelectInvoice }) {
     </div>
   );
 }
-export { Invoices as default };
+export { DanhSachHoaDon as default };

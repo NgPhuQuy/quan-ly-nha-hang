@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   ArrowLeft,
   MapPin,
@@ -43,7 +43,7 @@ function InvoiceDetail({ invoiceId, onNavigate, branches = [] }) {
   const [actionLoading, setActionLoading] = useState(false);
   const [loi, setLoi] = useState(null);
 
-  const fetchDetail = async () => {
+  const fetchDetail = useCallback(async () => {
     if (!invoiceId) return;
     try {
       setLoi(null);
@@ -52,11 +52,15 @@ function InvoiceDetail({ invoiceId, onNavigate, branches = [] }) {
     } catch (err) {
       setLoi(err.response?.data?.message || err.message || "Không thể tải chi tiết hóa đơn!");
     }
-  };
+  }, [invoiceId]);
 
   useEffect(() => {
-    fetchDetail();
-  }, [invoiceId]);
+    const timeoutId = setTimeout(() => {
+      fetchDetail();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [fetchDetail]);
 
   const handleThanhToan = async () => {
     if (!invoice?.maHoaDon) return;
@@ -82,7 +86,7 @@ function InvoiceDetail({ invoiceId, onNavigate, branches = [] }) {
     setLoi(null);
     try {
       await xoaHoaDon(invoice.maHoaDon);
-      onNavigate?.("invoices");
+      onNavigate?.("hoa_don");
     } catch (e) {
       const msg = e.response?.data?.message || e.message || "Lỗi khi xóa hóa đơn!";
       setLoi(msg);
@@ -92,18 +96,18 @@ function InvoiceDetail({ invoiceId, onNavigate, branches = [] }) {
     }
   };
 
-  if (loi && !invoice) {
+  if (!invoiceId || (loi && !invoice)) {
     return (
       <div className="p-6 max-w-3xl">
         <button
-          onClick={() => onNavigate?.("invoices")}
+          onClick={() => onNavigate?.("hoa_don")}
           className="flex items-center gap-1.5 text-sm font-500 hover:text-[var(--primary)] transition-colors mb-4"
           style={{ color: "var(--muted-foreground)" }}
         >
           <ArrowLeft size={15} /> Quay lại danh sách
         </button>
         <div className="p-4 rounded-lg bg-red-50 text-red-600 text-sm border border-red-200">
-          {loi}
+          {!invoiceId ? "Không tìm thấy mã hóa đơn." : loi}
         </div>
       </div>
     );
@@ -139,7 +143,7 @@ function InvoiceDetail({ invoiceId, onNavigate, branches = [] }) {
 
       <div className="flex items-center justify-between mb-5">
         <button
-          onClick={() => onNavigate?.("invoices")}
+          onClick={() => onNavigate?.("hoa_don")}
           className="flex items-center gap-1.5 text-sm font-500 hover:text-[var(--primary)] transition-colors"
           style={{ color: "var(--muted-foreground)" }}
         >

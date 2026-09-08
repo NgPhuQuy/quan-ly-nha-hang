@@ -18,35 +18,35 @@ const DatLich = lazy(() => import("../pages/quanLy/DatLich"));
 const CaiDat = lazy(() => import("../pages/quanLy/CaiDat"));
 
 const pageTitles = {
-  bao_cao_tong_quan: "Tổng quan",
-  hoa_don: "Hóa đơn",
-  tao_hoa_don: "Tạo hóa đơn",
-  chi_tiet_hoa_don: "Chi tiết hóa đơn",
-  mon_an: "Mặt hàng & Món ăn",
-  ban: "Bàn",
+  tong_quan: "Tổng quan",
   chi_nhanh: "Chi nhánh",
   tai_khoan: "Tài khoản",
   khach_hang: "Khách hàng",
+  mon_an: "Món ăn",
+  ban: "Bàn",
+  hoa_don: "Hóa đơn",
+  tao_hoa_don: "Tạo hóa đơn",
+  chi_tiet_hoa_don: "Chi tiết hóa đơn",
   dat_lich: "Đặt lịch",
   cai_dat: "Cài đặt",
 };
 
 const pages = {
-  bao_cao_tong_quan: TongQuan,
-  hoa_don: DanhSachHoaDon,
-  tao_hoa_don: TaoHoaDon,
-  chi_tiet_hoa_don: ChiTietHoaDon,
-  mon_an: ThucDon,
-  ban: DanhSachBan,
+  tong_quan: TongQuan,
   chi_nhanh: ChiNhanh,
   tai_khoan: TaiKhoan,
   khach_hang: KhachHang,
+  mon_an: ThucDon,
+  ban: DanhSachBan,
+  hoa_don: DanhSachHoaDon,
+  tao_hoa_don: TaoHoaDon,
+  chi_tiet_hoa_don: ChiTietHoaDon,
   dat_lich: DatLich,
   cai_dat: CaiDat,
 };
 
 export default function QuanLyApp({
-  initialPage = "bao_cao_tong_quan",
+  initialPage = "tong_quan",
   onNavigate,
   onQuayVeTrangChu,
 }) {
@@ -82,7 +82,7 @@ export default function QuanLyApp({
   const noHeader = page === "tao_hoa_don";
 
   const handleDangNhapThanhCong = () => {
-    setPage("dashboard");
+    setPage("tong_quan");
   };
 
   const khiChuyenTrang = (trangMoi) => {
@@ -104,8 +104,9 @@ export default function QuanLyApp({
     branches: chiNhanhs,
     loadingBranches: dangTaiChiNhanh,
     onRefreshBranches: taiChiNhanh,
-    ...(page === pages.chi_tiet_hoa_don ? { invoiceId: selectedMaHoaDon } : {}),
-    ...(page === pages.hoa_don ? { onSelectInvoice: setSelectedMaHoaDon } : {}),
+    ...(page === "chi_tiet_hoa_don" ? { invoiceId: selectedMaHoaDon } : {}),
+    ...(page === "hoa_don" ? { onSelectInvoice: setSelectedMaHoaDon } : {}),
+
   };
 
   return (
@@ -119,7 +120,7 @@ export default function QuanLyApp({
         onDangXuat={handleDangXuat}
       />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {!noHeader && <Header title={pageTitles[page]} />}
+        {!noHeader && <Header title={pageTitles[page] || "Tổng quan"} />}
         <main className="flex-1 min-h-0 overflow-y-auto">
           <Suspense fallback={<div className="min-h-full" aria-busy="true" />}>
             <Page {...pageProps} />

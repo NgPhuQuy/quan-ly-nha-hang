@@ -9,14 +9,11 @@ import {
   ShoppingBag,
   Building2,
   LayoutGrid,
-  User,
-  Phone,
-  Tag,
   CreditCard,
   CheckCircle2,
 } from "lucide-react";
 import { layDanhSachBan } from "../../services/banAn.service";
-import { taoHoaDon } from "../../services/hoaDon.service";
+import { taoHoaDon, thanhToanHoaDon } from "../../services/hoaDon.service";
 import { layDanhSachMatHang } from "../../services/matHang.service";
 import { dinhDangTien } from "../../utils/dinhDang";
 
@@ -26,17 +23,14 @@ const statusBg = {
   "Tạm ngưng": { bg: "#FFFBEB", text: "#D97706" },
 };
 
-function CreateInvoice({ onNavigate, branches = [] }) {
-  const [allFoods, setAllFoods] = useState([]);
-  const [tables, setTables] = useState([]);
-  const [promotions] = useState([]);
+function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
+  const [danhSachMonAn, setDanhSachMonAn] = useState([]);
+  const [ban, setBan] = useState([]);
 
   // Form states
-  const [selectedBranchId, setSelectedBranchId] = useState("");
-  const [selectedTableId, setSelectedTableId] = useState("");
-  const [customerName, setCustomerName] = useState("Khách vãng lai");
-  const [customerPhone, setCustomerPhone] = useState("");
-  const [selectedPromo, setSelectedPromo] = useState("");
+  const [selectedMaChiNhanh, setSelectedMaChiNhanh] = useState("");
+  const [selectedMaBan, setSelectedMaBan] = useState("");
+  const [maDatLich, setMaDatLich] = useState("");
 
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState("ALL");
@@ -45,32 +39,36 @@ function CreateInvoice({ onNavigate, branches = [] }) {
   const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
-    if (branches.length > 0 && !selectedBranchId) {
-      setSelectedBranchId(branches[0].maChiNhanh);
-    }
-  }, [branches, selectedBranchId]);
+    const timeoutId = setTimeout(() => {
+      if (chi_nhanh.length > 0 && !selectedMaChiNhanh) {
+        setSelectedMaChiNhanh(chi_nhanh[0].maChiNhanh);
+      }
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [chi_nhanh, selectedMaChiNhanh]);
 
   // Load danh sách mặt hàng
   useEffect(() => {
     layDanhSachMatHang()
       .then((data) => {
-        setAllFoods(Array.isArray(data) ? data : []);
+        setDanhSachMonAn(Array.isArray(data) ? data : []);
       })
       .catch(() => {
-        setAllFoods([]);
+        setDanhSachMonAn([]);
       });
   }, []);
 
   // Khi chọn chi nhánh -> load danh sách bàn trống của chi nhánh đó
   useEffect(() => {
-    if (selectedBranchId) {
-      layDanhSachBan(selectedBranchId)
+    if (selectedMaChiNhanh) {
+      layDanhSachBan(selectedMaChiNhanh)
         .then((res) => {
-          setTables(Array.isArray(res) ? res : []);
+          setBan(Array.isArray(res) ? res : []);
         })
-        .catch(() => setTables([]));
+        .catch(() => setBan([]));
     }
-  }, [selectedBranchId]);
+  }, [selectedMaChiNhanh]);
 
   const loaiTabs = [
     { key: "ALL", label: "Tất cả" },
@@ -79,7 +77,7 @@ function CreateInvoice({ onNavigate, branches = [] }) {
     { key: "DICH_VU", label: "Dịch vụ" },
   ];
 
-  const foods = allFoods.filter((f) => {
+  const foods = danhSachMonAn.filter((f) => {
     if (catFilter !== "ALL" && f.loaiMatHang !== catFilter) return false;
     if (search && !f.tenMatHang?.toLowerCase().includes(search.toLowerCase()))
       return false;
@@ -123,58 +121,47 @@ function CreateInvoice({ onNavigate, branches = [] }) {
 
   const subTotal = cart.reduce((s, c) => s + c.unitPrice * c.quantity, 0);
 
-  // Tính giảm giá nếu có mã khuyến mãi
-  let discountAmount = 0;
-  if (selectedPromo) {
-    const promo = promotions.find(
-      (p) => String(p.maKhuyenMaiId) === String(selectedPromo),
-    );
-    if (promo) {
-      if (promo.type.includes("%")) {
-        const pct = parseFloat(promo.value) || 0;
-        discountAmount = (subTotal * pct) / 100;
-      } else {
-        discountAmount = parseFloat(promo.value) || 0;
-      }
-    }
-  }
-  const total = Math.max(0, subTotal - discountAmount);
-
-  const handleCreate = async (trangThaiHoaDon = "Chờ xử lý") => {
+  const handleCreate = async () => {
     if (cart.length === 0) {
       alert("Vui lòng chọn ít nhất một món ăn!");
       return;
     }
-    if (!selectedBranchId) {
+    if (!selectedMaChiNhanh) {
       alert("Vui lòng chọn chi nhánh!");
+      return;
+    }
+    if (!selectedMaBan) {
+      alert("Vui lòng chọn bàn!");
+      return;
+    }
+    if (cart.some((item) => typeof item.foodId !== "number")) {
+      alert("Danh sách món ăn không hợp lệ!");
+      return;
+    }
+    const maDatLichValue = maDatLich.trim() ? Number(maDatLich) : null;
+    if (maDatLichValue !== null && (!Number.isInteger(maDatLichValue) || maDatLichValue <= 0)) {
+      alert("Mã đặt lịch không hợp lệ!");
       return;
     }
 
     setLoading(true);
     try {
-      await taoHoaDon({
-        maChiNhanh: Number(selectedBranchId),
-        maBan: selectedTableId ? Number(selectedTableId) : null,
-        tenKhachHang: customerName || "Khách vãng lai",
-        soDienThoai: customerPhone || null,
-        nguon: "WALK_IN",
-        trangThai: trangThaiHoaDon,
-        items: cart.map((c) => ({
-          maMatHang: typeof c.foodId === "number" ? c.foodId : 1,
+      const hoaDon = await taoHoaDon({
+        maBan: Number(selectedMaBan),
+        maDatLich: maDatLichValue,
+        listChiTiet: cart.map((c) => ({
+          maChiTietHoaDon: null,
+          maMatHang: c.foodId,
           soLuong: c.quantity,
-          donGia: c.unitPrice,
         })),
       });
+      await thanhToanHoaDon(hoaDon.maHoaDon);
 
-      setSuccessMsg(
-        trangThaiHoaDon === "Hoàn thành"
-          ? "Thanh toán thành công!"
-          : "Tạo hóa đơn thành công!",
-      );
+      setSuccessMsg("Thanh toán thành công!");
       setTimeout(() => {
         setSuccessMsg("");
         setCart([]);
-        onNavigate("invoices");
+        onNavigate("hoa_don");
       }, 1000);
     } catch (e) {
       alert(e.response?.data?.message || "Có lỗi xảy ra khi tạo hóa đơn! Vui lòng thử lại.");
@@ -197,7 +184,7 @@ function CreateInvoice({ onNavigate, branches = [] }) {
         >
           <div className="flex items-center gap-3">
             <button
-              onClick={() => onNavigate("invoices")}
+              onClick={() => onNavigate("hoa_don")}
               className="flex items-center gap-1.5 text-sm font-500 hover:text-[var(--primary)] transition-colors"
               style={{ color: "var(--muted-foreground)" }}
             >
@@ -216,12 +203,12 @@ function CreateInvoice({ onNavigate, branches = [] }) {
           <div className="flex items-center gap-2">
             <Building2 size={15} style={{ color: "var(--primary)" }} />
             <select
-              value={selectedBranchId}
-              onChange={(e) => setSelectedBranchId(e.target.value)}
+              value={selectedMaChiNhanh}
+              onChange={(e) => setSelectedMaChiNhanh(e.target.value)}
               className="text-xs font-600 border rounded-lg px-2.5 py-1.5 outline-none bg-white focus:ring-2 focus:ring-[var(--primary)]"
               style={{ borderColor: "var(--border)" }}
             >
-              {branches.map((b) => (
+              {chi_nhanh.map((b) => (
                 <option key={b.maChiNhanh} value={b.maChiNhanh}>
                   {b.tenChiNhanh}
                 </option>
@@ -371,13 +358,12 @@ function CreateInvoice({ onNavigate, branches = [] }) {
             <LayoutGrid size={14} className="text-gray-400 shrink-0" />
             <div className="flex-1">
               <select
-                value={selectedTableId}
-                onChange={(e) => setSelectedTableId(e.target.value)}
+                value={selectedMaBan}
+                onChange={(e) => setSelectedMaBan(e.target.value)}
                 className="w-full text-xs border rounded-lg px-2.5 py-1.5 outline-none bg-white font-600 focus:ring-2 focus:ring-[var(--primary)]"
                 style={{ borderColor: "var(--border)" }}
               >
-                <option value="">-- Mang về / Không chọn bàn --</option>
-                {tables.map((t) => (
+                {ban.map((t) => (
                   <option key={t.maBan} value={t.maBan}>
                     {t.soBan} ({t.sucChua} chỗ - {t.trangThai})
                   </option>
@@ -385,56 +371,15 @@ function CreateInvoice({ onNavigate, branches = [] }) {
               </select>
             </div>
           </div>
-
-          {/* Tên khách & SĐT */}
-          <div className="grid grid-cols-2 gap-2">
-            <div className="relative">
-              <User
-                size={12}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-              <input
-                type="text"
-                placeholder="Tên khách hàng"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                className="w-full text-xs border rounded-lg pl-7 pr-2 py-1.5 outline-none bg-white focus:ring-2 focus:ring-[var(--primary)]"
-                style={{ borderColor: "var(--border)" }}
-              />
-            </div>
-            <div className="relative">
-              <Phone
-                size={12}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-              <input
-                type="text"
-                placeholder="Số điện thoại"
-                value={customerPhone}
-                onChange={(e) => setCustomerPhone(e.target.value)}
-                className="w-full text-xs border rounded-lg pl-7 pr-2 py-1.5 outline-none bg-white focus:ring-2 focus:ring-[var(--primary)]"
-                style={{ borderColor: "var(--border)" }}
-              />
-            </div>
-          </div>
-
-          {/* Chọn Khuyến mãi */}
-          <div className="flex items-center gap-2">
-            <Tag size={13} className="text-gray-400 shrink-0" />
-            <select
-              value={selectedPromo}
-              onChange={(e) => setSelectedPromo(e.target.value)}
-              className="w-full text-xs border rounded-lg px-2.5 py-1.5 outline-none bg-white focus:ring-2 focus:ring-[var(--primary)]"
-              style={{ borderColor: "var(--border)" }}
-            >
-              <option value="">-- Không áp dụng khuyến mãi --</option>
-              {promotions.map((p) => (
-                <option key={p.maKhuyenMaiId} value={p.maKhuyenMaiId}>
-                  {p.name} ({p.type} {p.value})
-                </option>
-              ))}
-            </select>
-          </div>
+          <input
+            type="number"
+            min="1"
+            placeholder="Mã đặt lịch (không bắt buộc)"
+            value={maDatLich}
+            onChange={(e) => setMaDatLich(e.target.value)}
+            className="w-full text-xs border rounded-lg px-2.5 py-1.5 outline-none bg-white focus:ring-2 focus:ring-[var(--primary)]"
+            style={{ borderColor: "var(--border)" }}
+          />
         </div>
 
         {/* Danh sách món trong giỏ */}
@@ -524,12 +469,6 @@ function CreateInvoice({ onNavigate, branches = [] }) {
               <span>Tạm tính:</span>
               <span>{dinhDangTien(subTotal)}</span>
             </div>
-            {discountAmount > 0 && (
-              <div className="flex justify-between text-green-600 font-600">
-                <span>Giảm giá:</span>
-                <span>-{dinhDangTien(discountAmount)}</span>
-              </div>
-            )}
             <div
               className="flex justify-between items-center pt-1.5 border-t font-700 text-sm"
               style={{ borderColor: "var(--border)" }}
@@ -541,7 +480,7 @@ function CreateInvoice({ onNavigate, branches = [] }) {
                 className="text-base font-800"
                 style={{ color: "var(--primary)" }}
               >
-                {dinhDangTien(total)}
+                {dinhDangTien(subTotal)}
               </span>
             </div>
           </div>
@@ -553,23 +492,15 @@ function CreateInvoice({ onNavigate, branches = [] }) {
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-2 pt-1">
+          <div className="pt-1">
             <button
-              onClick={() => handleCreate("Chờ xử lý")}
+              onClick={handleCreate}
               disabled={cart.length === 0 || loading}
-              className="py-2.5 rounded-lg text-xs font-700 border transition-all disabled:opacity-50 hover:bg-gray-100"
-              style={{ borderColor: "var(--primary)", color: "var(--primary)" }}
-            >
-              Lưu Đơn (Chờ xử lý)
-            </button>
-            <button
-              onClick={() => handleCreate("Hoàn thành")}
-              disabled={cart.length === 0 || loading}
-              className="py-2.5 rounded-lg text-xs font-700 text-white transition-opacity disabled:opacity-50 hover:opacity-90 flex items-center justify-center gap-1.5"
+              className="w-full py-2.5 rounded-lg text-xs font-700 text-white transition-opacity disabled:opacity-50 hover:opacity-90 flex items-center justify-center gap-1.5"
               style={{ background: "var(--primary)" }}
             >
               <CreditCard size={14} />
-              Thanh Toán Ngay
+              Xác nhận thanh toán
             </button>
           </div>
         </div>
@@ -578,4 +509,4 @@ function CreateInvoice({ onNavigate, branches = [] }) {
   );
 }
 
-export default CreateInvoice;
+export default TaoHoaDon;

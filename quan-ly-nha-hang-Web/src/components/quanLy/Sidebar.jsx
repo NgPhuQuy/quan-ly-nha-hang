@@ -14,104 +14,67 @@ import {
   Ticket,
   TableProperties,
 } from "lucide-react";
-const managerNav = [
-  {
-    id: "dashboard",
-    label: "Tổng quan",
-    icon: LayoutDashboard,
-  },
-  {
-    id: "invoices",
-    label: "Hóa đơn",
-    icon: FileText,
-  },
-  {
-    id: "food",
-    label: "Món ăn",
-    icon: Utensils,
-  },
-  {
-    id: "tables",
-    label: "Bàn",
-    icon: TableProperties,
-  },
-  {
-    id: "bookings",
-    label: "Đặt lịch",
-    icon: CalendarDays,
-  },
-  {
-    id: "income-expense",
-    label: "Thu chi",
-    icon: ArrowLeftRight,
-  },
-  {
-    id: "reports",
-    label: "Báo cáo",
-    icon: BarChart3,
-  },
-];
 const adminNav = [
   {
-    id: "dashboard",
+    id: "tong_quan",
     label: "Tổng quan",
     icon: LayoutDashboard,
   },
   {
-    id: "branches",
+    id: "chi_nhanh",
     label: "Chi nhánh",
     icon: Building2,
   },
   {
-    id: "users",
+    id: "tai_khoan",
     label: "Tài khoản",
     icon: Users,
   },
   {
-    id: "customers",
+    id: "khach_hang",
     label: "Khách hàng",
     icon: UserCircle,
   },
   {
-    id: "food",
+    id: "mon_an",
     label: "Món ăn",
     icon: Utensils,
   },
   {
-    id: "tables",
+    id: "ban",
     label: "Bàn",
     icon: TableProperties,
   },
   {
-    id: "invoices",
+    id: "hoa_don",
     label: "Hóa đơn",
     icon: FileText,
   },
   {
-    id: "bookings",
+    id: "dat_lich",
     label: "Đặt lịch",
     icon: CalendarDays,
   },
   {
-    id: "promotions",
+    id: "khuyen_mai",
     label: "Khuyến mãi",
     icon: Ticket,
   },
   {
-    id: "income-expense",
+    id: "thu_chi",
     label: "Thu chi",
     icon: ArrowLeftRight,
   },
   {
-    id: "reports",
+    id: "bao_cao",
     label: "Báo cáo",
     icon: BarChart3,
   },
 ];
 function Sidebar({ activePage, onNavigate, onDangXuat }) {
   const navItems = adminNav;
-  const activeNav = ["create-invoice", "invoice-detail"].includes(activePage)
-    ? "invoices"
+  const activeNav = ["tao_hoa_don", "chi_tiet_hoa_don"].includes(activePage)
+    ? "hoa_don"
     : activePage;
   return (
     <aside
@@ -187,20 +150,20 @@ function Sidebar({ activePage, onNavigate, onDangXuat }) {
         }}
       >
         <button
-          onClick={() => onNavigate("settings")}
+          onClick={() => onNavigate("cai_dat")}
           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-500 transition-colors text-left"
           style={{
             background:
-              activeNav === "settings" ? "var(--primary-light)" : "transparent",
+              activeNav === "cai_dat" ? "var(--primary-light)" : "transparent",
             color:
-              activeNav === "settings" ? "var(--primary)" : "var(--foreground)",
+              activeNav === "cai_dat" ? "var(--primary)" : "var(--foreground)",
           }}
           onMouseEnter={(e) => {
-            if (activeNav !== "settings")
+            if (activeNav !== "cai_dat")
               e.currentTarget.style.background = "var(--secondary)";
           }}
           onMouseLeave={(e) => {
-            if (activeNav !== "settings")
+            if (activeNav !== "cai_dat")
               e.currentTarget.style.background = "transparent";
           }}
         >
