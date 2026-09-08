@@ -4,8 +4,6 @@ import {
   dangXuat as authDangXuat,
 } from "../services/xacThuc.service";
 import { thongTinCuaToi } from "../services/nguoiDung.service";
-import { chuanHoaVaiTro } from "../utils/vaiTro";
-
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -15,8 +13,7 @@ export function AuthProvider({ children }) {
   const taiThongTinNguoiDung = async () => {
     if (layToken()) {
       try {
-        const duLieu = await thongTinCuaToi();
-        setNguoiDung(duLieu);
+        const duLieu = await thongTinCuaToi().then(setNguoiDung(duLieu));
       } catch {
         setNguoiDung(null);
       }
@@ -39,22 +36,14 @@ export function AuthProvider({ children }) {
     setNguoiDung(null);
   };
 
-  const vaiTro = chuanHoaVaiTro(nguoiDung?.vaiTro || nguoiDung?.role);
-  const isAdmin = vaiTro === "ADMIN";
-  const isNhanVien = ["ADMIN", "QUAN_LY", "NHAN_VIEN"].includes(vaiTro);
-
   return (
     <AuthContext.Provider
       value={{
         nguoiDung,
-        user: nguoiDung,
-        setUser: setNguoiDung,
         loading,
         isAuth: !!nguoiDung,
-        isAdmin,
-        isNhanVien,
         dangXuat,
-        taiLaiThongTin: taiThongTinNguoiDung,
+        taiThongTinNguoiDung,
       }}
     >
       {children}

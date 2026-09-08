@@ -6,7 +6,6 @@ import {
   taoBan,
 } from "../../services/banAn.service";
 import apis, { endpoints } from "../../services/apis";
-import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
 
 const statusStyle = {
   Trống: {
@@ -31,15 +30,15 @@ const statusStyle = {
 
 const STATUS_OPTIONS = ["Trống", "Đang phục vụ", "Đã đặt trước"];
 
-function Tables() {
+function Tables({ branches = [] }) {
   const [tables, setTables] = useState([]);
-  const [branches, setBranches] = useState([]);
   const [selectedBranchId, setSelectedBranchId] = useState("");
   const [filter, setFilter] = useState("");
 
   // Modal State
   const [showModal, setShowModal] = useState(false);
   const [editingTable, setEditingTable] = useState(null);
+  const [thongBaoLoi, setThongBaoLoi] = useState("");
   const [formData, setFormData] = useState({
     soBan: "",
     sucChua: 4,
@@ -47,41 +46,21 @@ function Tables() {
     maChiNhanh: 1,
   });
 
-  const fetchBranches = async () => {
-    try {
-      const res = await layDanhSachChiNhanh();
-      if (res && res.length) {
-        setBranches(res);
-        setSelectedBranchId(res[0].maChiNhanh);
-      }
-    } catch (e) {
-      console.warn("Could not fetch branches", e);
+  useEffect(() => {
+    if (branches.length && !selectedBranchId) {
+      setSelectedBranchId(branches[0].maChiNhanh);
     }
-  };
+  }, [branches, selectedBranchId]);
 
   const fetchTables = async () => {
     try {
       const data = await layDanhSachBan(selectedBranchId || undefined);
-      if (data) {
-        setTables(
-          data.map((b) => ({
-            id: `tbl-${b.maBan}`,
-            maBanId: b.maBan,
-            number: b.soBan,
-            capacity: b.sucChua || 4,
-            status: b.trangThai || "Trống",
-            maChiNhanh: b.maChiNhanh,
-          })),
-        );
-      }
-    } catch (e) {
-      console.warn("Could not fetch tables", e);
+      setTables(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.warn("Could not fetch tables", err);
+      setTables([]);
     }
   };
-
-  useEffect(() => {
-    fetchBranches();
-  }, []);
 
   useEffect(() => {
     if (selectedBranchId) {
@@ -89,31 +68,30 @@ function Tables() {
     }
   }, [selectedBranchId]);
 
-  const handleDoiTrangThaiBan = async (id, current, maBanId, e) => {
+  const handleDoiTrangThaiBan = async (maBan, currentStatus, e) => {
     if (e) e.stopPropagation();
-    const idx = STATUS_OPTIONS.indexOf(current);
+    const idx = STATUS_OPTIONS.indexOf(currentStatus);
     const nextStatus = STATUS_OPTIONS[(idx + 1) % STATUS_OPTIONS.length];
-    if (maBanId) {
-      try {
-        await doiTrangThaiBan(maBanId, nextStatus);
-      } catch (err) {
-        console.warn("Update status API failed:", err);
-      }
+    try {
+      await doiTrangThaiBan(maBan, nextStatus);
+      setTables((prev) =>
+        prev.map((t) =>
+          t.maBan === maBan
+            ? {
+                ...t,
+                trangThai: nextStatus,
+              }
+            : t,
+        ),
+      );
+    } catch (err) {
+      alert(err.response?.data?.message || "Cập nhật trạng thái bàn thất bại!");
     }
-    setTables((prev) =>
-      prev.map((t) =>
-        t.id === id
-          ? {
-              ...t,
-              status: nextStatus,
-            }
-          : t,
-      ),
-    );
   };
 
   const handleOpenAdd = () => {
     setEditingTable(null);
+    setThongBaoLoi("");
     setFormData({
       soBan: `Bàn ${tables.length + 1}`,
       sucChua: 4,
@@ -126,10 +104,11 @@ function Tables() {
   const handleOpenEdit = (t, e) => {
     if (e) e.stopPropagation();
     setEditingTable(t);
+    setThongBaoLoi("");
     setFormData({
-      soBan: t.number,
-      sucChua: t.capacity,
-      trangThai: t.status,
+      soBan: t.soBan,
+      sucChua: t.sucChua,
+      trangThai: t.trangThai,
       maChiNhanh: t.maChiNhanh || selectedBranchId || 1,
     });
     setShowModal(true);
@@ -137,21 +116,21 @@ function Tables() {
 
   const handleDelete = async (t, e) => {
     if (e) e.stopPropagation();
-    if (!window.confirm(`Bạn có chắc muốn đổi trạng thái ${t.number}?`)) return;
+    if (!window.confirm(`Bạn có chắc muốn đổi trạng thái ${t.soBan}?`)) return;
     try {
-      await doiTrangThaiBan(t.maBanId);
+      await doiTrangThaiBan(t.maBan);
       fetchTables();
     } catch (err) {
-      console.error(err);
-      alert("Lỗi khi đổi trạng thái bàn!");
+      alert(err.response?.data?.message || "Lỗi khi đổi trạng thái bàn!");
     }
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
+    setThongBaoLoi("");
     try {
       if (editingTable) {
-        await apis.put(endpoints.cap_nhat_ban(editingTable.maBanId), {
+        await apis.put(endpoints.cap_nhat_ban(editingTable.maBan), {
           ...formData,
           sucChua: Number(formData.sucChua),
           maChiNhanh: Number(formData.maChiNhanh),
@@ -166,15 +145,14 @@ function Tables() {
       setShowModal(false);
       fetchTables();
     } catch (err) {
-      console.error(err);
-      alert("Lỗi khi lưu bàn!");
+      setThongBaoLoi(err.response?.data?.message || "Lỗi khi lưu bàn!");
     }
   };
 
-  const filtered = filter ? tables.filter((t) => t.status === filter) : tables;
+  const filtered = filter ? tables.filter((t) => t.trangThai === filter) : tables;
   const counts = tables.reduce(
     (acc, t) => {
-      acc[t.status] = (acc[t.status] || 0) + 1;
+      acc[t.trangThai] = (acc[t.trangThai] || 0) + 1;
       return acc;
     },
     { Trống: 0, "Đang phục vụ": 0, "Đã đặt trước": 0 },
@@ -281,12 +259,12 @@ function Tables() {
       {/* Sơ đồ danh sách bàn */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
         {filtered.map((table) => {
-          const s = statusStyle[table.status] || statusStyle["Trống"];
+          const s = statusStyle[table.trangThai] || statusStyle["Trống"];
           return (
             <div
-              key={table.id}
+              key={table.maBan}
               onClick={(e) =>
-                handleDoiTrangThaiBan(table.id, table.status, table.maBanId, e)
+                handleDoiTrangThaiBan(table.maBan, table.trangThai, e)
               }
               className="bg-white rounded-xl border-2 p-3.5 text-left transition-all hover:shadow-md cursor-pointer relative group flex flex-col justify-between"
               style={{
@@ -321,7 +299,7 @@ function Tables() {
                     color: s.text,
                   }}
                 >
-                  {table.number}
+                  {table.soBan}
                 </div>
                 <div
                   className="flex items-center gap-1 text-xs mb-2.5 font-medium"
@@ -329,7 +307,7 @@ function Tables() {
                     color: "var(--muted-foreground)",
                   }}
                 >
-                  <Users size={11} /> {table.capacity} chỗ
+                  <Users size={11} /> {table.sucChua} chỗ
                 </div>
               </div>
 
@@ -340,7 +318,7 @@ function Tables() {
                   color: s.text,
                 }}
               >
-                {table.status}
+                {table.trangThai}
               </span>
             </div>
           );
@@ -366,6 +344,12 @@ function Tables() {
                 <X size={16} />
               </button>
             </div>
+
+            {thongBaoLoi && (
+              <div className="p-2.5 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg">
+                {thongBaoLoi}
+              </div>
+            )}
 
             <div className="space-y-2.5 text-xs">
               <div>

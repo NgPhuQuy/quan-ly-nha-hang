@@ -1,8 +1,7 @@
 import { Bell, ChevronDown } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
-import { chuanHoaVaiTro } from "../../utils/vaiTro";
 
-function Header({ title, role }) {
+function Header({ title }) {
   const { user: nguoiDung } = useAuth();
   const now = new Date();
   const dateStr = now.toLocaleDateString("vi-VN", {
@@ -12,22 +11,10 @@ function Header({ title, role }) {
     year: "numeric",
   });
 
-  const tenHienThi =
-    nguoiDung?.hoTen ||
-    nguoiDung?.taiKhoan ||
-    (role === "admin" ? "Admin 5S" : "Quản lý 5S");
+  const hoTen = [nguoiDung?.ho, nguoiDung?.ten].filter(Boolean).join(" ").trim();
+  const tenHienThi = hoTen || nguoiDung?.taiKhoan || "Người dùng";
   const tenVietTat = tenHienThi.slice(0, 2).toUpperCase();
-  const vRole = chuanHoaVaiTro(nguoiDung?.vaiTro || nguoiDung?.role);
-  const tenVaiTro =
-    vRole === "ADMIN"
-      ? "Quản trị viên"
-      : vRole === "QUANLY"
-        ? "Quản lý chi nhánh"
-        : vRole === "NHANVIEN"
-          ? "Nhân viên POS"
-          : role === "admin"
-            ? "Quản trị viên"
-            : "Quản lý";
+  const tenVaiTro = nguoiDung?.vaiTro || "Thành viên";
 
   return (
     <header

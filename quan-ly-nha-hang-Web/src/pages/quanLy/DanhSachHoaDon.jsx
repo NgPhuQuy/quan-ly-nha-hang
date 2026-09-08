@@ -2,47 +2,65 @@ import { useState, useEffect } from "react";
 import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { layDanhSachHoaDon } from "../../services/hoaDon.service";
 import { dinhDangTien } from "../../utils/dinhDang";
+
 const statusColor = {
+  HOAN_THANH: {
+    bg: "var(--success-bg)",
+    text: "var(--success)",
+    label: "Hoàn thành",
+  },
   "Hoàn thành": {
     bg: "var(--success-bg)",
     text: "var(--success)",
+    label: "Hoàn thành",
+  },
+  CHO_XU_LY: {
+    bg: "var(--warning-bg)",
+    text: "var(--warning)",
+    label: "Chờ xử lý",
   },
   "Chờ xử lý": {
     bg: "var(--warning-bg)",
     text: "var(--warning)",
+    label: "Chờ xử lý",
+  },
+  DA_HUY: {
+    bg: "var(--danger-bg)",
+    text: "var(--danger)",
+    label: "Đã hủy",
   },
   "Đã hủy": {
     bg: "var(--danger-bg)",
     text: "var(--danger)",
+    label: "Đã hủy",
   },
 };
+
 const PAGE_SIZE = 10;
-function Invoices({ role, onNavigate, onSelectInvoice }) {
+
+function Invoices({ branches = [], onNavigate, onSelectInvoice }) {
   const [invoices, setInvoices] = useState([]);
   const [search, setSearch] = useState("");
-  const [sourceFilter, setSourceFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [branchFilter, setBranchFilter] = useState("");
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    layDanhSachHoaDon().then((data) => {
-      if (data && data.length > 0) {
-        setInvoices(data);
-      }
-    });
+    layDanhSachHoaDon()
+      .then((data) => {
+        setInvoices(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        setInvoices([]);
+      });
   }, []);
 
-  const baseInvoices =
-    role === "manager"
-      ? invoices.filter((i) => i.branch === "Quận 1")
-      : invoices;
-  const filtered = baseInvoices.filter((inv) => {
-    if (search && !inv.id.toLowerCase().includes(search.toLowerCase()))
+  const filtered = invoices.filter((inv) => {
+    if (search && !String(inv.maHoaDon).includes(search.toLowerCase()))
       return false;
-    if (sourceFilter && inv.source !== sourceFilter) return false;
-    if (statusFilter && inv.status !== statusFilter) return false;
-    if (branchFilter && inv.branch !== branchFilter) return false;
+    if (statusFilter && inv.trangThai !== statusFilter) return false;
+    if (branchFilter && String(inv.maChiNhanh) !== String(branchFilter))
+      return false;
     return true;
   });
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
@@ -101,32 +119,10 @@ function Invoices({ role, onNavigate, onSelectInvoice }) {
             }}
           />
         </div>
-        {role === "admin" && (
-          <select
-            value={branchFilter}
-            onChange={(e) => {
-              setBranchFilter(e.target.value);
-              setPage(1);
-            }}
-            className={selectStyle}
-            style={{
-              borderColor: "var(--border)",
-            }}
-          >
-            {[
-              "Tất cả",
-              ...new Set(invoices.map((i) => i.branch).filter(Boolean)),
-            ].map((b) => (
-              <option key={b} value={b === "Tất cả" ? "" : b}>
-                {b}
-              </option>
-            ))}
-          </select>
-        )}
         <select
-          value={sourceFilter}
+          value={branchFilter}
           onChange={(e) => {
-            setSourceFilter(e.target.value);
+            setBranchFilter(e.target.value);
             setPage(1);
           }}
           className={selectStyle}
@@ -134,9 +130,12 @@ function Invoices({ role, onNavigate, onSelectInvoice }) {
             borderColor: "var(--border)",
           }}
         >
-          <option value="">Tất cả nguồn</option>
-          <option value="ONLINE">Online</option>
-          <option value="WALK_IN">Tại quầy</option>
+          <option value="">Tất cả chi nhánh</option>
+          {branches.map((b) => (
+            <option key={b.maChiNhanh} value={b.maChiNhanh}>
+              {b.tenChiNhanh}
+            </option>
+          ))}
         </select>
         <select
           value={statusFilter}
@@ -150,9 +149,9 @@ function Invoices({ role, onNavigate, onSelectInvoice }) {
           }}
         >
           <option value="">Tất cả trạng thái</option>
-          <option value="Hoàn thành">Hoàn thành</option>
-          <option value="Chờ xử lý">Chờ xử lý</option>
-          <option value="Đã hủy">Đã hủy</option>
+          <option value="HOAN_THANH">Hoàn thành</option>
+          <option value="CHO_XU_LY">Chờ xử lý</option>
+          <option value="DA_HUY">Đã hủy</option>
         </select>
       </div>
       <div
@@ -171,13 +170,14 @@ function Invoices({ role, onNavigate, onSelectInvoice }) {
               {[
                 "Mã hóa đơn",
                 "Thời gian",
-                ...(role === "admin" ? ["Chi nhánh"] : []),
-                "Nguồn",
+                "Chi nhánh",
+                "Số món",
                 "Tổng tiền",
                 "Trạng thái",
                 "Thao tác",
               ].map((h) => (
                 <th
+                  key={h}
                   className="px-4 py-2.5 text-left text-xs font-600"
                   style={{
                     color: "var(--muted-foreground)",
@@ -192,7 +192,7 @@ function Invoices({ role, onNavigate, onSelectInvoice }) {
             {paged.length === 0 && (
               <tr>
                 <td
-                  colSpan={role === "admin" ? 7 : 6}
+                  colSpan={7}
                   className="px-4 py-8 text-center text-sm"
                   style={{
                     color: "var(--muted-foreground)",
@@ -202,95 +202,91 @@ function Invoices({ role, onNavigate, onSelectInvoice }) {
                 </td>
               </tr>
             )}
-            {paged.map((inv) => (
-              <tr
-                className="border-t hover:bg-[var(--secondary)] transition-colors cursor-pointer"
-                style={{
-                  borderColor: "var(--border)",
-                }}
-                onClick={() => {
-                  onSelectInvoice(inv.id);
-                  onNavigate("invoice-detail");
-                }}
-              >
-                <td
-                  className="px-4 py-3 font-600 text-xs"
+            {paged.map((inv) => {
+              const sColor = statusColor[inv.trangThai] || statusColor.CHO_XU_LY;
+              const tenCn =
+                branches.find((b) => b.maChiNhanh === inv.maChiNhanh)
+                  ?.tenChiNhanh || `Chi nhánh #${inv.maChiNhanh}`;
+              return (
+                <tr
+                  key={inv.maHoaDon}
+                  className="border-t hover:bg-[var(--secondary)] transition-colors cursor-pointer"
                   style={{
-                    color: "var(--primary)",
+                    borderColor: "var(--border)",
+                  }}
+                  onClick={() => {
+                    onSelectInvoice(inv.maHoaDon);
+                    onNavigate("invoice-detail");
                   }}
                 >
-                  {inv.id}
-                </td>
-                <td
-                  className="px-4 py-3 text-xs"
-                  style={{
-                    color: "var(--muted-foreground)",
-                  }}
-                >
-                  {inv.createdAt}
-                </td>
-                {role === "admin" && (
+                  <td
+                    className="px-4 py-3 font-600 text-xs"
+                    style={{
+                      color: "var(--primary)",
+                    }}
+                  >
+                    #{inv.maHoaDon}
+                  </td>
+                  <td
+                    className="px-4 py-3 text-xs"
+                    style={{
+                      color: "var(--muted-foreground)",
+                    }}
+                  >
+                    {inv.ngayLapHoaDon}
+                  </td>
                   <td
                     className="px-4 py-3 text-xs"
                     style={{
                       color: "var(--foreground)",
                     }}
                   >
-                    {inv.branch}
+                    {tenCn}
                   </td>
-                )}
-                <td className="px-4 py-3">
-                  <span
-                    className="text-xs px-2 py-0.5 rounded font-500"
+                  <td
+                    className="px-4 py-3 text-xs font-medium"
                     style={{
-                      background:
-                        inv.source === "ONLINE"
-                          ? "var(--info-bg)"
-                          : "var(--success-bg)",
-                      color:
-                        inv.source === "ONLINE"
-                          ? "var(--info)"
-                          : "var(--success)",
+                      color: "var(--foreground)",
                     }}
                   >
-                    {inv.source === "ONLINE" ? "Online" : "Tại quầy"}
-                  </span>
-                </td>
-                <td
-                  className="px-4 py-3 text-xs font-600"
-                  style={{
-                    color: "var(--foreground)",
-                  }}
-                >
-                  {dinhDangTien(inv.total)}
-                </td>
-                <td className="px-4 py-3">
-                  <span
-                    className="text-xs px-2 py-0.5 rounded font-500"
+                    {inv.listChiTietHoaDon?.length || 0} món
+                  </td>
+                  <td
+                    className="px-4 py-3 text-xs font-700"
                     style={{
-                      background: statusColor[inv.status].bg,
-                      color: statusColor[inv.status].text,
+                      color: "var(--foreground)",
                     }}
                   >
-                    {inv.status}
-                  </span>
-                </td>
-                <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    className="text-xs font-500 hover:underline"
-                    style={{
-                      color: "var(--primary)",
-                    }}
-                    onClick={() => {
-                      onSelectInvoice(inv.id);
-                      onNavigate("invoice-detail");
-                    }}
-                  >
-                    Chi tiết
-                  </button>
-                </td>
-              </tr>
-            ))}
+                    {dinhDangTien(inv.tongTien || 0)}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span
+                      className="text-xs px-2 py-0.5 rounded font-500"
+                      style={{
+                        background: sColor.bg,
+                        color: sColor.text,
+                      }}
+                    >
+                      {sColor.label || inv.trangThai}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      className="text-xs font-500 hover:underline cursor-pointer"
+                      style={{
+                        color: "var(--primary)",
+                      }}
+                      onClick={() => {
+                        onSelectInvoice(inv.maHoaDon);
+                        onNavigate("invoice-detail");
+                      }}
+                    >
+                      Chi tiết
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         {totalPages > 1 && (

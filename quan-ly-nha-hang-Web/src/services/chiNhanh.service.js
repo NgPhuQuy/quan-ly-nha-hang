@@ -2,7 +2,7 @@ import apis, { endpoints } from "./apis";
 
 export const layDanhSachChiNhanh = async () => {
   const chiNhanhs = await apis.get(endpoints.chi_nhanh);
-  return chiNhanhs;
+  return chiNhanhs.data;
 };
 
 export const layChiTietChiNhanh = async (id) => {

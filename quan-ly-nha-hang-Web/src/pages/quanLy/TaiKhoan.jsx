@@ -5,51 +5,55 @@ import {
   doiTrangThaiNguoiDung,
 } from "../../services/nguoiDung.service";
 import apis, { endpoints } from "../../services/apis";
-import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
 import ModalNguoiDung from "../../components/quanLy/taiKhoan/ModalNguoiDung";
 
 const roleStyle = {
+  QUAN_LY: {
+    bg: "rgba(212,150,43,0.12)",
+    color: "var(--primary)",
+    label: "Quản lý",
+  },
   ROLE_QUAN_LY: {
     bg: "rgba(212,150,43,0.12)",
     color: "var(--primary)",
     label: "Quản lý",
   },
-  "Quản lý": {
-    bg: "rgba(212,150,43,0.12)",
-    color: "var(--primary)",
-    label: "Quản lý",
+  NHAN_VIEN: {
+    bg: "var(--info-bg)",
+    color: "var(--info)",
+    label: "Nhân viên",
   },
   ROLE_NHAN_VIEN: {
     bg: "var(--info-bg)",
     color: "var(--info)",
     label: "Nhân viên",
   },
-  "Nhân viên": {
-    bg: "var(--info-bg)",
-    color: "var(--info)",
-    label: "Nhân viên",
+  ADMIN: {
+    bg: "rgba(139,92,246,0.12)",
+    color: "#8B5CF6",
+    label: "Admin",
   },
   ROLE_ADMIN: {
     bg: "rgba(139,92,246,0.12)",
     color: "#8B5CF6",
     label: "Admin",
   },
-  Admin: {
-    bg: "rgba(139,92,246,0.12)",
-    color: "#8B5CF6",
-    label: "Admin",
+  KHACH_HANG: {
+    bg: "rgba(16,185,129,0.12)",
+    color: "#10B981",
+    label: "Khách hàng",
   },
 };
 
-function Users() {
+function Users({ branches = [] }) {
   const [search, setSearch] = useState("");
-  const [branchFilter, setBranchFilter] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
   const [users, setUsers] = useState([]);
-  const [branches, setBranches] = useState([]);
 
   // Modals
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
+  const [thongBaoLoi, setThongBaoLoi] = useState("");
   const [formData, setFormData] = useState({
     hoTen: "",
     taiKhoan: "",
@@ -64,21 +68,20 @@ function Users() {
   const fetchUsers = async () => {
     try {
       const data = await layDanhSachNguoiDung();
-      if (data) setUsers(data);
+      setUsers(Array.isArray(data) ? data : []);
     } catch (e) {
       console.warn("Fetch users failed", e);
+      setUsers([]);
     }
   };
 
   useEffect(() => {
     fetchUsers();
-    layDanhSachChiNhanh().then((res) => {
-      if (res && res.length) setBranches(res);
-    });
   }, []);
 
   const handleOpenAdd = () => {
     setEditingUser(null);
+    setThongBaoLoi("");
     setFormData({
       hoTen: "",
       taiKhoan: "",
@@ -94,75 +97,71 @@ function Users() {
 
   const handleOpenEdit = (u) => {
     setEditingUser(u);
+    setThongBaoLoi("");
+    const hoTen = [u.ho, u.ten].filter(Boolean).join(" ").trim();
     setFormData({
-      hoTen: u.name,
-      taiKhoan: u.username || u.name,
+      hoTen: hoTen || u.taiKhoan,
+      taiKhoan: u.taiKhoan,
       matKhau: "",
-      email: u.email,
-      soDienThoai: u.phone || "",
-      vaiTro: u.role?.startsWith("ROLE_")
-        ? u.role
-        : u.role === "Quản lý"
-          ? "ROLE_QUAN_LY"
-          : u.role === "Admin"
-            ? "ROLE_ADMIN"
-            : "ROLE_NHAN_VIEN",
-      maChiNhanh: u.branchId || 1,
-      trangThai: u.status === "Hoạt động",
+      email: u.email || "",
+      soDienThoai: u.soDienThoai || "",
+      vaiTro: u.vaiTro || "ROLE_NHAN_VIEN",
+      maChiNhanh: branches[0]?.maChiNhanh || 1,
+      trangThai: u.trangThai,
     });
     setShowModal(true);
   };
 
   const handleToggleStatus = async (u) => {
     try {
-      await doiTrangThaiNguoiDung(u.maNguoiDungId);
+      await doiTrangThaiNguoiDung(u.maNguoiDung);
       fetchUsers();
     } catch (err) {
-      console.error(err);
-      alert("Lỗi khi đổi trạng thái tài khoản!");
+      alert(err.response?.data?.message || "Lỗi khi đổi trạng thái tài khoản!");
     }
   };
 
   const handleDelete = async (user) => {
-    if (!window.confirm(`Bạn có chắc muốn đổi trạng thái tài khoản ${user.name}?`)) return;
-    const id = user.maNguoiDungId || user.maNguoiDung || user.id;
-    if (id) {
-      try {
-        await doiTrangThaiNguoiDung(id);
-        fetchUsers();
-      } catch (e) {
-        console.error("Change user status failed:", e);
-        alert("Lỗi khi cập nhật trạng thái người dùng!");
-      }
+    const hoTen = [user.ho, user.ten].filter(Boolean).join(" ") || user.taiKhoan;
+    if (!window.confirm(`Bạn có chắc muốn đổi trạng thái tài khoản ${hoTen}?`)) return;
+    try {
+      await doiTrangThaiNguoiDung(user.maNguoiDung);
+      fetchUsers();
+    } catch (err) {
+      alert(err.response?.data?.message || "Lỗi khi cập nhật trạng thái người dùng!");
     }
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
+    setThongBaoLoi("");
     try {
       if (editingUser) {
-        // Cập nhật trạng thái nếu có
-        const id = editingUser.maNguoiDungId || editingUser.maNguoiDung;
-        await doiTrangThaiNguoiDung(id);
+        await doiTrangThaiNguoiDung(editingUser.maNguoiDung);
       } else {
         await apis.post(endpoints.dang_ky, formData);
       }
       setShowModal(false);
       fetchUsers();
     } catch (err) {
-      console.error(err);
-      alert("Lỗi khi lưu thông tin tài khoản!");
+      setThongBaoLoi(err.response?.data?.message || "Lỗi khi lưu thông tin tài khoản!");
     }
   };
 
   const filtered = users.filter((u) => {
-    if (branchFilter && u.branch !== branchFilter) return false;
-    if (
-      search &&
-      !u.name.toLowerCase().includes(search.toLowerCase()) &&
-      !u.email.toLowerCase().includes(search.toLowerCase())
-    )
-      return false;
+    if (roleFilter && u.vaiTro !== roleFilter) return false;
+    if (search) {
+      const hoTen = [u.ho, u.ten].filter(Boolean).join(" ").toLowerCase();
+      const q = search.toLowerCase();
+      if (
+        !hoTen.includes(q) &&
+        !u.taiKhoan?.toLowerCase().includes(q) &&
+        !u.email?.toLowerCase().includes(q) &&
+        !u.soDienThoai?.includes(q)
+      ) {
+        return false;
+      }
+    }
     return true;
   });
 
@@ -211,7 +210,7 @@ function Users() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tìm theo tên, email..."
+            placeholder="Tìm theo tên, email, sđt..."
             className="w-56 text-sm border rounded-lg pl-8 pr-3 py-1.5 outline-none bg-white focus:ring-2 focus:ring-[var(--primary)]"
             style={{
               borderColor: "var(--border)",
@@ -219,22 +218,18 @@ function Users() {
           />
         </div>
         <select
-          value={branchFilter}
-          onChange={(e) => setBranchFilter(e.target.value)}
+          value={roleFilter}
+          onChange={(e) => setRoleFilter(e.target.value)}
           className="text-sm border rounded-lg px-3 py-1.5 outline-none bg-white font-medium"
           style={{
             borderColor: "var(--border)",
           }}
         >
-          <option value="">Tất cả chi nhánh</option>
-          {branches.map((b) => {
-            const name = b.tenChiNhanh || b.ten;
-            return (
-              <option key={b.maChiNhanh || b.id || name} value={name}>
-                {name}
-              </option>
-            );
-          })}
+          <option value="">Tất cả vai trò</option>
+          <option value="ROLE_ADMIN">Quản trị viên (Admin)</option>
+          <option value="ROLE_QUAN_LY">Quản lý chi nhánh</option>
+          <option value="ROLE_NHAN_VIEN">Nhân viên POS</option>
+          <option value="ROLE_KHACH_HANG">Khách hàng</option>
         </select>
       </div>
 
@@ -252,11 +247,10 @@ function Users() {
           >
             <tr>
               {[
-                "Họ tên",
+                "Tài khoản / Họ tên",
                 "Email",
+                "Số điện thoại",
                 "Vai trò",
-                "Chi nhánh",
-                "Ngày tham gia",
                 "Trạng thái",
                 "Thao tác",
               ].map((h) => (
@@ -274,10 +268,11 @@ function Users() {
           </thead>
           <tbody>
             {filtered.map((u) => {
-              const rStyle = roleStyle[u.role] || roleStyle["ROLE_NHAN_VIEN"];
+              const hoTen = [u.ho, u.ten].filter(Boolean).join(" ").trim() || u.taiKhoan;
+              const rStyle = roleStyle[u.vaiTro] || roleStyle["ROLE_NHAN_VIEN"];
               return (
                 <tr
-                  key={u.id}
+                  key={u.maNguoiDung}
                   className="border-t hover:bg-[var(--secondary)] transition-colors"
                   style={{
                     borderColor: "var(--border)",
@@ -291,16 +286,21 @@ function Users() {
                           background: "var(--primary)",
                         }}
                       >
-                        {u.name.charAt(0).toUpperCase()}
+                        {hoTen.charAt(0).toUpperCase()}
                       </div>
-                      <span
-                        className="text-sm font-600"
-                        style={{
-                          color: "var(--foreground)",
-                        }}
-                      >
-                        {u.name}
-                      </span>
+                      <div>
+                        <span
+                          className="text-sm font-600 block leading-tight"
+                          style={{
+                            color: "var(--foreground)",
+                          }}
+                        >
+                          {hoTen}
+                        </span>
+                        <span className="text-xs text-gray-500 font-mono">
+                          @{u.taiKhoan}
+                        </span>
+                      </div>
                     </div>
                   </td>
                   <td
@@ -309,7 +309,15 @@ function Users() {
                       color: "var(--muted-foreground)",
                     }}
                   >
-                    {u.email}
+                    {u.email || "—"}
+                  </td>
+                  <td
+                    className="px-4 py-3 text-xs font-mono"
+                    style={{
+                      color: "var(--foreground)",
+                    }}
+                  >
+                    {u.soDienThoai || "—"}
                   </td>
                   <td className="px-4 py-3">
                     <span
@@ -319,24 +327,8 @@ function Users() {
                         color: rStyle.color,
                       }}
                     >
-                      {rStyle.label || u.role}
+                      {rStyle.label || u.vaiTro}
                     </span>
-                  </td>
-                  <td
-                    className="px-4 py-3 text-xs"
-                    style={{
-                      color: "var(--foreground)",
-                    }}
-                  >
-                    {u.branch}
-                  </td>
-                  <td
-                    className="px-4 py-3 text-xs"
-                    style={{
-                      color: "var(--muted-foreground)",
-                    }}
-                  >
-                    {u.joinDate}
                   </td>
                   <td className="px-4 py-3">
                     <button
@@ -344,17 +336,17 @@ function Users() {
                       className="text-xs px-2 py-0.5 rounded-full font-600 cursor-pointer hover:opacity-80"
                       style={{
                         background:
-                          u.status === "Hoạt động"
+                          u.trangThai
                             ? "var(--success-bg)"
                             : "var(--muted)",
                         color:
-                          u.status === "Hoạt động"
+                          u.trangThai
                             ? "var(--success)"
                             : "var(--muted-foreground)",
                       }}
                       title="Nhấn để đổi trạng thái"
                     >
-                      {u.status}
+                      {u.trangThai ? "Hoạt động" : "Tạm khóa"}
                     </button>
                   </td>
                   <td className="px-4 py-3">
@@ -370,7 +362,7 @@ function Users() {
                       <button
                         type="button"
                         className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                        title="Xóa tài khoản"
+                        title="Đổi trạng thái tài khoản"
                         onClick={() => handleDelete(u)}
                       >
                         <Trash2 size={16} strokeWidth={2} />
@@ -393,6 +385,7 @@ function Users() {
         setFormData={setFormData}
         branches={branches}
         onSubmit={handleSave}
+        thongBaoLoi={thongBaoLoi}
       />
     </div>
   );

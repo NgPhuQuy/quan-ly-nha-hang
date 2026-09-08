@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import {
   Search,
@@ -14,10 +15,9 @@ import {
   CreditCard,
   CheckCircle2,
 } from "lucide-react";
-import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
 import { layDanhSachBan } from "../../services/banAn.service";
 import { taoHoaDon } from "../../services/hoaDon.service";
-import apis, { endpoints } from "../../services/apis";
+import { layDanhSachMatHang } from "../../services/matHang.service";
 import { dinhDangTien } from "../../utils/dinhDang";
 
 const statusBg = {
@@ -26,9 +26,8 @@ const statusBg = {
   "Tạm ngưng": { bg: "#FFFBEB", text: "#D97706" },
 };
 
-function CreateInvoice({ onNavigate }) {
+function CreateInvoice({ onNavigate, branches = [] }) {
   const [allFoods, setAllFoods] = useState([]);
-  const [branches, setBranches] = useState([]);
   const [tables, setTables] = useState([]);
   const [promotions] = useState([]);
 
@@ -44,41 +43,32 @@ function CreateInvoice({ onNavigate }) {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
-  // Load Chi nhánh & Khuyến mãi ban đầu
-  useEffect(() => {
-    layDanhSachChiNhanh().then((res) => {
-      if (res && res.length > 0) {
-        setBranches(res);
-        setSelectedBranchId(res[0].maChiNhanh);
-      }
-    });
 
-    apis
-      .get(endpoints.mat_hang)
-      .then((res) => {
-        const data = res.data || [];
-        if (data.length > 0) {
-          setAllFoods(
-            data.map((m) => ({
-              ...m,
-              id: m.maMatHang,
-              name: m.tenMatHang,
-              price: m.giaMatHang,
-              image: m.anhMinhHoa,
-              status: "Đang bán",
-            })),
-          );
-        }
+  useEffect(() => {
+    if (branches.length > 0 && !selectedBranchId) {
+      setSelectedBranchId(branches[0].maChiNhanh);
+    }
+  }, [branches, selectedBranchId]);
+
+  // Load danh sách mặt hàng
+  useEffect(() => {
+    layDanhSachMatHang()
+      .then((data) => {
+        setAllFoods(Array.isArray(data) ? data : []);
       })
-      .catch(() => {});
+      .catch(() => {
+        setAllFoods([]);
+      });
   }, []);
 
   // Khi chọn chi nhánh -> load danh sách bàn trống của chi nhánh đó
   useEffect(() => {
     if (selectedBranchId) {
-      layDanhSachBan(selectedBranchId).then((res) => {
-        setTables(res || []);
-      });
+      layDanhSachBan(selectedBranchId)
+        .then((res) => {
+          setTables(Array.isArray(res) ? res : []);
+        })
+        .catch(() => setTables([]));
     }
   }, [selectedBranchId]);
 
@@ -91,25 +81,25 @@ function CreateInvoice({ onNavigate }) {
 
   const foods = allFoods.filter((f) => {
     if (catFilter !== "ALL" && f.loaiMatHang !== catFilter) return false;
-    if (search && !f.name.toLowerCase().includes(search.toLowerCase()))
+    if (search && !f.tenMatHang?.toLowerCase().includes(search.toLowerCase()))
       return false;
     return true;
   });
 
   const addToCart = (food) => {
-    if (food.status !== "Đang bán") return;
+    if (food.trangThai && food.trangThai !== "Đang bán") return;
     setCart((prev) => {
-      const existing = prev.find((c) => c.foodId === food.id);
+      const existing = prev.find((c) => c.foodId === food.maMatHang);
       if (existing)
         return prev.map((c) =>
-          c.foodId === food.id ? { ...c, quantity: c.quantity + 1 } : c,
+          c.foodId === food.maMatHang ? { ...c, quantity: c.quantity + 1 } : c,
         );
       return [
         ...prev,
         {
-          foodId: food.id,
-          name: food.name,
-          unitPrice: food.price,
+          foodId: food.maMatHang,
+          name: food.tenMatHang,
+          unitPrice: food.giaMatHang,
           quantity: 1,
         },
       ];
@@ -187,8 +177,7 @@ function CreateInvoice({ onNavigate }) {
         onNavigate("invoices");
       }, 1000);
     } catch (e) {
-      console.error("Create invoice failed:", e);
-      alert("Có lỗi xảy ra khi tạo hóa đơn! Vui lòng thử lại.");
+      alert(e.response?.data?.message || "Có lỗi xảy ra khi tạo hóa đơn! Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -241,31 +230,32 @@ function CreateInvoice({ onNavigate }) {
           </div>
         </div>
 
-        {/* Thanh tìm kiếm & Danh mục */}
+        {/* Ô Tìm kiếm & Tab Loại món */}
         <div
-          className="px-5 py-3 bg-white border-b flex items-center gap-3 shrink-0"
+          className="px-5 py-2.5 border-b bg-white flex items-center gap-3 shrink-0 flex-wrap"
           style={{ borderColor: "var(--border)" }}
         >
-          <div className="relative flex-1 max-w-xs">
+          <div className="relative">
             <Search
               size={14}
-              className="absolute left-3 top-1/2 -translate-y-1/2"
-              style={{ color: "var(--muted-foreground)" }}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
             />
             <input
+              type="text"
+              placeholder="Tìm món ăn, thức uống..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm món ăn..."
-              className="w-full text-sm border rounded-lg pl-8 pr-3 py-1.5 outline-none focus:ring-2 focus:ring-[var(--primary)]"
+              className="text-xs border rounded-lg pl-8 pr-3 py-1.5 w-60 outline-none focus:ring-2 focus:ring-[var(--primary)] bg-white"
               style={{ borderColor: "var(--border)" }}
             />
           </div>
-          <div className="flex items-center gap-1.5 flex-wrap">
+
+          <div className="flex items-center gap-1">
             {loaiTabs.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setCatFilter(tab.key)}
-                className="px-3 py-1 rounded-full text-xs font-500 transition-colors cursor-pointer"
+                className="px-3 py-1 rounded-full text-xs font-600 transition-colors cursor-pointer"
                 style={{
                   background:
                     catFilter === tab.key
@@ -287,11 +277,11 @@ function CreateInvoice({ onNavigate }) {
         <div className="flex-1 overflow-y-auto p-5">
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5">
             {foods.map((food) => {
-              const inCart = cart.find((c) => c.foodId === food.id);
-              const unavailable = food.status !== "Đang bán";
+              const inCart = cart.find((c) => c.foodId === food.maMatHang);
+              const unavailable = food.trangThai && food.trangThai !== "Đang bán";
               return (
                 <button
-                  key={food.id}
+                  key={food.maMatHang}
                   onClick={() => addToCart(food)}
                   disabled={unavailable}
                   className="bg-white rounded-xl border text-left overflow-hidden transition-all disabled:opacity-60 hover:shadow-md relative group"
@@ -302,18 +292,18 @@ function CreateInvoice({ onNavigate }) {
                 >
                   <div className="relative h-28 overflow-hidden bg-[var(--secondary)]">
                     <img
-                      src={food.image}
-                      alt={food.name}
+                      src={food.anhMinhHoa}
+                      alt={food.tenMatHang}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <span
                       className="absolute top-2 right-2 text-[10px] px-1.5 py-0.5 rounded font-600"
                       style={{
-                        background: statusBg[food.status]?.bg || "#F0FDF4",
-                        color: statusBg[food.status]?.text || "#16A34A",
+                        background: statusBg[food.trangThai]?.bg || "#F0FDF4",
+                        color: statusBg[food.trangThai]?.text || "#16A34A",
                       }}
                     >
-                      {food.status}
+                      {food.trangThai || "Đang bán"}
                     </span>
                     {inCart && (
                       <span
@@ -329,19 +319,13 @@ function CreateInvoice({ onNavigate }) {
                       className="text-xs font-700 leading-snug mb-1 truncate"
                       style={{ color: "var(--foreground)" }}
                     >
-                      {food.name}
-                    </div>
-                    <div
-                      className="text-[11px]"
-                      style={{ color: "var(--muted-foreground)" }}
-                    >
-                      {food.category}
+                      {food.tenMatHang}
                     </div>
                     <div
                       className="text-sm font-800 mt-1"
                       style={{ color: "var(--primary)" }}
                     >
-                      {dinhDangTien(food.price)}
+                      {dinhDangTien(food.giaMatHang)}
                     </div>
                   </div>
                 </button>

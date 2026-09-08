@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { Search, Plus, Edit2, Trash2, X, UtensilsCrossed } from "lucide-react";
-import { taoMonAn, capNhatMonAn } from "../../services/matHang.service";
-import apis, { endpoints } from "../../services/apis";
+import {
+  layDanhSachMatHang,
+  taoMonAn,
+  capNhatMonAn,
+  xoaMatHang,
+} from "../../services/matHang.service";
 import { dinhDangTien } from "../../utils/dinhDang";
 
 const statusStyle = {
@@ -43,6 +47,7 @@ function FoodMenu() {
   const [showModal, setShowModal] = useState(false);
   const [editingFood, setEditingFood] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [thongBaoLoi, setThongBaoLoi] = useState("");
   const [formData, setFormData] = useState({
     tenMatHang: "",
     giaMatHang: 100000,
@@ -53,20 +58,11 @@ function FoodMenu() {
 
   const fetchFoods = async () => {
     try {
-      const res = await apis.get(endpoints.mat_hang);
-      const data = res.data || [];
-      setFoods(
-        data.map((m) => ({
-          ...m,
-          id: m.maMatHang,
-          name: m.tenMatHang,
-          price: m.giaMatHang,
-          image: m.anhMinhHoa,
-          status: "Đang bán",
-        })),
-      );
+      const data = await layDanhSachMatHang();
+      setFoods(Array.isArray(data) ? data : []);
     } catch (e) {
       console.warn("Lỗi tải món ăn", e);
+      setFoods([]);
     }
   };
 
@@ -77,6 +73,7 @@ function FoodMenu() {
   const handleOpenAdd = () => {
     setEditingFood(null);
     setSelectedFile(null);
+    setThongBaoLoi("");
     setFormData({
       tenMatHang: "",
       giaMatHang: 100000,
@@ -91,11 +88,12 @@ function FoodMenu() {
     if (e) e.stopPropagation();
     setEditingFood(f);
     setSelectedFile(null);
+    setThongBaoLoi("");
     setFormData({
-      tenMatHang: f.name || f.tenMatHang || f.ten,
-      giaMatHang: f.price || f.giaMatHang || f.gia || 0,
+      tenMatHang: f.tenMatHang,
+      giaMatHang: f.giaMatHang,
       loaiMatHang: f.loaiMatHang || "MON_AN",
-      trangThai: f.status || f.trangThai || "Đang bán",
+      trangThai: f.trangThai || "Đang bán",
       moTa: f.moTa || "",
     });
     setShowModal(true);
@@ -103,19 +101,18 @@ function FoodMenu() {
 
   const handleDelete = async (f, e) => {
     if (e) e.stopPropagation();
-    if (!window.confirm(`Bạn có chắc muốn xóa "${f.name || f.ten}"?`)) return;
+    if (!window.confirm(`Bạn có chắc muốn xóa "${f.tenMatHang}"?`)) return;
     try {
-      const id = f.maMatHang || f.id;
-      await apis.delete(endpoints.xoa_mat_hang(id));
+      await xoaMatHang(f.maMatHang);
       fetchFoods();
     } catch (err) {
-      console.error(err);
-      alert("Lỗi khi xóa mặt hàng!");
+      alert(err.response?.data?.message || "Lỗi khi xóa mặt hàng!");
     }
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
+    setThongBaoLoi("");
     try {
       const fd = new FormData();
       fd.append("tenMatHang", formData.tenMatHang.trim());
@@ -128,27 +125,26 @@ function FoodMenu() {
       }
 
       if (editingFood) {
-        await capNhatMonAn(editingFood.id, fd);
+        await capNhatMonAn(editingFood.maMatHang, fd);
       } else {
         await taoMonAn(fd);
       }
       setShowModal(false);
       fetchFoods();
     } catch (err) {
-      console.error(err);
-      alert("Lỗi khi lưu mặt hàng!");
+      setThongBaoLoi(err.response?.data?.message || "Lỗi khi lưu mặt hàng!");
     }
   };
 
   const filtered = foods.filter((f) => {
     if (loaiFilter !== "ALL" && f.loaiMatHang !== loaiFilter) return false;
-    if (statusFilter && f.status !== statusFilter) return false;
+    if (statusFilter && f.trangThai !== statusFilter) return false;
     if (
       search &&
-      !f.name?.toLowerCase().includes(search.toLowerCase()) &&
-      !f.ten?.toLowerCase().includes(search.toLowerCase())
-    )
+      !f.tenMatHang?.toLowerCase().includes(search.toLowerCase())
+    ) {
       return false;
+    }
     return true;
   });
 
@@ -252,21 +248,21 @@ function FoodMenu() {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {filtered.map((food) => {
-          const s = statusStyle[food.status] || statusStyle["Đang bán"];
+          const s = statusStyle[food.trangThai] || statusStyle["Đang bán"];
           const loaiText = layNhanLoai(food.loaiMatHang);
           return (
             <div
-              key={food.id}
+              key={food.maMatHang}
               className="bg-white rounded-xl border overflow-hidden flex flex-col hover:shadow-md transition-shadow group relative shadow-sm"
               style={{
                 borderColor: "var(--border)",
               }}
             >
               <div className="h-32 bg-[var(--secondary)] relative overflow-hidden flex items-center justify-center">
-                {food.image || food.anh ? (
+                {food.anhMinhHoa ? (
                   <img
-                    src={food.image || food.anh}
-                    alt={food.name || food.ten}
+                    src={food.anhMinhHoa}
+                    alt={food.tenMatHang}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 ) : (
@@ -284,10 +280,10 @@ function FoodMenu() {
                     color: s.text,
                   }}
                 >
-                  {food.status || "Đang bán"}
+                  {food.trangThai || "Đang bán"}
                 </span>
 
-                {/* Nút Sửa & Xóa size 16 với padding chuẩn */}
+                {/* Nút Sửa & Xóa */}
                 <div className="absolute top-2 left-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     type="button"
@@ -316,7 +312,7 @@ function FoodMenu() {
                       color: "var(--foreground)",
                     }}
                   >
-                    {food.name || food.ten}
+                    {food.tenMatHang}
                   </div>
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <span
@@ -329,14 +325,14 @@ function FoodMenu() {
                       {loaiText}
                     </span>
                   </div>
-                  {food.description && (
+                  {food.moTa && (
                     <div
                       className="text-[11px] line-clamp-2"
                       style={{
                         color: "var(--muted-foreground)",
                       }}
                     >
-                      {food.description}
+                      {food.moTa}
                     </div>
                   )}
                 </div>
@@ -348,7 +344,7 @@ function FoodMenu() {
                       color: "var(--primary)",
                     }}
                   >
-                    {dinhDangTien(food.price || food.gia || 0)}
+                    {dinhDangTien(food.giaMatHang || 0)}
                   </div>
                 </div>
               </div>
@@ -385,6 +381,12 @@ function FoodMenu() {
                 <X size={16} />
               </button>
             </div>
+
+            {thongBaoLoi && (
+              <div className="p-2.5 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg">
+                {thongBaoLoi}
+              </div>
+            )}
 
             <form onSubmit={handleSave} className="space-y-3">
               <div className="space-y-2.5 text-xs">

@@ -15,7 +15,6 @@ function ThanhDieuHuong({ onDatBan, onTraCuuDatBan, onDangNhap }) {
   const {
     user: nguoiDung,
     isAuth: daDangNhap,
-    isNhanVien: laNhanVienAdmin,
     dangXuat: handleDangXuat,
   } = useAuth();
   const [isMoMenu, setIsMoMenu] = useState(false);
@@ -116,12 +115,10 @@ function ThanhDieuHuong({ onDatBan, onTraCuuDatBan, onDangNhap }) {
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200">
                     <User size={13} className="text-amber-400" />
-                    <span>{nguoiDung.hoTen || nguoiDung.taiKhoan}</span>
-                    {laNhanVienAdmin && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-semibold flex items-center gap-1">
-                        <Shield size={10} /> Quản trị
-                      </span>
-                    )}
+                    <span>
+                      {[nguoiDung.ho, nguoiDung.ten].filter(Boolean).join(" ") ||
+                        nguoiDung.taiKhoan}
+                    </span>
                   </div>
                   <button
                     onClick={handleThoat}
@@ -199,7 +196,8 @@ function ThanhDieuHuong({ onDatBan, onTraCuuDatBan, onDangNhap }) {
                     Tài khoản
                   </p>
                   <p className="font-bold text-amber-200 mt-0.5">
-                    {nguoiDung.hoTen || nguoiDung.taiKhoan}
+                    {[nguoiDung.ho, nguoiDung.ten].filter(Boolean).join(" ") ||
+                      nguoiDung.taiKhoan}
                   </p>
                   <p className="text-amber-400/60 text-[11px]">
                     {nguoiDung.email}

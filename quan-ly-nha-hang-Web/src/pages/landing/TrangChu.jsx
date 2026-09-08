@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import ThanhDieuHuong from "../../components/landing/home/ThanhDieuHuong";
 import PhanDauTrang from "../../components/landing/home/PhanDauTrang";
 import TrietLyAmThuc from "../../components/landing/home/TrietLyAmThuc";
@@ -8,6 +9,7 @@ import CauHoiThuongGap from "../../components/landing/home/CauHoiThuongGap";
 import DatBan from "../../components/landing/home/DatBan";
 import ChanTrang from "../../components/landing/home/ChanTrang";
 import KetNoiKhongGian, { DauNoiSection } from "../../components/landing/home/KetNoiKhongGian";
+import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
 
 function TrangChu({
   onDatBan,
@@ -16,6 +18,18 @@ function TrangChu({
   onBookTable,
   onLookupBooking,
 }) {
+  const [chiNhanhs, setChiNhanhs] = useState([]);
+
+  useEffect(() => {
+    layDanhSachChiNhanh()
+      .then((data) => {
+        setChiNhanhs(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        setChiNhanhs([]);
+      });
+  }, []);
+
   const handleDatBan = onDatBan || onBookTable;
   const handleTraCuuDatBan = onTraCuuDatBan || onLookupBooking;
 
@@ -29,7 +43,7 @@ function TrangChu({
         onTraCuuDatBan={handleTraCuuDatBan}
         onDangNhap={onDangNhap}
       />
-      <PhanDauTrang onDatBan={handleDatBan} />
+      <PhanDauTrang onDatBan={handleDatBan} branches={chiNhanhs} />
 
       <DauNoiSection nhan="Triết Lý L'Délice" />
       <TrietLyAmThuc />
@@ -38,7 +52,7 @@ function TrangChu({
       <BoSuuTapMonAn onDatBan={handleDatBan} />
 
       <DauNoiSection nhan="Không Gian Độc Bản" />
-      <KhuVucChiNhanh onDatBan={handleDatBan} />
+      <KhuVucChiNhanh onDatBan={handleDatBan} chiNhanhs={chiNhanhs} />
 
       <DauNoiSection nhan="Đánh Giá Thực Khách" />
       <CamNhanKhachHang />

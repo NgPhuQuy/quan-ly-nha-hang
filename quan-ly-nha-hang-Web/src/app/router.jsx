@@ -8,7 +8,6 @@ const TrangKhongCoQuyen = lazy(() => import("../pages/landing/TrangKhongCoQuyen"
 const QuanLyApp = lazy(() => import("./QuanLyApp"));
 
 import { useAuth } from "../contexts/AuthContext";
-import { chuanHoaVaiTro } from "../utils/vaiTro";
 
 const layDuongDan = () =>
   window.location.pathname.replace(/^\/+|\/+$/g, "") || "home";
@@ -21,29 +20,13 @@ function Router() {
   const [manHinh, setManHinh] = useState(layDuongDan);
   const [redirectSauDangNhap, setRedirectSauDangNhap] = useState("");
 
-  const { isAuth, isNhanVien } = useAuth();
+  const { isAuth } = useAuth();
 
   const dieuHuong = (manHinhMoi) => {
     if (manHinhMoi === "booking" && !isAuth) {
       setRedirectSauDangNhap("booking");
       window.history.pushState({}, "", "/login");
       setManHinh("login");
-      window.scrollTo(0, 0);
-      return;
-    }
-
-    if (
-      (manHinhMoi.startsWith("admin") || manHinhMoi.startsWith("pos")) &&
-      !isNhanVien
-    ) {
-      if (!isAuth) {
-        setRedirectSauDangNhap(manHinhMoi);
-        window.history.pushState({}, "", "/login");
-        setManHinh("login");
-      } else {
-        window.history.pushState({}, "", "/403");
-        setManHinh("403");
-      }
       window.scrollTo(0, 0);
       return;
     }
@@ -64,25 +47,13 @@ function Router() {
         setRedirectSauDangNhap("booking");
         window.history.pushState({}, "", "/login");
         setManHinh("login");
-      } else if (
-        (duongDanMoi.startsWith("admin") || duongDanMoi.startsWith("pos")) &&
-        !isNhanVien
-      ) {
-        if (!isAuth) {
-          setRedirectSauDangNhap(duongDanMoi);
-          window.history.pushState({}, "", "/login");
-          setManHinh("login");
-        } else {
-          window.history.pushState({}, "", "/403");
-          setManHinh("403");
-        }
       } else {
         setManHinh(duongDanMoi);
       }
     };
     window.addEventListener("popstate", khiThayDoiLichSu);
     return () => window.removeEventListener("popstate", khiThayDoiLichSu);
-  }, [isAuth, isNhanVien]);
+  }, [isAuth]);
 
   const laXacThuc =
     manHinh === "auth" ||
@@ -105,15 +76,10 @@ function Router() {
       defaultTab={
         manHinh === "register" || manHinh === "dang-ky" ? "register" : "login"
       }
-      onDangNhapThanhCong={(u) => {
-        const role = chuanHoaVaiTro(u?.vaiTro || u?.role);
-        if (["ADMIN", "QUANLY", "NHANVIEN"].includes(role)) {
-          dieuHuong(redirectSauDangNhap || "admin");
-        } else {
-          const target = redirectSauDangNhap || "booking";
-          setRedirectSauDangNhap("");
-          dieuHuong(target);
-        }
+      onDangNhapThanhCong={() => {
+        const target = redirectSauDangNhap || "home";
+        setRedirectSauDangNhap("");
+        dieuHuong(target);
       }}
       onQuayVeTrangChu={() => dieuHuong("home")}
     />

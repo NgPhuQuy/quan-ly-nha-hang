@@ -6,7 +6,6 @@ import {
   ChevronRight,
   Sparkles,
 } from "lucide-react";
-import { layDanhSachChiNhanh } from "../../../services/chiNhanh.service";
 import apis, { endpoints } from "../../../services/apis";
 
 const layThongTinTrangThai = (trangThai) => {
@@ -34,54 +33,46 @@ const layThongTinTrangThai = (trangThai) => {
   };
 };
 
-function BranchSection({ onDatBan }) {
-  const [chiNhanhs, setChiNhanhs] = useState([]);
+function BranchSection({ onDatBan, chiNhanhs = [] }) {
   const [trangThaiMap, setTrangThaiMap] = useState({});
 
   useEffect(() => {
-    layDanhSachChiNhanh()
-      .then(async (res) => {
-        const danhSach = Array.isArray(res)
-          ? res
-          : Array.isArray(res?.data)
-            ? res.data
-            : [];
-        setChiNhanhs(danhSach);
+    if (!chiNhanhs || chiNhanhs.length === 0) return;
 
-        const today = new Date().toLocaleDateString("en-CA");
-        const map = {};
+    const today = new Date().toLocaleDateString("en-CA");
+    const map = {};
 
-        await Promise.all(
-          danhSach.map(async (cn) => {
-            const id = cn.maChiNhanh ?? cn.id;
-            try {
-              const res = await apis.get(endpoints.khung_gio(id, today));
-              const slots = res.data || [];
-              // Mặc định mỗi chi nhánh có 50 đơn có thể đặt
-              if (!slots || slots.length === 0) {
-                map[id] = "con";
-              } else {
-                const allFull = slots.every((s) => s.trangThai === "het");
-                const hasScarce = slots.some(
-                  (s) => s.trangThai === "it" || s.trangThai === "het",
-                );
-                if (allFull) {
-                  map[id] = "het";
-                } else if (hasScarce) {
-                  map[id] = "it";
-                } else {
-                  map[id] = "con";
-                }
-              }
-            } catch {
+    Promise.all(
+      chiNhanhs.map(async (cn) => {
+        const id = cn.maChiNhanh;
+        try {
+          const res = await apis.get(endpoints.khung_gio(id, today));
+          const slots = res.data || [];
+          if (!slots || slots.length === 0) {
+            map[id] = "con";
+          } else {
+            const allFull = slots.every((s) => s.trangThai === "het");
+            const hasScarce = slots.some(
+              (s) => s.trangThai === "it" || s.trangThai === "het",
+            );
+            if (allFull) {
+              map[id] = "het";
+            } else if (hasScarce) {
+              map[id] = "it";
+            } else {
               map[id] = "con";
             }
-          }),
-        );
+          }
+        } catch {
+          map[id] = "con";
+        }
+      }),
+    )
+      .then(() => {
         setTrangThaiMap(map);
       })
       .catch(console.error);
-  }, []);
+  }, [chiNhanhs]);
 
   return (
     <section

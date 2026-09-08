@@ -24,6 +24,16 @@ export const capNhatMonAn = async (id, formData) => {
   return res.data;
 };
 
+export const layDanhSachMatHang = async () => {
+  const res = await apis.get(endpoints.mat_hang);
+  return res.data;
+};
+
+export const xoaMatHang = async (id) => {
+  const res = await apis.delete(endpoints.xoa_mat_hang(id));
+  return res.data;
+};
+
 export const layDanhSachMonAn = async (maChiNhanh) => {
   const res = await apis.get(endpoints.mon_an(maChiNhanh));
   return res.data;

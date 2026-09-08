@@ -41,6 +41,7 @@ export const endpoints = {
   doi_trang_thai_nguoi_dung: (maNguoiDung) => `/users/${maNguoiDung}/trang-thai`,
 
   chi_nhanh: "/chi-nhanh",
+  chi_nhanh_public: "/chi-nhanh/public",
   chi_tiet_chi_nhanh: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}`,
   cap_nhat_chi_nhanh: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}`,
   doi_trang_thai_chi_nhanh: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/trang-thai`,

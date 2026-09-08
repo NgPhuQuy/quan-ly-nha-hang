@@ -1,7 +1,7 @@
 import { Sparkles, Star } from "lucide-react";
 import ThanhDatBanNhanh from "./ThanhDatBanNhanh";
 
-function Hero({ onDatBan }) {
+function Hero({ onDatBan, branches }) {
   return (
     <section
       className="relative min-h-[100dvh] w-full flex flex-col justify-center items-center bg-transparent pt-24 sm:pt-32 pb-14 sm:pb-20 z-10 overflow-hidden"
@@ -37,7 +37,7 @@ function Hero({ onDatBan }) {
         </p>
 
         {/* Quick Booking Interactive Widget on Hero */}
-        <ThanhDatBanNhanh onDatBan={onDatBan} />
+        <ThanhDatBanNhanh onDatBan={onDatBan} branches={branches} />
 
         {/* Key Highlight Accolades */}
         <div className="grid grid-cols-3 gap-6 max-w-xl mx-auto pt-6 border-t border-amber-500/20 text-center">

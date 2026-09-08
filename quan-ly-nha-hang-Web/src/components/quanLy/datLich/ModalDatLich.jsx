@@ -24,14 +24,13 @@ export function ModalGanBan({
         </div>
         <div className="text-xs space-y-1.5 text-gray-600">
           <p>
-            <strong>Khách hàng:</strong> {checkInBooking.customer} (
-            {checkInBooking.phone})
+            <strong>Mã đặt:</strong> #{checkInBooking.maDatLich}
           </p>
           <p>
-            <strong>Số khách:</strong> {checkInBooking.guests} người
+            <strong>Số khách:</strong> {checkInBooking.soKhach} người
           </p>
           <p>
-            <strong>Chi nhánh:</strong> {checkInBooking.branch}
+            <strong>Thời gian:</strong> {checkInBooking.gio} - {checkInBooking.ngay}
           </p>
         </div>
         <div>
@@ -80,7 +79,7 @@ export function ModalMonDatTruoc({ viewPreOrderBooking, onClose }) {
         <div className="flex items-center justify-between border-b pb-3">
           <h3 className="text-sm font-700 flex items-center gap-1.5">
             <Utensils size={15} style={{ color: "var(--primary)" }} /> Món ăn
-            đặt trước ({viewPreOrderBooking.id})
+            đặt trước (#{viewPreOrderBooking.maDatLich})
           </h3>
           <button
             onClick={onClose}
@@ -119,6 +118,7 @@ export function ModalTaoDatLich({
   setFormData,
   branches,
   onSubmit,
+  thongBaoLoi,
 }) {
   if (!show) return null;
 
@@ -138,6 +138,13 @@ export function ModalTaoDatLich({
             <X size={16} />
           </button>
         </div>
+
+        {thongBaoLoi && (
+          <div className="p-2.5 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg">
+            {thongBaoLoi}
+          </div>
+        )}
+
         <div className="space-y-2.5 text-xs">
           <div>
             <label className="block font-600 mb-1">Chi nhánh:</label>

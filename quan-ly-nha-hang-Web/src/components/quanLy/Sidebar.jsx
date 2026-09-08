@@ -108,8 +108,8 @@ const adminNav = [
     icon: BarChart3,
   },
 ];
-function Sidebar({ activePage, role, onNavigate, onDangXuat }) {
-  const navItems = role === "admin" ? adminNav : managerNav;
+function Sidebar({ activePage, onNavigate, onDangXuat }) {
+  const navItems = adminNav;
   const activeNav = ["create-invoice", "invoice-detail"].includes(activePage)
     ? "invoices"
     : activePage;
@@ -150,7 +150,7 @@ function Sidebar({ activePage, role, onNavigate, onDangXuat }) {
                 color: "var(--muted-foreground)",
               }}
             >
-              {role === "admin" ? "Toàn hệ thống" : "Chi nhánh Quận 1"}
+              Hệ thống quản lý
             </div>
           </div>
         </div>

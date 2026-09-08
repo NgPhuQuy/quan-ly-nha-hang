@@ -8,6 +8,7 @@ function ModalNguoiDung({
   setFormData,
   branches,
   onSubmit,
+  thongBaoLoi,
 }) {
   if (!show) return null;
 
@@ -30,6 +31,12 @@ function ModalNguoiDung({
             <X size={16} />
           </button>
         </div>
+
+        {thongBaoLoi && (
+          <div className="p-2.5 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg">
+            {thongBaoLoi}
+          </div>
+        )}
 
         <div className="space-y-2.5 text-xs">
           <div className="grid grid-cols-2 gap-2">

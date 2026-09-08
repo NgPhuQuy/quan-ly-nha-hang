@@ -1,22 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Plus,
   Search,
   MapPin,
   Phone,
-  TrendingUp,
   Building2,
   Edit2,
   Trash2,
   X,
+  ShoppingBag,
 } from "lucide-react";
 import {
-  layDanhSachChiNhanh,
   taoChiNhanh,
   capNhatChiNhanh,
   doiTrangThaiChiNhanh,
 } from "../../services/chiNhanh.service";
-import { dinhDangTienRutGon } from "../../utils/dinhDang";
 
 const statusStyle = {
   "Hoạt động": {
@@ -29,13 +27,13 @@ const statusStyle = {
   },
 };
 
-function Branches() {
+function Branches({ branches = [], onRefreshBranches }) {
   const [search, setSearch] = useState("");
-  const [branches, setBranches] = useState([]);
 
   // Modals
   const [showModal, setShowModal] = useState(false);
   const [editingBranch, setEditingBranch] = useState(null);
+  const [thongBaoLoi, setThongBaoLoi] = useState("");
   const [formData, setFormData] = useState({
     tenChiNhanh: "",
     diaChi: "",
@@ -43,35 +41,9 @@ function Branches() {
     trangThaiChiNhanh: true,
   });
 
-  const fetchBranches = async () => {
-    try {
-      const data = await layDanhSachChiNhanh(true);
-      if (data) {
-        setBranches(
-          data.map((b) => ({
-            id: `b${b.maChiNhanh}`,
-            maChiNhanhId: b.maChiNhanh,
-            name: b.tenChiNhanh,
-            address: b.diaChi || "Đang cập nhật",
-            phone: b.soDienThoai || "028 3822 xxxx",
-            manager: "Quản lý chi nhánh",
-            status: b.trangThaiChiNhanh ? "Hoạt động" : "Tạm đóng",
-            rawStatus: b.trangThaiChiNhanh,
-            revenue: 140000000,
-          })),
-        );
-      }
-    } catch (e) {
-      console.warn("Fetch branches failed", e);
-    }
-  };
-
-  useEffect(() => {
-    fetchBranches();
-  }, []);
-
   const handleOpenAdd = () => {
     setEditingBranch(null);
+    setThongBaoLoi("");
     setFormData({
       tenChiNhanh: "",
       diaChi: "",
@@ -83,63 +55,63 @@ function Branches() {
 
   const handleOpenEdit = (b) => {
     setEditingBranch(b);
+    setThongBaoLoi("");
     setFormData({
-      tenChiNhanh: b.name,
-      diaChi: b.address,
-      soDienThoai: b.phone,
-      trangThaiChiNhanh: b.rawStatus ?? true,
+      tenChiNhanh: b.tenChiNhanh,
+      diaChi: b.diaChi || "",
+      soDienThoai: b.soDienThoai || "",
+      trangThaiChiNhanh: b.trangThaiChiNhanh,
     });
     setShowModal(true);
   };
 
   const handleToggleStatus = async (b) => {
     try {
-      await doiTrangThaiChiNhanh(b.maChiNhanhId);
-      fetchBranches();
+      await doiTrangThaiChiNhanh(b.maChiNhanh);
+      onRefreshBranches?.();
     } catch (err) {
-      console.error(err);
-      alert("Lỗi khi đổi trạng thái chi nhánh!");
+      alert(err.response?.data?.message || "Lỗi khi đổi trạng thái chi nhánh!");
     }
   };
 
   const handleDelete = async (b) => {
-    if (!window.confirm(`Bạn có chắc muốn đổi trạng thái / đóng chi nhánh "${b.name}"?`)) return;
+    if (!window.confirm(`Bạn có chắc muốn đổi trạng thái / đóng chi nhánh "${b.tenChiNhanh}"?`)) return;
     try {
-      await doiTrangThaiChiNhanh(b.maChiNhanhId);
-      fetchBranches();
+      await doiTrangThaiChiNhanh(b.maChiNhanh);
+      onRefreshBranches?.();
     } catch (err) {
-      console.error(err);
-      alert("Lỗi khi đổi trạng thái chi nhánh!");
+      alert(err.response?.data?.message || "Lỗi khi đổi trạng thái chi nhánh!");
     }
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
+    setThongBaoLoi("");
     try {
       const fd = new FormData();
-      fd.append("tenChiNhanh", formData.tenChiNhanh);
-      fd.append("diaChi", formData.diaChi);
-      fd.append("soDienThoai", formData.soDienThoai);
+      fd.append("tenChiNhanh", formData.tenChiNhanh.trim());
+      fd.append("diaChi", formData.diaChi.trim());
+      fd.append("soDienThoai", formData.soDienThoai.trim());
       fd.append("trangThaiChiNhanh", formData.trangThaiChiNhanh);
 
       if (editingBranch) {
-        await capNhatChiNhanh(editingBranch.maChiNhanhId, fd);
+        await capNhatChiNhanh(editingBranch.maChiNhanh, fd);
       } else {
         await taoChiNhanh(fd);
       }
       setShowModal(false);
-      fetchBranches();
+      onRefreshBranches?.();
     } catch (err) {
-      console.error(err);
-      alert("Lỗi khi lưu chi nhánh!");
+      setThongBaoLoi(err.response?.data?.message || "Lỗi khi lưu chi nhánh!");
     }
   };
 
   const filtered = branches.filter(
     (b) =>
       !search ||
-      b.name.toLowerCase().includes(search.toLowerCase()) ||
-      b.address.toLowerCase().includes(search.toLowerCase()),
+      b.tenChiNhanh?.toLowerCase().includes(search.toLowerCase()) ||
+      b.diaChi?.toLowerCase().includes(search.toLowerCase()) ||
+      b.soDienThoai?.includes(search),
   );
 
   return (
@@ -211,8 +183,7 @@ function Branches() {
                 "Tên chi nhánh",
                 "Địa chỉ",
                 "Số điện thoại",
-                "Quản lý",
-                "Doanh thu (tháng)",
+                "Số lượng đơn",
                 "Trạng thái",
                 "Thao tác",
               ].map((h) => (
@@ -231,7 +202,7 @@ function Branches() {
           <tbody>
             {filtered.map((b) => (
               <tr
-                key={b.id}
+                key={b.maChiNhanh}
                 className="border-t hover:bg-[var(--secondary)] transition-colors"
                 style={{
                   borderColor: "var(--border)",
@@ -244,7 +215,7 @@ function Branches() {
                       color: "var(--foreground)",
                     }}
                   >
-                    {b.name}
+                    {b.tenChiNhanh}
                   </div>
                 </td>
                 <td className="px-4 py-3">
@@ -255,7 +226,7 @@ function Branches() {
                     }}
                   >
                     <MapPin size={12} className="mt-0.5 shrink-0" />
-                    <span className="max-w-[200px]">{b.address}</span>
+                    <span className="max-w-[200px]">{b.diaChi || "—"}</span>
                   </div>
                 </td>
                 <td className="px-4 py-3">
@@ -265,25 +236,17 @@ function Branches() {
                       color: "var(--muted-foreground)",
                     }}
                   >
-                    <Phone size={12} /> {b.phone}
+                    <Phone size={12} /> {b.soDienThoai || "—"}
                   </div>
-                </td>
-                <td
-                  className="px-4 py-3 text-xs"
-                  style={{
-                    color: "var(--foreground)",
-                  }}
-                >
-                  {b.manager}
                 </td>
                 <td className="px-4 py-3">
                   <div
-                    className="flex items-center gap-1.5 text-xs font-700"
+                    className="flex items-center gap-1.5 text-xs font-600"
                     style={{
-                      color: "var(--primary)",
+                      color: "var(--foreground)",
                     }}
                   >
-                    <TrendingUp size={12} /> {dinhDangTienRutGon(b.revenue)}
+                    <ShoppingBag size={12} /> {b.soLuongDon ?? 0} đơn
                   </div>
                 </td>
                 <td className="px-4 py-3">
@@ -291,12 +254,16 @@ function Branches() {
                     onClick={() => handleToggleStatus(b)}
                     className="text-xs px-2.5 py-0.5 rounded-full font-600 cursor-pointer hover:opacity-80 transition-opacity"
                     style={{
-                      background: statusStyle[b.status]?.bg || "#F0FDF4",
-                      color: statusStyle[b.status]?.color || "#16A34A",
+                      background: b.trangThaiChiNhanh
+                        ? "var(--success-bg)"
+                        : "var(--warning-bg)",
+                      color: b.trangThaiChiNhanh
+                        ? "var(--success)"
+                        : "var(--warning)",
                     }}
                     title="Nhấn để đổi trạng thái"
                   >
-                    {b.status}
+                    {b.trangThaiChiNhanh ? "Hoạt động" : "Tạm đóng"}
                   </button>
                 </td>
                 <td className="px-4 py-3">
@@ -313,7 +280,7 @@ function Branches() {
                       type="button"
                       onClick={() => handleDelete(b)}
                       className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                      title="Xóa chi nhánh"
+                      title="Đổi trạng thái chi nhánh"
                     >
                       <Trash2 size={16} strokeWidth={2} />
                     </button>
@@ -340,11 +307,17 @@ function Branches() {
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 cursor-pointer"
               >
                 <X size={16} />
               </button>
             </div>
+
+            {thongBaoLoi && (
+              <div className="p-2.5 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg">
+                {thongBaoLoi}
+              </div>
+            )}
 
             <div className="space-y-2.5 text-xs">
               <div>

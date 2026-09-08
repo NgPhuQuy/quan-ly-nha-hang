@@ -192,23 +192,25 @@ export function useDatLich(initialValues = null) {
   }, [date]);
 
   const selectedBranch = useMemo(
-    () =>
-      branches.find(
-        (b) =>
-          String(b.maChiNhanh ?? b.id) === String(maChiNhanh),
-      ),
+    () => branches.find((b) => String(b.maChiNhanh) === String(maChiNhanh)),
     [branches, maChiNhanh],
   );
 
   const totalAmount = useMemo(() => {
     const tienMonAn = selectedItems.reduce((total, item) => {
-      const mon = menuItems.find((m) => m.id === item.monAnId);
-      return total + (mon?.gia || 0) * item.soLuong;
+      const mon = menuItems.find(
+        (m) => m.maMatHang === (item.maMatHang || item.monAnId),
+      );
+      const donGia = mon?.giaMatHang ?? item.giaMatHang ?? item.gia ?? 0;
+      return total + Number(donGia) * item.soLuong;
     }, 0);
 
     const tienDichVu = selectedServices.reduce((total, serviceId) => {
-      const dv = additionalServices.find((s) => s.id === serviceId);
-      return total + (dv?.gia || 0);
+      const dv = additionalServices.find(
+        (s) => (s.maMatHang || s.id) === serviceId,
+      );
+      const donGia = dv?.giaMatHang ?? dv?.gia ?? 0;
+      return total + Number(donGia);
     }, 0);
 
     return tienMonAn + tienDichVu;
@@ -220,17 +222,17 @@ export function useDatLich(initialValues = null) {
 
     const preorderedItems = [
       ...(selectedItems || []).map((item) => ({
-        maMatHang: Number(String(item.monAnId || item.id).replace(/\D/g, "")),
+        maMatHang: Number(item.maMatHang || item.monAnId),
         soLuong: Number(item.soLuong) || 1,
       })),
       ...(selectedServices || []).map((serviceId) => ({
-        maMatHang: Number(String(serviceId).replace(/\D/g, "")),
+        maMatHang: Number(serviceId),
         soLuong: 1,
       })),
     ].filter((item) => item.maMatHang && item.soLuong > 0);
 
     const payload = {
-      maChiNhanh: Number(String(maChiNhanh).replace(/\D/g, "")) || 1,
+      maChiNhanh: Number(maChiNhanh) || 1,
       ngay: date,
       gio: selectedTime.length === 5 ? `${selectedTime}:00` : selectedTime,
       soKhach: Number(guestCount) || 2,
@@ -245,10 +247,9 @@ export function useDatLich(initialValues = null) {
     try {
       const result = await taoDatLich(payload);
       setBookingCode(
-        result.maDatLichCode ||
-          (result.maDatLich ? `BK-${result.maDatLich}` : null) ||
-          result.maDatBan ||
-          `LDELICE-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
+        result.maDatLich
+          ? `BK-${result.maDatLich}`
+          : `LDELICE-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
       );
       setStep(5);
       return { thanhCong: true, data: result };

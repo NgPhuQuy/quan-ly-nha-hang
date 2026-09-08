@@ -10,9 +10,8 @@ import {
   Minus,
   Plus,
 } from "lucide-react";
-import { layDanhSachChiNhanh } from "../../../services/chiNhanh.service";
 
-function ThanhDatBanNhanh({ onDatBan }) {
+function ThanhDatBanNhanh({ onDatBan, branches = [] }) {
   const dropdownBranchRef = useRef(null);
   const dropdownDateRef = useRef(null);
 
@@ -25,7 +24,6 @@ function ThanhDatBanNhanh({ onDatBan }) {
 
   const homNayStr = layNgayDiaPhuong();
 
-  const [branches, setBranches] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState("");
   const [isMoDropdownChiNhanh, setIsMoDropdownChiNhanh] = useState(false);
 
@@ -37,18 +35,10 @@ function ThanhDatBanNhanh({ onDatBan }) {
   const [guestCount, setGuestCount] = useState(2);
 
   useEffect(() => {
-    layDanhSachChiNhanh().then((res) => {
-      const list = Array.isArray(res)
-        ? res
-        : Array.isArray(res?.data)
-          ? res.data
-          : [];
-      if (list.length) {
-        setBranches(list);
-        setSelectedBranch(list[0].maChiNhanh);
-      }
-    });
-  }, []);
+    if (branches.length && !selectedBranch) {
+      setSelectedBranch(branches[0].maChiNhanh);
+    }
+  }, [branches, selectedBranch]);
 
   // Đóng dropdown khi click ra ngoài
   useEffect(() => {

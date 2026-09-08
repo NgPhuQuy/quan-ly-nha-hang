@@ -10,18 +10,19 @@ function BookingSummary({
   menuItems,
   additionalServices,
 }) {
-  const branchName =
-    branch?.tenChiNhanh || branch?.ten || "Chưa chọn chi nhánh";
+  const branchName = branch?.tenChiNhanh || "Chưa chọn chi nhánh";
   const branchAddress = branch?.diaChi;
 
   const totalFoodAmount = selectedItems.reduce((total, item) => {
-    const dish = menuItems.find((m) => m.id === item.monAnId);
-    return total + (dish?.gia || 0) * item.soLuong;
+    const dish = menuItems.find((m) => m.maMatHang === (item.maMatHang || item.monAnId));
+    const donGia = dish?.giaMatHang ?? item.giaMatHang ?? 0;
+    return total + Number(donGia) * item.soLuong;
   }, 0);
 
   const totalServiceAmount = selectedServices.reduce((total, id) => {
-    const s = additionalServices.find((service) => service.id === id);
-    return total + (s?.gia || 0);
+    const s = additionalServices.find((service) => (service.maMatHang || service.id) === id);
+    const donGia = s?.giaMatHang ?? s?.gia ?? 0;
+    return total + Number(donGia);
   }, 0);
 
   const totalAmount = totalFoodAmount + totalServiceAmount;
@@ -105,19 +106,20 @@ function BookingSummary({
           </div>
           <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
             {selectedItems.map((item) => {
-              const dish = menuItems.find((m) => m.id === item.monAnId);
-              if (!dish) return null;
+              const dish = menuItems.find((m) => m.maMatHang === (item.maMatHang || item.monAnId));
+              const ten = dish?.tenMatHang || item.tenMatHang || item.ten || "Món ăn";
+              const gia = dish?.giaMatHang ?? item.giaMatHang ?? item.gia ?? 0;
               return (
                 <div
-                  key={item.monAnId}
+                  key={item.maMatHang || item.monAnId}
                   className="flex items-center justify-between text-[11px] text-amber-200/80"
                 >
                   <span className="truncate max-w-[140px]">
-                    {dish.ten}{" "}
+                    {ten}{" "}
                     <strong className="text-amber-400">×{item.soLuong}</strong>
                   </span>
                   <span className="font-mono text-amber-200">
-                    {((dish.gia || 0) * item.soLuong).toLocaleString("vi-VN")}₫
+                    {(Number(gia) * item.soLuong).toLocaleString("vi-VN")}₫
                   </span>
                 </div>
               );

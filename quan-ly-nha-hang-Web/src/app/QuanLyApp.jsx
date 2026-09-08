@@ -1,9 +1,9 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useState, useEffect, useCallback } from "react";
 import Sidebar from "../components/quanLy/Sidebar";
 import Header from "../components/quanLy/Header";
 import DangNhap from "../pages/quanLy/DangNhap";
-import TrangKhongCoQuyen from "../pages/landing/TrangKhongCoQuyen";
 import { useAuth } from "../contexts/AuthContext";
+import { layDanhSachChiNhanh } from "../services/chiNhanh.service";
 
 const TongQuan = lazy(() => import("../pages/quanLy/TongQuan"));
 const DanhSachHoaDon = lazy(() => import("../pages/quanLy/DanhSachHoaDon"));
@@ -19,7 +19,9 @@ const DatLich = lazy(() => import("../pages/quanLy/DatLich"));
 const CaiDat = lazy(() => import("../pages/quanLy/CaiDat"));
 
 const pageTitles = {
+  dashboard: "Tổng quan",
   bao_cao_tong_quan: "Tổng quan",
+  invoices: "Hóa đơn",
   hoa_don: "Hóa đơn",
   "create-invoice": "Tạo hóa đơn",
   "invoice-detail": "Chi tiết hóa đơn",
@@ -35,7 +37,9 @@ const pageTitles = {
 };
 
 const pages = {
+  dashboard: TongQuan,
   bao_cao_tong_quan: TongQuan,
+  invoices: DanhSachHoaDon,
   hoa_don: DanhSachHoaDon,
   "create-invoice": TaoHoaDon,
   "invoice-detail": ChiTietHoaDon,
@@ -54,16 +58,30 @@ export default function QuanLyApp({
   onNavigate,
   onQuayVeTrangChu,
 }) {
-  const {
-    isAuth: daXacThuc,
-    isNhanVien,
-    isAdmin,
-    dangXuat: handleDangXuat,
-  } = useAuth();
+  const { isAuth: daXacThuc, dangXuat: handleDangXuat } = useAuth();
   const [page, setPage] = useState(initialPage);
   const [selectedInvoiceId, setSelectedInvoiceId] = useState("");
+  const [chiNhanhs, setChiNhanhs] = useState([]);
+  const [dangTaiChiNhanh, setDangTaiChiNhanh] = useState(false);
 
-  const role = isAdmin ? "admin" : "manager";
+  const taiChiNhanh = useCallback(async () => {
+    setDangTaiChiNhanh(true);
+    try {
+      const data = await layDanhSachChiNhanh();
+      setChiNhanhs(Array.isArray(data) ? data : []);
+    } catch {
+      setChiNhanhs([]);
+    } finally {
+      setDangTaiChiNhanh(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (daXacThuc) {
+      taiChiNhanh();
+    }
+  }, [daXacThuc, taiChiNhanh]);
+
   const Page = pages[page] || TongQuan;
   const noHeader = page === "create-invoice";
 
@@ -72,11 +90,6 @@ export default function QuanLyApp({
   };
 
   const khiChuyenTrang = (trangMoi) => {
-    if (trangMoi === "branches" && role === "manager") return;
-    if (trangMoi === "users" && role === "manager") return;
-    if (trangMoi === "customers" && role === "manager") return;
-    if (trangMoi === "categories" && role === "manager") return;
-    if (trangMoi === "promotions" && role === "manager") return;
     setPage(trangMoi);
     onNavigate?.(trangMoi);
   };
@@ -90,17 +103,11 @@ export default function QuanLyApp({
     );
   }
 
-  if (!isNhanVien) {
-    return (
-      <TrangKhongCoQuyen
-        onQuayVeTrangChu={onQuayVeTrangChu}
-        onDangNhapKhac={() => onNavigate?.("login")}
-      />
-    );
-  }
-
   const pageProps = {
     onNavigate: khiChuyenTrang,
+    branches: chiNhanhs,
+    loadingBranches: dangTaiChiNhanh,
+    onRefreshBranches: taiChiNhanh,
     ...(page === "invoice-detail" ? { invoiceId: selectedInvoiceId } : {}),
     ...(page === "invoices" ? { onSelectInvoice: setSelectedInvoiceId } : {}),
   };
@@ -112,15 +119,14 @@ export default function QuanLyApp({
     >
       <Sidebar
         activePage={page}
-        role={role}
         onNavigate={khiChuyenTrang}
         onDangXuat={handleDangXuat}
       />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {!noHeader && <Header title={pageTitles[page]} role={role} />}
+        {!noHeader && <Header title={pageTitles[page]} />}
         <main className="flex-1 min-h-0 overflow-y-auto">
           <Suspense fallback={<div className="min-h-full" aria-busy="true" />}>
-            <Page role={role} {...pageProps} />
+            <Page {...pageProps} />
           </Suspense>
         </main>
       </div>

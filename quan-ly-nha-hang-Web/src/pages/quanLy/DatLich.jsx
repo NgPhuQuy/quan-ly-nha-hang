@@ -6,7 +6,6 @@ import {
   taoDatLich,
 } from "../../services/datLich.service";
 import { layDanhSachBan } from "../../services/banAn.service";
-import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
 import {
   ModalGanBan,
   ModalMonDatTruoc,
@@ -14,28 +13,30 @@ import {
 } from "../../components/quanLy/datLich/ModalDatLich";
 
 const statusStyle = {
-  "Xác nhận": {
+  DA_XAC_NHAN: {
     bg: "var(--success-bg)",
     color: "var(--success)",
+    label: "Đã xác nhận",
   },
-  "Chờ xác nhận": {
+  CHO_XAC_NHAN: {
     bg: "var(--warning-bg)",
     color: "var(--warning)",
+    label: "Chờ xác nhận",
   },
-  "Đã huỷ": {
+  DA_HUY: {
     bg: "var(--danger-bg)",
     color: "var(--danger)",
+    label: "Đã huỷ",
   },
 };
 
 const PAGE_SIZE = 8;
 
-function Bookings({ role }) {
+function Bookings({ branches = [] }) {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [branchFilter, setBranchFilter] = useState("");
   const [bookings, setBookings] = useState([]);
-  const [branches, setBranches] = useState([]);
   const [tables, setTables] = useState([]);
   const [page, setPage] = useState(1);
 
@@ -44,6 +45,7 @@ function Bookings({ role }) {
   const [selectedTableId, setSelectedTableId] = useState("");
   const [viewPreOrderBooking, setViewPreOrderBooking] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [thongBaoLoi, setThongBaoLoi] = useState("");
   const [formData, setFormData] = useState({
     maChiNhanh: 1,
     hoTen: "",
@@ -54,71 +56,62 @@ function Bookings({ role }) {
     ghiChu: "",
   });
 
-  const fetchBookings = () => {
-    layDanhSachDatLich().then((data) => {
-      if (data) setBookings(data);
-    });
+  const fetchBookings = async () => {
+    try {
+      const data = await layDanhSachDatLich();
+      setBookings(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.warn("Lỗi tải đặt lịch", e);
+      setBookings([]);
+    }
   };
 
   useEffect(() => {
     fetchBookings();
-    layDanhSachChiNhanh().then((res) => {
-      if (res && res.length) {
-        setBranches(res);
-        setFormData((prev) => ({ ...prev, maChiNhanh: res[0].maChiNhanh }));
-      }
-    });
   }, []);
+
+  useEffect(() => {
+    if (branches.length && !formData.maChiNhanh) {
+      setFormData((prev) => ({ ...prev, maChiNhanh: branches[0].maChiNhanh }));
+    }
+  }, [branches, formData.maChiNhanh]);
 
   const handleOpenCheckIn = (booking) => {
     setCheckInBooking(booking);
     setSelectedTableId("");
-    // Lấy danh sách bàn
-    layDanhSachBan().then((res) => setTables(res || []));
+    layDanhSachBan(booking.maChiNhanh).then((res) =>
+      setTables(Array.isArray(res) ? res : []),
+    );
   };
 
   const handleConfirmCheckIn = async () => {
     if (!checkInBooking) return;
     try {
       await capNhatTrangThaiDatLich(
-        checkInBooking.maDatLichId,
+        checkInBooking.maDatLich,
         "DA_XAC_NHAN",
         selectedTableId ? Number(selectedTableId) : null,
       );
       setCheckInBooking(null);
       fetchBookings();
-      alert("Xếp bàn và Check-in thành công!");
     } catch (e) {
-      console.error(e);
-      alert("Lỗi khi xác nhận check-in!");
+      alert(e.response?.data?.message || "Lỗi khi xác nhận check-in!");
     }
   };
 
   const handleHuyLich = async (booking) => {
-    if (!window.confirm(`Xác nhận hủy đặt bàn mã ${booking.id}?`)) return;
+    if (!window.confirm(`Xác nhận hủy đặt bàn #${booking.maDatLich}?`)) return;
     try {
-      await capNhatTrangThaiDatLich(booking.maDatLichId, "DA_HUY", null);
+      await capNhatTrangThaiDatLich(booking.maDatLich, "DA_HUY", null);
       fetchBookings();
     } catch (e) {
-      console.error(e);
-      alert("Lỗi khi hủy lịch!");
+      alert(e.response?.data?.message || "Lỗi khi hủy lịch!");
     }
-  };
-
-  const handleDelete = async (booking) => {
-    if (!window.confirm(`Bạn có chắc muốn hủy lịch đặt ${booking.id}?`)) return;
-    if (booking.maDatLichId) {
-      try {
-        await capNhatTrangThaiDatLich(booking.maDatLichId, "DA_HUY");
-      } catch (e) {
-        console.warn("Cancel API error:", e);
-      }
-    }
-    setBookings((prev) => prev.filter((x) => x.id !== booking.id));
   };
 
   const handleCreateSubmit = async (e) => {
     e.preventDefault();
+    setThongBaoLoi("");
     try {
       await taoDatLich({
         ...formData,
@@ -127,22 +120,22 @@ function Bookings({ role }) {
       });
       setShowCreateModal(false);
       fetchBookings();
-      alert("Tạo đặt lịch thành công!");
     } catch (err) {
-      console.error(err);
-      alert("Lỗi khi tạo lịch đặt!");
+      setThongBaoLoi(err.response?.data?.message || "Lỗi khi tạo lịch đặt!");
     }
   };
 
   const filtered = bookings.filter((b) => {
-    if (
-      search &&
-      !b.customer.toLowerCase().includes(search.toLowerCase()) &&
-      !b.phone.includes(search)
-    )
-      return false;
-    if (statusFilter && b.status !== statusFilter) return false;
-    if (branchFilter && b.branch !== branchFilter) return false;
+    if (search) {
+      const q = search.toLowerCase();
+      const maStr = String(b.maDatLich);
+      const ghiChuStr = b.ghiChu ? b.ghiChu.toLowerCase() : "";
+      if (!maStr.includes(q) && !ghiChuStr.includes(q)) {
+        return false;
+      }
+    }
+    if (statusFilter && b.trangThai !== statusFilter) return false;
+    if (branchFilter && String(b.maChiNhanh) !== String(branchFilter)) return false;
     return true;
   });
 
@@ -194,27 +187,22 @@ function Bookings({ role }) {
             style={{ borderColor: "var(--border)" }}
           />
         </div>
-        {role === "admin" && (
-          <select
-            value={branchFilter}
-            onChange={(e) => {
-              setBranchFilter(e.target.value);
-              setPage(1);
-            }}
-            className="text-sm border rounded-lg px-3 py-1.5 outline-none bg-white focus:ring-2 focus:ring-[var(--primary)]"
-            style={{ borderColor: "var(--border)" }}
-          >
-            <option value="">Tất cả chi nhánh</option>
-            {branches.map((b) => {
-              const name = b.tenChiNhanh || b.ten;
-              return (
-                <option key={b.maChiNhanh || b.id || name} value={name}>
-                  {name}
-                </option>
-              );
-            })}
-          </select>
-        )}
+        <select
+          value={branchFilter}
+          onChange={(e) => {
+            setBranchFilter(e.target.value);
+            setPage(1);
+          }}
+          className="text-sm border rounded-lg px-3 py-1.5 outline-none bg-white focus:ring-2 focus:ring-[var(--primary)]"
+          style={{ borderColor: "var(--border)" }}
+        >
+          <option value="">Tất cả chi nhánh</option>
+          {branches.map((b) => (
+            <option key={b.maChiNhanh} value={b.maChiNhanh}>
+              {b.tenChiNhanh}
+            </option>
+          ))}
+        </select>
         <select
           value={statusFilter}
           onChange={(e) => {
@@ -225,11 +213,9 @@ function Bookings({ role }) {
           style={{ borderColor: "var(--border)" }}
         >
           <option value="">Tất cả trạng thái</option>
-          {["Xác nhận", "Chờ xác nhận", "Đã huỷ"].map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
+          <option value="DA_XAC_NHAN">Đã xác nhận</option>
+          <option value="CHO_XAC_NHAN">Chờ xác nhận</option>
+          <option value="DA_HUY">Đã huỷ</option>
         </select>
       </div>
 
@@ -243,12 +229,11 @@ function Bookings({ role }) {
             <tr>
               {[
                 "Mã",
-                "Khách hàng",
+                "Chi nhánh",
                 "Ngày / Giờ",
                 "Số khách",
-                "Bàn",
-                ...(role === "admin" ? ["Chi nhánh"] : []),
                 "Đặt trước",
+                "Ghi chú",
                 "Trạng thái",
                 "Thao tác",
               ].map((h) => (
@@ -266,113 +251,100 @@ function Bookings({ role }) {
             {paged.length === 0 ? (
               <tr>
                 <td
-                  colSpan={9}
+                  colSpan={8}
                   className="text-center py-8 text-xs text-gray-400"
                 >
                   Không có lịch đặt nào phù hợp
                 </td>
               </tr>
             ) : (
-              paged.map((b) => (
-                <tr
-                  key={b.id}
-                  className="border-t hover:bg-[var(--secondary)] transition-colors"
-                  style={{ borderColor: "var(--border)" }}
-                >
-                  <td
-                    className="px-4 py-3 text-xs font-700"
-                    style={{ color: "var(--primary)" }}
+              paged.map((b) => {
+                const s = statusStyle[b.trangThai] || statusStyle.CHO_XAC_NHAN;
+                const tenCn =
+                  branches.find((br) => br.maChiNhanh === b.maChiNhanh)
+                    ?.tenChiNhanh || `Chi nhánh #${b.maChiNhanh}`;
+                return (
+                  <tr
+                    key={b.maDatLich}
+                    className="border-t hover:bg-[var(--secondary)] transition-colors"
+                    style={{ borderColor: "var(--border)" }}
                   >
-                    {b.id}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div
-                      className="text-xs font-600"
+                    <td
+                      className="px-4 py-3 text-xs font-700"
+                      style={{ color: "var(--primary)" }}
+                    >
+                      #{b.maDatLich}
+                    </td>
+                    <td
+                      className="px-4 py-3 text-xs font-medium"
                       style={{ color: "var(--foreground)" }}
                     >
-                      {b.customer}
-                    </div>
-                    <div className="text-xs text-gray-400 font-mono">
-                      {b.phone}
-                    </div>
-                  </td>
-                  <td
-                    className="px-4 py-3 text-xs"
-                    style={{ color: "var(--foreground)" }}
-                  >
-                    {b.date} <span className="font-semibold">{b.time}</span>
-                  </td>
-                  <td
-                    className="px-4 py-3 text-xs font-semibold"
-                    style={{ color: "var(--foreground)" }}
-                  >
-                    {b.guests} khách
-                  </td>
-                  <td
-                    className="px-4 py-3 text-xs font-bold"
-                    style={{ color: "var(--primary)" }}
-                  >
-                    {b.table && b.table !== "—" ? `Bàn ${b.table}` : "Chưa gán"}
-                  </td>
-                  {role === "admin" && (
+                      {tenCn}
+                    </td>
                     <td
                       className="px-4 py-3 text-xs"
                       style={{ color: "var(--foreground)" }}
                     >
-                      {b.branch}
+                      {b.ngay} <span className="font-semibold">{b.gio}</span>
                     </td>
-                  )}
-                  <td className="px-4 py-3">
-                    {b.listDatTruoc && b.listDatTruoc.length > 0 ? (
-                      <button
-                        onClick={() => setViewPreOrderBooking(b)}
-                        className="flex items-center gap-1 text-[11px] px-2 py-0.5 rounded bg-amber-50 text-amber-700 font-semibold border border-amber-200 hover:bg-amber-100"
-                      >
-                        <Utensils size={11} /> {b.listDatTruoc.length} món
-                      </button>
-                    ) : (
-                      <span className="text-xs text-gray-400">—</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className="text-xs px-2.5 py-0.5 rounded-full font-600"
-                      style={{
-                        background: statusStyle[b.status]?.bg || "#FFFBEB",
-                        color: statusStyle[b.status]?.color || "#D97706",
-                      }}
+                    <td
+                      className="px-4 py-3 text-xs font-semibold"
+                      style={{ color: "var(--foreground)" }}
                     >
-                      {b.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      {b.status !== "Đã huỷ" && (
+                      {b.soKhach} khách
+                    </td>
+                    <td className="px-4 py-3">
+                      {b.listDatTruoc && b.listDatTruoc.length > 0 ? (
                         <button
-                          onClick={() => handleOpenCheckIn(b)}
-                          className="px-2 py-1 rounded text-xs font-600 bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
+                          onClick={() => setViewPreOrderBooking(b)}
+                          className="flex items-center gap-1 text-[11px] px-2 py-0.5 rounded bg-amber-50 text-amber-700 font-semibold border border-amber-200 hover:bg-amber-100 cursor-pointer"
                         >
-                          Xếp bàn
+                          <Utensils size={11} /> {b.listDatTruoc.length} món
                         </button>
+                      ) : (
+                        <span className="text-xs text-gray-400">—</span>
                       )}
-                      {b.status === "Chờ xác nhận" && (
-                        <button
-                          onClick={() => handleHuyLich(b)}
-                          className="px-2 py-1 rounded text-xs font-600 bg-red-50 text-red-600 hover:bg-red-100"
-                        >
-                          Hủy
-                        </button>
-                      )}
-                      <button
-                        onClick={() => handleDelete(b)}
-                        className="text-xs text-gray-400 hover:text-red-600 transition-colors"
+                    </td>
+                    <td
+                      className="px-4 py-3 text-xs text-gray-500 max-w-[150px] truncate"
+                      title={b.ghiChu}
+                    >
+                      {b.ghiChu || "—"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className="text-xs px-2.5 py-0.5 rounded-full font-600"
+                        style={{
+                          background: s.bg,
+                          color: s.color,
+                        }}
                       >
-                        Xóa
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
+                        {s.label || b.trangThai}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        {b.trangThai !== "DA_HUY" && (
+                          <button
+                            onClick={() => handleOpenCheckIn(b)}
+                            className="px-2 py-1 rounded text-xs font-600 bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 cursor-pointer"
+                          >
+                            Xếp bàn
+                          </button>
+                        )}
+                        {b.trangThai === "CHO_XAC_NHAN" && (
+                          <button
+                            onClick={() => handleHuyLich(b)}
+                            className="px-2 py-1 rounded text-xs font-600 bg-red-50 text-red-600 hover:bg-red-100 cursor-pointer"
+                          >
+                            Hủy
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
@@ -430,6 +402,7 @@ function Bookings({ role }) {
         setFormData={setFormData}
         branches={branches}
         onSubmit={handleCreateSubmit}
+        thongBaoLoi={thongBaoLoi}
       />
     </div>
   );

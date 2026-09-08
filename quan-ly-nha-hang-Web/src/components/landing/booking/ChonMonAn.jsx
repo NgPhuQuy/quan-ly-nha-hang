@@ -26,32 +26,25 @@ function MenuSelection({
   ];
 
   const filteredItems = menuItems.filter((mon) => {
-    const loai =
-      mon.loaiMatHang ||
-      (mon.nhom === "Đồ uống" || mon.danhMuc === "Đồ uống"
-        ? "THUC_UONG"
-        : mon.nhom === "Dịch vụ" || mon.danhMuc === "Dịch vụ"
-          ? "DICH_VU"
-          : "MON_AN");
-
+    const loai = mon.loaiMatHang || "MON_AN";
     const matchesLoai = nhom === "ALL" || loai === nhom;
     const matchesSearch =
       !searchQuery ||
-      mon.ten?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      mon.moTa?.toLowerCase().includes(searchQuery.toLowerCase());
+      mon.tenMatHang?.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesLoai && matchesSearch;
   });
 
-  const getSoLuong = (id) =>
-    selectedItems.find((item) => item.monAnId === id)?.soLuong || 0;
+  const getSoLuong = (maMatHang) =>
+    selectedItems.find((item) => (item.maMatHang || item.monAnId) === maMatHang)?.soLuong || 0;
 
   const tangSoLuong = (mon) =>
     setSelectedItems((items) => {
-      const daCo = items.find((item) => item.monAnId === mon.id);
+      const id = mon.maMatHang;
+      const daCo = items.find((item) => (item.maMatHang || item.monAnId) === id);
 
       if (daCo) {
         return items.map((item) =>
-          item.monAnId === mon.id
+          (item.maMatHang || item.monAnId) === id
             ? { ...item, soLuong: item.soLuong + 1 }
             : item,
         );
@@ -60,24 +53,26 @@ function MenuSelection({
       return [
         ...items,
         {
-          monAnId: mon.id,
+          maMatHang: id,
+          monAnId: id,
           soLuong: 1,
-          ten: mon.ten,
-          gia: mon.gia,
+          tenMatHang: mon.tenMatHang,
+          giaMatHang: mon.giaMatHang,
         },
       ];
     });
 
   const giamSoLuong = (mon) =>
-    setSelectedItems((items) =>
-      items
+    setSelectedItems((items) => {
+      const id = mon.maMatHang;
+      return items
         .map((item) =>
-          item.monAnId === mon.id
+          (item.maMatHang || item.monAnId) === id
             ? { ...item, soLuong: item.soLuong - 1 }
             : item,
         )
-        .filter((item) => item.soLuong > 0),
-    );
+        .filter((item) => item.soLuong > 0);
+    });
 
   const totalPreorderItems = selectedItems.reduce(
     (sum, item) => sum + item.soLuong,
@@ -144,10 +139,10 @@ function MenuSelection({
         )}
 
         {filteredItems.map((mon) => {
-          const qty = getSoLuong(mon.id);
+          const qty = getSoLuong(mon.maMatHang);
           return (
             <div
-              key={mon.id}
+              key={mon.maMatHang}
               className={`flex items-center gap-3.5 p-3 rounded-2xl border transition-all duration-200 ${
                 qty > 0
                   ? "bg-amber-500/10 border-amber-400/60"
@@ -155,22 +150,17 @@ function MenuSelection({
               }`}
             >
               <img
-                src={mon.anh}
-                alt={mon.ten}
+                src={mon.anhMinhHoa || "/food-placeholder.png"}
+                alt={mon.tenMatHang}
                 className="w-16 h-16 object-cover rounded-xl border border-white/10"
               />
 
               <div className="flex-1 min-w-0">
                 <h4 className="font-serif text-sm sm:text-base font-bold text-amber-100 leading-snug">
-                  {mon.ten}
+                  {mon.tenMatHang}
                 </h4>
-                {mon.moTa && (
-                  <p className="text-[11px] sm:text-xs text-amber-200/50 line-clamp-1 mt-0.5">
-                    {mon.moTa}
-                  </p>
-                )}
                 <div className="mt-1.5 font-serif text-xs sm:text-sm font-bold text-amber-300">
-                  {Number(mon.gia || 0).toLocaleString("vi-VN")}₫
+                  {Number(mon.giaMatHang || 0).toLocaleString("vi-VN")}₫
                 </div>
               </div>
 
