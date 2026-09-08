@@ -102,12 +102,7 @@ function Dashboard({ onNavigate, branches = [] }) {
   const [invoices, setInvoices] = useState([]);
   const [loi, setLoi] = useState(null);
 
-  const [expenseList] = useState([
-    { category: "Nguyên vật liệu", amount: 45000000, pct: 45 },
-    { category: "Nhân sự", amount: 30000000, pct: 30 },
-    { category: "Mặt bằng & Tiện ích", amount: 15000000, pct: 15 },
-    { category: "Khác", amount: 10000000, pct: 10 },
-  ]);
+  const expenseList = [];
 
   useEffect(() => {
     const taiDuLieu = async () => {
@@ -132,20 +127,22 @@ function Dashboard({ onNavigate, branches = [] }) {
 
   const totalInvoices = invoices.length;
   const totalIncome = totalRevenue;
-  const totalExpense = Math.round(totalRevenue * 0.45);
+  const totalExpense = 0;
   const profit = totalIncome - totalExpense;
 
   const revenueByDay = useMemo(() => {
     const dayMap = {};
-    invoices.forEach((inv) => {
-      const dateStr = inv.ngayLapHoaDon
-        ? new Date(inv.ngayLapHoaDon).toLocaleDateString("vi-VN", {
-            day: "2-digit",
-            month: "2-digit",
-          })
-        : "Khác";
-      dayMap[dateStr] = (dayMap[dateStr] || 0) + Number(inv.tongTien || 0);
-    });
+    invoices
+      .filter((inv) => inv.trangThai === "HOAN_THANH")
+      .forEach((inv) => {
+        const dateStr = inv.ngayLapHoaDon
+          ? new Date(inv.ngayLapHoaDon).toLocaleDateString("vi-VN", {
+              day: "2-digit",
+              month: "2-digit",
+            })
+          : "Khác";
+        dayMap[dateStr] = (dayMap[dateStr] || 0) + Number(inv.tongTien || 0);
+      });
 
     const entries = Object.entries(dayMap).map(([date, revenue]) => ({
       date,
@@ -374,7 +371,7 @@ function Dashboard({ onNavigate, branches = [] }) {
             <button
               className="text-xs font-medium flex items-center gap-1 cursor-pointer hover:underline"
               style={{ color: "var(--primary)" }}
-              onClick={() => onNavigate?.("invoices")}
+              onClick={() => onNavigate?.("hoa_don")}
             >
               Xem tất cả <ArrowUpRight size={11} />
             </button>
@@ -457,10 +454,17 @@ function Dashboard({ onNavigate, branches = [] }) {
             className="text-sm font-semibold mb-3"
             style={{ color: "var(--foreground)" }}
           >
-            Chi phí ước tính tháng này
+            Chi phí tháng này
           </div>
           <div className="flex flex-col gap-3">
-            {expenseList.map((item, idx) => (
+            {expenseList.length === 0 ? (
+              <div
+                className="py-8 text-center text-xs"
+                style={{ color: "var(--muted-foreground)" }}
+              >
+                Chưa có dữ liệu chi phí
+              </div>
+            ) : expenseList.map((item, idx) => (
               <div key={idx}>
                 <div className="flex justify-between text-xs mb-1">
                   <span style={{ color: "var(--foreground)" }}>

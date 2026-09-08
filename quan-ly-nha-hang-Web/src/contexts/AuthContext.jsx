@@ -25,7 +25,11 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    taiThongTinNguoiDung();
+    const timeoutId = setTimeout(() => {
+      taiThongTinNguoiDung();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const dangXuat = async () => {

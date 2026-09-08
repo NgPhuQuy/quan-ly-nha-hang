@@ -10,7 +10,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { layThongBaoLoi } from "../utils/apiError";
 
 export function useDatLich(initialValues = null) {
-  const { user } = useAuth();
+  const { nguoiDung } = useAuth();
 
   const layNgayDiaPhuong = (d = new Date()) => {
     const y = d.getFullYear();
@@ -47,9 +47,9 @@ export function useDatLich(initialValues = null) {
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [guestDetails, setGuestDetails] = useState({
-    hoTen: user?.hoTen || "",
-    soDienThoai: user?.soDienThoai || "",
-    email: user?.email || "",
+    hoTen: nguoiDung?.hoTen || "",
+    soDienThoai: nguoiDung?.soDienThoai || "",
+    email: nguoiDung?.email || "",
     ghiChu: "",
     dip: "khong",
   });
@@ -66,20 +66,22 @@ export function useDatLich(initialValues = null) {
   const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
-    if (user) {
-      setGuestDetails((prev) => ({
-        ...prev,
-        hoTen: prev.hoTen || user.hoTen || "",
-        soDienThoai: prev.soDienThoai || user.soDienThoai || "",
-        email: prev.email || user.email || "",
-      }));
-    }
-  }, [user]);
+    const timeoutId = setTimeout(() => {
+      if (nguoiDung) {
+        setGuestDetails((prev) => ({
+          ...prev,
+          hoTen: prev.hoTen || nguoiDung.hoTen || "",
+          soDienThoai: prev.soDienThoai || nguoiDung.soDienThoai || "",
+          email: prev.email || nguoiDung.email || "",
+        }));
+      }
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [nguoiDung]);
 
   useEffect(() => {
     let isActive = true;
-    setDangTaiDuLieu(true);
-
     const khoiTao = async () => {
       try {
         const dsChiNhanh = await layDanhSachChiNhanh();
@@ -127,8 +129,13 @@ export function useDatLich(initialValues = null) {
       }
     };
 
-    khoiTao();
+    const timeoutId = setTimeout(() => {
+      setDangTaiDuLieu(true);
+      khoiTao();
+    }, 0);
+
     return () => {
+      clearTimeout(timeoutId);
       isActive = false;
     };
   }, []);
@@ -282,9 +289,9 @@ export function useDatLich(initialValues = null) {
     setSelectedTime("");
     setSelectedItems([]);
     setGuestDetails({
-      hoTen: user?.hoTen || "",
-      soDienThoai: user?.soDienThoai || "",
-      email: user?.email || "",
+      hoTen: nguoiDung?.hoTen || "",
+      soDienThoai: nguoiDung?.soDienThoai || "",
+      email: nguoiDung?.email || "",
       ghiChu: "",
       dip: "khong",
     });

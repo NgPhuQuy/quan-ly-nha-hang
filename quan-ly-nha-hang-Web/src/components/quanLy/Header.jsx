@@ -2,7 +2,7 @@ import { Bell, ChevronDown } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 
 function Header({ title }) {
-  const { user: nguoiDung } = useAuth();
+  const { nguoiDung } = useAuth();
   const now = new Date();
   const dateStr = now.toLocaleDateString("vi-VN", {
     weekday: "long",

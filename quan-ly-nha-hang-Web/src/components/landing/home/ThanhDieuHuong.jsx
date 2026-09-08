@@ -11,7 +11,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 
 function ThanhDieuHuong({ onDatBan, onDangNhap }) {
   const {
-    user: nguoiDung,
+    nguoiDung,
     isAuth: daDangNhap,
     dangXuat: handleDangXuat,
   } = useAuth();

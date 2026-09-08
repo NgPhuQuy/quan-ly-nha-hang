@@ -2,7 +2,7 @@ import { ShieldAlert, LogOut, Home, PhoneCall } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 
 function TrangKhongCoQuyen({ onQuayVeTrangChu, onDangNhapKhac }) {
-  const { user, dangXuat } = useAuth();
+  const { nguoiDung, dangXuat } = useAuth();
 
   const handleDangXuatVaDangNhap = async () => {
     await dangXuat();
@@ -42,9 +42,9 @@ function TrangKhongCoQuyen({ onQuayVeTrangChu, onDangNhapKhac }) {
 
         <p className="text-xs sm:text-sm text-amber-200/70 font-light leading-relaxed mb-6">
           Tài khoản hiện tại{" "}
-          {user?.taiKhoan ? (
+          {nguoiDung?.taiKhoan ? (
             <span className="font-semibold text-amber-300">
-              ({user.taiKhoan})
+              ({nguoiDung.taiKhoan})
             </span>
           ) : (
             ""
@@ -54,11 +54,11 @@ function TrangKhongCoQuyen({ onQuayVeTrangChu, onDangNhapKhac }) {
         </p>
 
         {/* User Role Tag */}
-        {user && (
+        {nguoiDung && (
           <div className="mb-8 p-3 rounded-xl bg-white/5 border border-white/10 text-xs text-amber-200/80 flex items-center justify-between">
             <span className="text-amber-200/60">Vai trò hiện tại:</span>
             <span className="font-bold text-amber-400 uppercase tracking-wider">
-              {user.vaiTro}
+              {nguoiDung.vaiTro}
             </span>
           </div>
         )}
