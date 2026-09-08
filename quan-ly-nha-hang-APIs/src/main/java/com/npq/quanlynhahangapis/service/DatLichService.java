@@ -80,19 +80,7 @@ public class DatLichService {
                 request.gio().isBefore(chiNhanh.getGioHoatDong()) || request.gio().isAfter(chiNhanh.getGioDongCua());
     }
 
-
-//    public List<KhungGio> laySoLuongDonTrenGio(Integer maChiNhanh, LocalDate ngay){
-//        List<KhungGio> listKhungGio = new ArrayList<>();
-//        List<DatLich> listDatLich = datLichRepository.findByChiNhanh_MaChiNhanhAndNgay(maChiNhanh, ngay);
-//        listDatLich.forEach(datLich -> );
-//        return
-//    }
-
     public List<KhungGioResponse> layKhungGio(Integer maChiNhanh, LocalDate ngay) {
-        //todo tra ve
-        // thong ke so luong dat lich
-        // cua tung thoi diem nhu 08:00 co so don la 5...
-        // tra ve list {thoi gian : so luong con lai}
         return datLichRepository.countDatLichTheoGio(maChiNhanh, ngay);
     }
 
@@ -157,7 +145,6 @@ public class DatLichService {
                 .maChiNhanh(dto.getChiNhanh().getMaChiNhanh())
                 .ngay(dto.getNgay())
                 .gio(dto.getGio())
-                .soKhach(dto.getSoKhach())
                 .ghiChu(dto.getGhiChu())
                 .trangThai(dto.getTrangThai())
                 .listDatTruoc(listDatTruoc)
@@ -181,7 +168,7 @@ public class DatLichService {
     public DatLichResponse huyDatLich(Integer maNguoiDung, Integer maDatLich) {
         DatLich datLich = layDatLichTheoId(maDatLich);
         NguoiDung nguoiDung = nguoiDungService.layNguoiDungTheoId(maNguoiDung);
-        if(!datLich.getNguoiDung().equals(nguoiDung)) throw new AppException(ErrorCode.DAT_LICH_NOT_OWNER);
+        if (!datLich.getNguoiDung().equals(nguoiDung)) throw new AppException(ErrorCode.DAT_LICH_NOT_OWNER);
         if (datLich.getNgay().isEqual(LocalDate.now()) && LocalTime.now().isBefore(datLich.getGio().minusHours(2)))
             throw new AppException(ErrorCode.KHONG_THE_HUY_DAT_LICH);
 

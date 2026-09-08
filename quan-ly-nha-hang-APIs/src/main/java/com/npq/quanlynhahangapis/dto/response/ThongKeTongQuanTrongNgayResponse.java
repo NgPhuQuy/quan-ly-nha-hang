@@ -5,10 +5,10 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record ThongKeTongQuanTrongNgayResponse(
-        BigDecimal tong,
-        Integer soHoaDonHoanThanh,
-        Integer soHoaDonDaHuy,
-        BigDecimal trungBinhHoaDon
+public record ThongKeTongQuanTrongNgayResponse(//todo
+                                               BigDecimal tong,
+                                               Integer soHoaDonHoanThanh,
+                                               Integer soHoaDonDaHuy,
+                                               BigDecimal trungBinhHoaDon
 ) {
 }

@@ -11,10 +11,8 @@ import java.util.List;
 public record DatLichResponse(
         Integer maDatLich,
         Integer maChiNhanh,
-        Integer maKhachHang,
         LocalDate ngay,
         LocalTime gio,
-        Integer soKhach,
         String ghiChu,
         TrangThaiDatLich trangThai,
         List<DatTruocResponse> listDatTruoc

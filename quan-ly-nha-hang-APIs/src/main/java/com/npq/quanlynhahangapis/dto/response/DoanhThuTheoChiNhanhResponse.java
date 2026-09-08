@@ -5,9 +5,9 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record DoanhThuTheoChiNhanhResponse(
-        String branch,
-        BigDecimal revenue
+public record DoanhThuTheoChiNhanhResponse(//todo xoa hoac lam tiep
+                                           String branch,
+                                           BigDecimal revenue
 ) {
 }
 

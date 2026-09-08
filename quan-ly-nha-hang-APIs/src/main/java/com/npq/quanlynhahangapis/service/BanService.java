@@ -8,7 +8,6 @@ import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
 import com.npq.quanlynhahangapis.repository.BanRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,13 +50,6 @@ public class BanService {
                 .chiNhanh(chiNhanh)
                 .build();
 
-        return chuyenSangDto(banRepository.save(ban));
-    }
-
-    @Transactional
-    public BanResponse capNhatBan(Integer maBan, BanRequest request) {
-        Ban ban = layBanTheoId(maBan);
-        ban.setChiNhanh(chiNhanhService.layChiNhanhTheoId(request.maChiNhanh()));
         return chuyenSangDto(banRepository.save(ban));
     }
 

@@ -26,8 +26,8 @@ public class ThongKeController {
 
     @GetMapping("/khoang")
     public ResponseEntity<?> layDoanhThuTheoKhoan(@RequestParam Integer maChiNhanh,
-                                                 @RequestParam LocalDate tuNgay,
-                                                 @RequestParam LocalDate denNgay) {
+                                                  @RequestParam LocalDate tuNgay,
+                                                  @RequestParam LocalDate denNgay) {
         return ResponseEntity.ok(thongKeService.layDoanhThuTheoNgay(maChiNhanh, tuNgay, denNgay));
     }
 

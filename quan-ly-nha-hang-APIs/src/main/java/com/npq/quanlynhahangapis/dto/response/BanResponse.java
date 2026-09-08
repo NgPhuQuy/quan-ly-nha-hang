@@ -5,8 +5,6 @@ import lombok.Builder;
 @Builder
 public record BanResponse(
         Integer maBan,
-        String soBan,
-        Integer sucChua,
         Integer maChiNhanh,
         String tenChiNhanh,
         Boolean trangThai

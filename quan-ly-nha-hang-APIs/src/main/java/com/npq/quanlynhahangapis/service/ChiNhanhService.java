@@ -94,8 +94,4 @@ public class ChiNhanhService {
                 .map(this::chuyenSangDto)
                 .toList();
     }
-
-    public List<ChiNhanh> layDanhSachChiNhanh() {
-        return chiNhanhRepository.findAll();
-    }
 }

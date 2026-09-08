@@ -30,7 +30,6 @@ public class DatLich {
 
     private LocalDate ngay;
     private LocalTime gio;
-    private Integer soKhach;
     private String ghiChu;
 
     @Enumerated(EnumType.STRING)

@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
 
-    List<HoaDon> findByBan_ChiNhanh_MaChiNhanh(Integer maChiNhanh);
+    List<HoaDon> findByBan_ChiNhanh_MaChiNhanh(Integer maChiNhanh);//todo danh sach hoa don cua chi nhanh A
 
     @Query("""
             SELECT SUM(hd.tongTien)
