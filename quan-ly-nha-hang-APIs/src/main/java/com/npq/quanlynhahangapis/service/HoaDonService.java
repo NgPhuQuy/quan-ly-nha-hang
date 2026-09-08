@@ -89,8 +89,6 @@ public class HoaDonService {
 
     @Transactional
     public HoaDonResponse thanhToanHoaDon(Integer maHoaDon) {
-        BigDecimal tongTien = chiTietHoaDonService.layTongTien(maHoaDon);
-
         HoaDon hoaDon = layHoaDonTheoId(maHoaDon);
         hoaDon.setTrangThai(TrangThaiHoaDon.HOAN_THANH);
         Ban ban = hoaDon.getBan();
@@ -110,6 +108,9 @@ public class HoaDonService {
     public HoaDonResponse chuyenSangDto(HoaDon hoaDon) {
         int maKhachHang = 0;
         NguoiDung khachHang = hoaDon.getKhachHang();
+        BigDecimal tongTien = chiTietHoaDonService.layTongTien(hoaDon.getMaHoaDon());
+        hoaDon.setTongTien(tongTien);
+        hoaDonRepository.save(hoaDon);
         if (khachHang != null) maKhachHang = khachHang.getMaNguoiDung();
         List<ChiTietHoaDonResponse> listChiTiet = chiTietHoaDonService.danhSachChiTietHoaDon(hoaDon);
         return HoaDonResponse.builder()

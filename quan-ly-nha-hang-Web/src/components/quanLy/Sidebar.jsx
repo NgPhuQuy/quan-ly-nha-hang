@@ -59,7 +59,18 @@ const adminNav = [
     icon: BarChart3,
   },
 ];
-function Sidebar({ activePage, onNavigate, onDangXuat }) {
+function Sidebar({ activePage, isPos, khuVuc, onNavigate, onDangXuat }) {
+  const checkIsPos =
+    isPos ??
+    (khuVuc === "pos" ||
+      (typeof window !== "undefined" &&
+        window.location.pathname.startsWith("/pos")));
+
+  const posHiddenIds = ["chi_nhanh", "tai_khoan", "khach_hang"];
+  const navItems = adminNav.filter(
+    (item) => !checkIsPos || !posHiddenIds.includes(item.id),
+  );
+
   const activeNav = ["tao_hoa_don", "chi_tiet_hoa_don"].includes(activePage)
     ? "hoa_don"
     : activePage;
@@ -100,13 +111,13 @@ function Sidebar({ activePage, onNavigate, onDangXuat }) {
                 color: "var(--muted-foreground)",
               }}
             >
-              Hệ thống quản lý
+              {checkIsPos ? "Hệ thống POS bán hàng" : "Hệ thống quản lý"}
             </div>
           </div>
         </div>
       </div>
       <nav className="flex-1 px-3 py-3 flex flex-col gap-0.5 overflow-y-auto">
-        {adminNav.map(({ id, label, icon: Icon }) => {
+        {navItems.map(({ id, label, icon: Icon }) => {
           const isActive = activeNav === id;
           return (
             <button

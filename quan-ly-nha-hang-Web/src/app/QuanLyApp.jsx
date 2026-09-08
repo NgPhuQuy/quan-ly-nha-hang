@@ -47,10 +47,16 @@ const pages = {
 
 export default function QuanLyApp({
   initialPage = "tong_quan",
+  khuVuc = "admin",
   onNavigate,
   onQuayVeTrangChu,
 }) {
   const { isAuth: daXacThuc, dangXuat: handleDangXuat } = useAuth();
+  const isPos =
+    khuVuc === "pos" ||
+    (typeof window !== "undefined" &&
+      window.location.pathname.startsWith("/pos"));
+
   const [page, setPage] = useState(initialPage);
   const [selectedMaHoaDon, setSelectedMaHoaDon] = useState("");
   const [chiNhanhs, setChiNhanhs] = useState([]);
@@ -78,14 +84,20 @@ export default function QuanLyApp({
     return () => clearTimeout(timeoutId);
   }, [daXacThuc, taiChiNhanh]);
 
-  const Page = pages[page] || TongQuan;
-  const noHeader = page === "tao_hoa_don";
+  const trangBiCam =
+    isPos && ["chi_nhanh", "tai_khoan", "khach_hang"].includes(page);
+  const trangHienThi = trangBiCam ? "tong_quan" : page;
+  const Page = pages[trangHienThi] || TongQuan;
+  const noHeader = trangHienThi === "tao_hoa_don";
 
   const handleDangNhapThanhCong = () => {
     setPage("tong_quan");
   };
 
   const khiChuyenTrang = (trangMoi) => {
+    if (isPos && ["chi_nhanh", "tai_khoan", "khach_hang"].includes(trangMoi)) {
+      return;
+    }
     setPage(trangMoi);
     onNavigate?.(trangMoi);
   };
@@ -101,12 +113,13 @@ export default function QuanLyApp({
 
   const pageProps = {
     onNavigate: khiChuyenTrang,
+    isPos,
+    khuVuc,
     chi_nhanh: chiNhanhs,
     loadingBranches: dangTaiChiNhanh,
     onRefreshBranches: taiChiNhanh,
-    ...(page === "chi_tiet_hoa_don" ? { invoiceId: selectedMaHoaDon } : {}),
-    ...(page === "hoa_don" ? { onSelectInvoice: setSelectedMaHoaDon } : {}),
-
+    ...(trangHienThi === "chi_tiet_hoa_don" ? { invoiceId: selectedMaHoaDon } : {}),
+    ...(trangHienThi === "hoa_don" ? { onSelectInvoice: setSelectedMaHoaDon } : {}),
   };
 
   return (
@@ -115,12 +128,14 @@ export default function QuanLyApp({
       style={{ background: "var(--background)", color: "var(--foreground)" }}
     >
       <Sidebar
-        activePage={page}
+        activePage={trangHienThi}
+        isPos={isPos}
+        khuVuc={khuVuc}
         onNavigate={khiChuyenTrang}
         onDangXuat={handleDangXuat}
       />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {!noHeader && <Header title={pageTitles[page] || "Tổng quan"} />}
+        {!noHeader && <Header title={pageTitles[trangHienThi] || "Tổng quan"} />}
         <main className="flex-1 min-h-0 overflow-y-auto">
           <Suspense fallback={<div className="min-h-full" aria-busy="true" />}>
             <Page {...pageProps} />
