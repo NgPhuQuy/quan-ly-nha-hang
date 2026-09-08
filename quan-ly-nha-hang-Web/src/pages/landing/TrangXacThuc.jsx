@@ -10,6 +10,7 @@ import {
   Mail,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
+import { layThongBaoLoi } from "../../utils/apiError";
 
 function TrangXacThuc({
   defaultTab = "login",
@@ -58,8 +59,8 @@ function TrangXacThuc({
           ketQua.thongBao || "Tài khoản hoặc mật khẩu không chính xác!",
         );
       }
-    } catch {
-      setThongBaoLoi("Lỗi kết nối máy chủ. Vui lòng kiểm tra lại backend!");
+    } catch (err) {
+      setThongBaoLoi(layThongBaoLoi(err));
     } finally {
       setLoading(false);
     }
@@ -105,14 +106,12 @@ function TrangXacThuc({
         const loginRes = await dangNhap(regTaiKhoan, regMatKhau);
         onDangNhapThanhCong?.(loginRes.user);
       } else {
-        setTab("login");
-        setTaiKhoan(regTaiKhoan);
         setThongBaoLoi(
           ketQua.thongBao || "Đăng ký thất bại, vui lòng thử lại!",
         );
       }
-    } catch {
-      setThongBaoLoi("Lỗi kết nối máy chủ khi đăng ký!");
+    } catch (err) {
+      setThongBaoLoi(layThongBaoLoi(err));
     } finally {
       setLoading(false);
     }

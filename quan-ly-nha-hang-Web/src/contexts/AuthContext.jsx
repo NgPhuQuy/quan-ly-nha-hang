@@ -7,6 +7,7 @@ import {
 } from "../services/xacThuc.service";
 import { thongTinCuaToi } from "../services/nguoiDung.service";
 import { chuanHoaVaiTro } from "../utils/vaiTro";
+import { layThongBaoLoi } from "../utils/apiError";
 
 const AuthContext = createContext(null);
 
@@ -59,16 +60,21 @@ export function AuthProvider({ children }) {
     } catch (err) {
       return {
         thanhCong: false,
-        thongBao:
-          err.response?.data?.message ||
-          err.response?.data?.thongBao ||
-          "Tài khoản hoặc mật khẩu không chính xác!",
+        thongBao: layThongBaoLoi(err, "Tài khoản hoặc mật khẩu không chính xác!"),
       };
     }
   };
 
   const dangKy = async (duLieu) => {
-    return await authDangKy(duLieu);
+    try {
+      const res = await authDangKy(duLieu);
+      return { thanhCong: true, data: res };
+    } catch (err) {
+      return {
+        thanhCong: false,
+        thongBao: layThongBaoLoi(err, "Đăng ký không thành công!"),
+      };
+    }
   };
 
   const dangXuat = async () => {
