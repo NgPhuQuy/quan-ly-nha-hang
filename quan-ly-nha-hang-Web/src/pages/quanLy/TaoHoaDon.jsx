@@ -11,6 +11,7 @@ import {
   LayoutGrid,
   CreditCard,
   CheckCircle2,
+  Save,
 } from "lucide-react";
 import { layDanhSachBan } from "../../services/banAn.service";
 import { taoHoaDon, thanhToanHoaDon } from "../../services/hoaDon.service";
@@ -23,12 +24,19 @@ const statusBg = {
   "Tạm ngưng": { bg: "#FFFBEB", text: "#D97706" },
 };
 
-function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
+function TaoHoaDon({
+  onNavigate,
+  chi_nhanh = [],
+  selectedBranchId,
+  onSelectBranch,
+}) {
   const [danhSachMonAn, setDanhSachMonAn] = useState([]);
   const [ban, setBan] = useState([]);
 
   // Form states
-  const [selectedMaChiNhanh, setSelectedMaChiNhanh] = useState("");
+  const [selectedMaChiNhanh, setSelectedMaChiNhanh] = useState(
+    () => selectedBranchId || "",
+  );
   const [selectedMaBan, setSelectedMaBan] = useState("");
   const [maDatLich, setMaDatLich] = useState("");
 
@@ -40,14 +48,12 @@ function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (chi_nhanh.length > 0 && !selectedMaChiNhanh) {
-        setSelectedMaChiNhanh(chi_nhanh[0].maChiNhanh);
-      }
-    }, 0);
-
-    return () => clearTimeout(timeoutId);
-  }, [chi_nhanh, selectedMaChiNhanh]);
+    if (selectedBranchId) {
+      setSelectedMaChiNhanh(selectedBranchId);
+    } else if (chi_nhanh.length > 0 && !selectedMaChiNhanh) {
+      setSelectedMaChiNhanh(chi_nhanh[0].maChiNhanh);
+    }
+  }, [selectedBranchId, chi_nhanh, selectedMaChiNhanh]);
 
   // Load danh sách mặt hàng theo chi nhánh đang chọn
   useEffect(() => {
@@ -65,18 +71,27 @@ function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
   // Khi chọn chi nhánh -> load danh sách bàn trống của chi nhánh đó
   useEffect(() => {
     if (selectedMaChiNhanh) {
-      const timeoutId = setTimeout(() => {
-        setSelectedMaBan("");
-      }, 0);
       layDanhSachBan(selectedMaChiNhanh)
         .then((res) => {
-          setBan(Array.isArray(res) ? res : []);
+          const list = Array.isArray(res) ? res : [];
+          setBan(list);
+          const firstTrong = list.find(
+            (t) =>
+              t.trangThai === true || t.trangThai === 1 || t.trangThai === "true",
+          );
+          if (firstTrong) {
+            setSelectedMaBan(firstTrong.maBan);
+          } else if (list.length > 0) {
+            setSelectedMaBan(list[0].maBan);
+          } else {
+            setSelectedMaBan("");
+          }
         })
-        .catch(() => setBan([]));
-
-      return () => clearTimeout(timeoutId);
+        .catch(() => {
+          setBan([]);
+          setSelectedMaBan("");
+        });
     }
-    return undefined;
   }, [selectedMaChiNhanh]);
 
   const loaiTabs = [
@@ -130,7 +145,7 @@ function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
 
   const subTotal = cart.reduce((s, c) => s + c.unitPrice * c.quantity, 0);
 
-  const handleCreate = async () => {
+  const handleSaveInvoice = async (thanhToanNgay = false) => {
     setErrorMsg("");
     if (cart.length === 0) {
       setErrorMsg("Vui lòng chọn ít nhất một món ăn!");
@@ -149,7 +164,10 @@ function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
       return;
     }
     const maDatLichValue = maDatLich.trim() ? Number(maDatLich) : null;
-    if (maDatLichValue !== null && (!Number.isInteger(maDatLichValue) || maDatLichValue <= 0)) {
+    if (
+      maDatLichValue !== null &&
+      (!Number.isInteger(maDatLichValue) || maDatLichValue <= 0)
+    ) {
       setErrorMsg("Mã đặt lịch không hợp lệ!");
       return;
     }
@@ -165,10 +183,16 @@ function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
           soLuong: c.quantity,
         })),
       });
-      await thanhToanHoaDon(hoaDon.maHoaDon);
 
-      setErrorMsg("");
-      setSuccessMsg("Thanh toán thành công!");
+      if (thanhToanNgay) {
+        await thanhToanHoaDon(hoaDon.maHoaDon);
+        setErrorMsg("");
+        setSuccessMsg(`Thanh toán thành công hóa đơn #${hoaDon.maHoaDon}!`);
+      } else {
+        setErrorMsg("");
+        setSuccessMsg(`Đã lưu hóa đơn #${hoaDon.maHoaDon}! (Bàn đang phục vụ)`);
+      }
+
       setTimeout(() => {
         setSuccessMsg("");
         setCart([]);
@@ -218,7 +242,11 @@ function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
             <Building2 size={15} style={{ color: "var(--primary)" }} />
             <select
               value={selectedMaChiNhanh}
-              onChange={(e) => setSelectedMaChiNhanh(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSelectedMaChiNhanh(val);
+                onSelectBranch?.(val);
+              }}
               className="text-xs font-600 border rounded-lg px-2.5 py-1.5 outline-none bg-white focus:ring-2 focus:ring-[var(--primary)]"
               style={{ borderColor: "var(--border)" }}
             >
@@ -377,11 +405,19 @@ function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
                 className="w-full text-xs border rounded-lg px-2.5 py-1.5 outline-none bg-white font-600 focus:ring-2 focus:ring-[var(--primary)]"
                 style={{ borderColor: "var(--border)" }}
               >
-                {ban.map((t) => (
-                  <option key={t.maBan} value={t.maBan}>
-                    {t.soBan} ({t.sucChua} chỗ - {t.trangThai})
-                  </option>
-                ))}
+                <option value="">-- Chọn bàn phục vụ --</option>
+                {ban.map((t) => {
+                  const isTrong =
+                    t.trangThai === true ||
+                    t.trangThai === 1 ||
+                    t.trangThai === "true";
+                  return (
+                    <option key={t.maBan} value={t.maBan}>
+                      {t.soBan || `Bàn ${t.maBan}`}{" "}
+                      ({isTrong ? "Trống" : "Đang phục vụ"})
+                    </option>
+                  );
+                })}
               </select>
             </div>
           </div>
@@ -512,15 +548,33 @@ function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
             </div>
           )}
 
-          <div className="pt-1">
+          <div className="pt-1 flex items-center gap-2">
             <button
-              onClick={handleCreate}
+              type="button"
+              onClick={() => handleSaveInvoice(false)}
               disabled={cart.length === 0 || loading}
-              className="w-full py-2.5 rounded-lg text-xs font-700 text-white transition-opacity disabled:opacity-50 hover:opacity-90 flex items-center justify-center gap-1.5"
+              className="flex-1 py-2.5 px-3 rounded-lg text-xs font-700 border-2 transition-all disabled:opacity-50 hover:bg-amber-50 flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+              style={{
+                borderColor: "var(--primary)",
+                color: "var(--primary)",
+                background: "white",
+              }}
+              title="Lưu hóa đơn và phục vụ bàn, thanh toán khi khách checkout"
+            >
+              <Save size={14} />
+              Lưu hóa đơn
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSaveInvoice(true)}
+              disabled={cart.length === 0 || loading}
+              className="flex-1 py-2.5 px-3 rounded-lg text-xs font-700 text-white transition-opacity disabled:opacity-50 hover:opacity-90 flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
               style={{ background: "var(--primary)" }}
+              title="Thanh toán ngay tại quầy và giải phóng bàn"
             >
               <CreditCard size={14} />
-              Xác nhận thanh toán
+              Thanh toán ngay
             </button>
           </div>
         </div>

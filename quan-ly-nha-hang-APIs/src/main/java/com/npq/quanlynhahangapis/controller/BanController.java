@@ -21,8 +21,8 @@ public class BanController {
     }
 
     @GetMapping("/chi-nhanh/{maChiNhanh}/ban")
-    public ResponseEntity<?> danhSachBanCuaChiNhanh(@PathVariable Integer maChinhanh) {
-        return ResponseEntity.ok(banService.layDSBanCuaChiNhanh(maChinhanh));
+    public ResponseEntity<?> danhSachBanCuaChiNhanh(@PathVariable Integer maChiNhanh) {
+        return ResponseEntity.ok(banService.layDSBanCuaChiNhanh(maChiNhanh));
     }
 
     @GetMapping("/ban/{maBan}")

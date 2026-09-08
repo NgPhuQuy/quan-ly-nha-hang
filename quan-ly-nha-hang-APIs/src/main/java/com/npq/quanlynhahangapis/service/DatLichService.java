@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -164,13 +165,11 @@ public class DatLichService {
     }
 
     private boolean checkQuaGio(DatLich datLich) {
-        if (datLich.getNgay().isBefore(LocalDate.now())) {
-            return true;
-        }
-        if (datLich.getNgay().isEqual(LocalDate.now())) {
-            return datLich.getGio().isBefore(LocalTime.now().minusHours(1));
-        }
-        return false;
+        LocalDateTime thoiGianDat = LocalDateTime.of(
+                datLich.getNgay(),
+                datLich.getGio()
+        );
+        return !LocalDateTime.now().isBefore(thoiGianDat.plusHours(1));
     }
 
     public List<DatLich> danhSachDatLichQuaGio() {

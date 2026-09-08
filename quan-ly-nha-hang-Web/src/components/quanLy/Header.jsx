@@ -1,7 +1,13 @@
-import { Bell, ChevronDown } from "lucide-react";
+import { Bell, ChevronDown, Building2 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 
-function Header({ title }) {
+function Header({
+  title,
+  selectedBranchId,
+  onSelectBranch,
+  chi_nhanh = [],
+  loadingBranches = false,
+}) {
   const { nguoiDung } = useAuth();
   const now = new Date();
   const dateStr = now.toLocaleDateString("vi-VN", {
@@ -41,7 +47,37 @@ function Header({ title }) {
           {dateStr}
         </div>
       </div>
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-center gap-3">
+        {/* Khung chọn chi nhánh */}
+        <div
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold bg-white shadow-xs"
+          style={{
+            borderColor: "var(--border)",
+          }}
+        >
+          <Building2 size={15} style={{ color: "var(--primary)" }} />
+          <select
+            value={selectedBranchId || ""}
+            onChange={(e) => onSelectBranch?.(e.target.value)}
+            disabled={loadingBranches || chi_nhanh.length === 0}
+            className="bg-transparent outline-none cursor-pointer text-xs font-600 pr-1"
+            style={{
+              color: "var(--foreground)",
+            }}
+            title="Chi nhánh đang làm việc"
+          >
+            {loadingBranches && <option value="">Đang tải chi nhánh...</option>}
+            {!loadingBranches && chi_nhanh.length === 0 && (
+              <option value="">Không có chi nhánh</option>
+            )}
+            {chi_nhanh.map((b) => (
+              <option key={b.maChiNhanh} value={b.maChiNhanh}>
+                {b.tenChiNhanh}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <button className="relative w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[var(--secondary)] transition-colors">
           <Bell
             size={15}

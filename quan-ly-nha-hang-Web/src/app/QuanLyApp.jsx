@@ -61,12 +61,31 @@ export default function QuanLyApp({
   const [selectedMaHoaDon, setSelectedMaHoaDon] = useState("");
   const [chiNhanhs, setChiNhanhs] = useState([]);
   const [dangTaiChiNhanh, setDangTaiChiNhanh] = useState(false);
+  const [selectedBranchId, setSelectedBranchId] = useState(() => {
+    try {
+      const saved = localStorage.getItem("selected_branch_id");
+      return saved ? Number(saved) : "";
+    } catch {
+      return "";
+    }
+  });
+
+  const handleSelectBranch = useCallback((branchId) => {
+    const idNum = Number(branchId);
+    setSelectedBranchId(idNum);
+    try {
+      localStorage.setItem("selected_branch_id", String(idNum));
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const taiChiNhanh = useCallback(async () => {
     setDangTaiChiNhanh(true);
     try {
       const data = await layDanhSachChiNhanh();
-      setChiNhanhs(Array.isArray(data) ? data : []);
+      const branches = Array.isArray(data) ? data : [];
+      setChiNhanhs(branches);
     } catch {
       setChiNhanhs([]);
     } finally {
@@ -75,14 +94,29 @@ export default function QuanLyApp({
   }, []);
 
   useEffect(() => {
-    if (!daXacThuc) return undefined;
+    if (chiNhanhs.length > 0) {
+      const exists = chiNhanhs.some(
+        (b) => String(b.maChiNhanh) === String(selectedBranchId),
+      );
+      if (!selectedBranchId || !exists) {
+        const defaultId = chiNhanhs[0].maChiNhanh;
+        setSelectedBranchId(defaultId);
+        try {
+          localStorage.setItem("selected_branch_id", String(defaultId));
+        } catch {
+          // ignore
+        }
+      }
+    }
+  }, [chiNhanhs, selectedBranchId]);
 
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
       taiChiNhanh();
     }, 0);
 
     return () => clearTimeout(timeoutId);
-  }, [daXacThuc, taiChiNhanh]);
+  }, [taiChiNhanh]);
 
   const trangBiCam =
     isPos && ["chi_nhanh", "tai_khoan", "khach_hang"].includes(page);
@@ -118,6 +152,8 @@ export default function QuanLyApp({
     chi_nhanh: chiNhanhs,
     loadingBranches: dangTaiChiNhanh,
     onRefreshBranches: taiChiNhanh,
+    selectedBranchId,
+    onSelectBranch: handleSelectBranch,
     ...(trangHienThi === "chi_tiet_hoa_don" ? { invoiceId: selectedMaHoaDon } : {}),
     ...(trangHienThi === "hoa_don" ? { onSelectInvoice: setSelectedMaHoaDon } : {}),
   };
@@ -135,7 +171,15 @@ export default function QuanLyApp({
         onDangXuat={handleDangXuat}
       />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {!noHeader && <Header title={pageTitles[trangHienThi] || "Tổng quan"} />}
+        {!noHeader && (
+          <Header
+            title={pageTitles[trangHienThi] || "Tổng quan"}
+            selectedBranchId={selectedBranchId}
+            onSelectBranch={handleSelectBranch}
+            chi_nhanh={chiNhanhs}
+            loadingBranches={dangTaiChiNhanh}
+          />
+        )}
         <main className="flex-1 min-h-0 overflow-y-auto">
           <Suspense fallback={<div className="min-h-full" aria-busy="true" />}>
             <Page {...pageProps} />

@@ -84,7 +84,7 @@ function Router() {
     />
   ) : laQuanLy ? (
     <QuanLyApp
-      initialPage={manHinh.split("/")[1] || "tong_quan"}
+      initialPage={(manHinh.split("/")[1] || "tong_quan").replace(/-/g, "_")}
       khuVuc={khuVuc}
       onNavigate={(trangMoi) => dieuHuong(`${khuVuc}/${trangMoi}`)}
       onQuayVeTrangChu={() => dieuHuong("home")}

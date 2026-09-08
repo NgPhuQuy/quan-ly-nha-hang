@@ -18,39 +18,20 @@ export function dinhDangTienRutGon(soTien) {
 }
 
 /**
- * Định dạng ngày (YYYY-MM-DD -> DD/MM/YYYY)
+ * Định dạng ngày bằng stdlib native (DD/MM/YYYY)
  */
-export function dinhDangNgay(ngayStr) {
-  if (!ngayStr) return "";
-  try {
-    const parts = String(ngayStr).slice(0, 10).split("-");
-    if (parts.length === 3) {
-      return `${parts[2]}/${parts[1]}/${parts[0]}`;
-    }
-    return ngayStr;
-  } catch {
-    return ngayStr;
-  }
-}
+export const dinhDangNgay = (d) =>
+  d && !isNaN(new Date(d).getTime())
+    ? new Date(d).toLocaleDateString("vi-VN")
+    : (d || "");
 
 /**
- * Định dạng ngày giờ đầy đủ
+ * Định dạng ngày giờ bằng stdlib native (HH:mm:ss DD/MM/YYYY)
  */
-export function dinhDangNgayGio(ngayGioStr) {
-  if (!ngayGioStr) return "";
-  try {
-    const d = new Date(ngayGioStr);
-    if (isNaN(d.getTime())) return ngayGioStr;
-    const gio = String(d.getHours()).padStart(2, "0");
-    const phut = String(d.getMinutes()).padStart(2, "0");
-    const ngay = String(d.getDate()).padStart(2, "0");
-    const thang = String(d.getMonth() + 1).padStart(2, "0");
-    const nam = d.getFullYear();
-    return `${gio}:${phut} ${ngay}/${thang}/${nam}`;
-  } catch {
-    return ngayGioStr;
-  }
-}
+export const dinhDangNgayGio = (d) =>
+  d && !isNaN(new Date(d).getTime())
+    ? new Date(d).toLocaleString("vi-VN")
+    : (d || "");
 
 /**
  * Lấy nhãn tháng/năm hiện tại (Ví dụ: "Tháng 8/2026")

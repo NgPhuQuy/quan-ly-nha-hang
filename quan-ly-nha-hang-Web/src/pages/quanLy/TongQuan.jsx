@@ -98,7 +98,12 @@ const statusLabel = {
   DANG_XU_LY: "Đang xử lý",
 };
 
-function Dashboard({ onNavigate, chi_nhanh = [] }) {
+function Dashboard({
+  onNavigate,
+  chi_nhanh = [],
+  selectedBranchId,
+  isPos,
+}) {
   const [invoices, setInvoices] = useState([]);
   const [loi, setLoi] = useState(null);
 
@@ -119,20 +124,29 @@ function Dashboard({ onNavigate, chi_nhanh = [] }) {
     taiDuLieu();
   }, []);
 
+  const branchInvoices = useMemo(() => {
+    if (isPos && selectedBranchId) {
+      return invoices.filter(
+        (inv) => String(inv.maChiNhanh) === String(selectedBranchId),
+      );
+    }
+    return invoices;
+  }, [invoices, isPos, selectedBranchId]);
+
   const totalRevenue = useMemo(() => {
-    return invoices
+    return branchInvoices
       .filter((inv) => inv.trangThai === "HOAN_THANH")
       .reduce((sum, inv) => sum + Number(inv.tongTien || 0), 0);
-  }, [invoices]);
+  }, [branchInvoices]);
 
-  const totalInvoices = invoices.length;
+  const totalInvoices = branchInvoices.length;
   const totalIncome = totalRevenue;
   const totalExpense = 0;
   const profit = totalIncome - totalExpense;
 
   const revenueByDay = useMemo(() => {
     const dayMap = {};
-    invoices
+    branchInvoices
       .filter((inv) => inv.trangThai === "HOAN_THANH")
       .forEach((inv) => {
         const dateStr = inv.ngayLapHoaDon
@@ -153,7 +167,7 @@ function Dashboard({ onNavigate, chi_nhanh = [] }) {
       return [{ date: "Hôm nay", revenue: 0 }];
     }
     return entries;
-  }, [invoices]);
+  }, [branchInvoices]);
 
   const revenueByBranch = useMemo(() => {
     return chi_nhanh.map((b) => {
@@ -167,7 +181,7 @@ function Dashboard({ onNavigate, chi_nhanh = [] }) {
     });
   }, [chi_nhanh, invoices]);
 
-  const recentInvoices = invoices.slice(0, 5);
+  const recentInvoices = branchInvoices.slice(0, 5);
 
   return (
     <div className="p-5 flex flex-col gap-4 overflow-y-auto">

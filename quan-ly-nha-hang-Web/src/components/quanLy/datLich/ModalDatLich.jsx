@@ -45,7 +45,11 @@ export function ModalGanBan({
             <option value="">-- Chọn bàn trống --</option>
             {tables.map((t) => (
               <option key={t.maBan} value={t.maBan}>
-                {t.soBan} ({t.sucChua} chỗ - {t.trangThai})
+                {t.soBan || `Bàn ${t.maBan}`} (
+                {t.trangThai === true || t.trangThai === 1 || t.trangThai === "true"
+                  ? "Trống"
+                  : "Đang phục vụ"}
+                )
               </option>
             ))}
           </select>

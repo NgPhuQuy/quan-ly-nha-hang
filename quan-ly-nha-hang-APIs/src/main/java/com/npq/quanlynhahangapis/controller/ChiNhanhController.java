@@ -17,7 +17,7 @@ public class ChiNhanhController {
     private final ChiNhanhService chiNhanhService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('QUAN_LY')")
     public ResponseEntity<?> danhSachChiNhanh() {
         return ResponseEntity.ok(chiNhanhService.layTatCaChiNhanh());
     }

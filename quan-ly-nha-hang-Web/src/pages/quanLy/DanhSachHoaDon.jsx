@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { layDanhSachHoaDon } from "../../services/hoaDon.service";
-import { dinhDangTien } from "../../utils/dinhDang";
+import { dinhDangTien, dinhDangNgayGio } from "../../utils/dinhDang";
 
 const mauTrangThaiHoaDon = {
   HOAN_THANH: {
@@ -9,10 +9,20 @@ const mauTrangThaiHoaDon = {
     text: "var(--success)",
     label: "Hoàn thành",
   },
+  DANG_PHUC_VU: {
+    bg: "#FFFBEB",
+    text: "#D97706",
+    label: "Đang phục vụ",
+  },
   CHO_XU_LY: {
     bg: "var(--warning-bg)",
     text: "var(--warning)",
     label: "Chờ xử lý",
+  },
+  DANG_XU_LY: {
+    bg: "#EFF6FF",
+    text: "#2563EB",
+    label: "Đang xử lý",
   },
   DA_HUY: {
     bg: "var(--danger-bg)",
@@ -23,12 +33,27 @@ const mauTrangThaiHoaDon = {
 
 const PAGE_SIZE = 10;
 
-function DanhSachHoaDon({ chi_nhanh = [], onNavigate, onSelectInvoice }) {
+function DanhSachHoaDon({
+  chi_nhanh = [],
+  onNavigate,
+  onSelectInvoice,
+  selectedBranchId,
+  onSelectBranch,
+  isPos,
+}) {
   const [danh_sach_hoa_don, setdanh_sach_hoa_don] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [branchFilter, setBranchFilter] = useState("");
+  const [branchFilter, setBranchFilter] = useState(() =>
+    isPos && selectedBranchId ? String(selectedBranchId) : "",
+  );
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    if (isPos && selectedBranchId) {
+      setBranchFilter(String(selectedBranchId));
+    }
+  }, [isPos, selectedBranchId]);
 
   useEffect(() => {
     layDanhSachHoaDon()
@@ -107,8 +132,10 @@ function DanhSachHoaDon({ chi_nhanh = [], onNavigate, onSelectInvoice }) {
         <select
           value={branchFilter}
           onChange={(e) => {
-            setBranchFilter(e.target.value);
+            const val = e.target.value;
+            setBranchFilter(val);
             setPage(1);
+            if (val) onSelectBranch?.(val);
           }}
           className={selectStyle}
           style={{
@@ -134,6 +161,7 @@ function DanhSachHoaDon({ chi_nhanh = [], onNavigate, onSelectInvoice }) {
           }}
         >
           <option value="">Tất cả trạng thái</option>
+          <option value="DANG_PHUC_VU">Đang phục vụ</option>
           <option value="HOAN_THANH">Hoàn thành</option>
           <option value="CHO_XU_LY">Chờ xử lý</option>
           <option value="DA_HUY">Đã hủy</option>
@@ -220,7 +248,7 @@ function DanhSachHoaDon({ chi_nhanh = [], onNavigate, onSelectInvoice }) {
                       color: "var(--muted-foreground)",
                     }}
                   >
-                    {inv.ngayLapHoaDon}
+                    {dinhDangNgayGio(inv.ngayLapHoaDon)}
                   </td>
                   <td
                     className="px-4 py-3 text-xs"

@@ -33,10 +33,10 @@ public class BanService {
     }
 
     public List<BanResponse> layDSBanCuaChiNhanh(Integer maChinhanh) {
-        ChiNhanh chiNhanh = chiNhanhService.layChiNhanhTheoId(maChinhanh);
-        Ban ban = Ban.builder().chiNhanh(chiNhanh).build();
-
-        return banRepository.findAll(Example.of(ban)).stream().map(this::chuyenSangDto).toList();
+        return banRepository.findByChiNhanh_MaChiNhanh(maChinhanh)
+                .stream()
+                .map(this::chuyenSangDto)
+                .toList();
     }
 
     public BanResponse chiTietBan(Integer maBan) {

@@ -1,60 +1,48 @@
 import { useState, useEffect, useCallback } from "react";
-import { Users, Plus, Building2, Trash2, Edit2, X } from "lucide-react";
+import {
+  Users,
+  Plus,
+  Building2,
+  X,
+  CheckCircle2,
+  RefreshCw,
+} from "lucide-react";
 import {
   layDanhSachBan,
   doiTrangThaiBan,
   taoBan,
 } from "../../services/banAn.service";
-import apis, { endpoints } from "../../services/apis";
 
-const statusStyle = {
-  Trống: {
-    bg: "var(--success-bg)",
-    border: "#16A34A",
-    text: "var(--success)",
-    dot: "var(--success)",
-  },
-  "Đang phục vụ": {
-    bg: "var(--danger-bg)",
-    border: "#DC2626",
-    text: "var(--danger)",
-    dot: "var(--danger)",
-  },
-  "Đã đặt trước": {
-    bg: "var(--warning-bg)",
-    border: "#D97706",
-    text: "var(--warning)",
-    dot: "var(--warning)",
-  },
+const kiemTraTrong = (trangThai) => {
+  return trangThai === true || trangThai === 1 || trangThai === "true";
 };
 
-const STATUS_OPTIONS = ["Trống", "Đang phục vụ", "Đã đặt trước"];
-
-function Tables({ chi_nhanh = [] }) {
+function Tables({
+  chi_nhanh = [],
+  selectedBranchId: propBranchId,
+  onSelectBranch,
+}) {
   const [tables, setTables] = useState([]);
-  const [selectedBranchId, setSelectedBranchId] = useState("");
+  const [selectedBranchId, setSelectedBranchId] = useState(
+    () => propBranchId || "",
+  );
   const [filter, setFilter] = useState("");
+  const [loadingDoiTrangThai, setLoadingDoiTrangThai] = useState(null);
 
   // Modal State
   const [showModal, setShowModal] = useState(false);
-  const [editingTable, setEditingTable] = useState(null);
   const [thongBaoLoi, setThongBaoLoi] = useState("");
   const [formData, setFormData] = useState({
-    soBan: "",
-    sucChua: 4,
-    trangThai: "Trống",
     maChiNhanh: 1,
   });
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (chi_nhanh.length && !selectedBranchId) {
-        setSelectedBranchId(chi_nhanh[0].maChiNhanh);
-      }
-    }, 0);
-
-    return () => clearTimeout(timeoutId);
-  }, [chi_nhanh, selectedBranchId]);
+    if (propBranchId) {
+      setSelectedBranchId(propBranchId);
+    } else if (chi_nhanh.length && !selectedBranchId) {
+      setSelectedBranchId(chi_nhanh[0].maChiNhanh);
+    }
+  }, [propBranchId, chi_nhanh, selectedBranchId]);
 
   const fetchTables = useCallback(async () => {
     try {
@@ -77,98 +65,62 @@ function Tables({ chi_nhanh = [] }) {
     return undefined;
   }, [selectedBranchId, fetchTables]);
 
-  const handleDoiTrangThaiBan = async (maBan, currentStatus, e) => {
-    if (e) e.stopPropagation();
-    const idx = STATUS_OPTIONS.indexOf(currentStatus);
-    const nextStatus = STATUS_OPTIONS[(idx + 1) % STATUS_OPTIONS.length];
+  const handleDoiTrangThaiBan = async (maBan) => {
+    setLoadingDoiTrangThai(maBan);
     try {
-      await doiTrangThaiBan(maBan, nextStatus);
+      const res = await doiTrangThaiBan(maBan);
       setTables((prev) =>
         prev.map((t) =>
           t.maBan === maBan
             ? {
                 ...t,
-                trangThai: nextStatus,
+                trangThai:
+                  res?.trangThai !== undefined ? res.trangThai : !t.trangThai,
               }
             : t,
         ),
       );
     } catch (err) {
       alert(err.response?.data?.message || "Cập nhật trạng thái bàn thất bại!");
+    } finally {
+      setLoadingDoiTrangThai(null);
     }
   };
 
   const handleOpenAdd = () => {
-    setEditingTable(null);
     setThongBaoLoi("");
     setFormData({
-      soBan: `Bàn ${tables.length + 1}`,
-      sucChua: 4,
-      trangThai: "Trống",
       maChiNhanh: selectedBranchId || (chi_nhanh[0]?.maChiNhanh ?? 1),
     });
     setShowModal(true);
-  };
-
-  const handleOpenEdit = (t, e) => {
-    if (e) e.stopPropagation();
-    setEditingTable(t);
-    setThongBaoLoi("");
-    setFormData({
-      soBan: t.soBan,
-      sucChua: t.sucChua,
-      trangThai: t.trangThai,
-      maChiNhanh: t.maChiNhanh || selectedBranchId || 1,
-    });
-    setShowModal(true);
-  };
-
-  const handleDelete = async (t, e) => {
-    if (e) e.stopPropagation();
-    if (!window.confirm(`Bạn có chắc muốn đổi trạng thái ${t.soBan}?`)) return;
-    try {
-      await doiTrangThaiBan(t.maBan);
-      fetchTables();
-    } catch (err) {
-      alert(err.response?.data?.message || "Lỗi khi đổi trạng thái bàn!");
-    }
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
     setThongBaoLoi("");
     try {
-      if (editingTable) {
-        await apis.put(endpoints.cap_nhat_ban(editingTable.maBan), {
-          ...formData,
-          sucChua: Number(formData.sucChua),
-          maChiNhanh: Number(formData.maChiNhanh),
-        });
-      } else {
-        await taoBan({
-          ...formData,
-          sucChua: Number(formData.sucChua),
-          maChiNhanh: Number(formData.maChiNhanh),
-        });
-      }
+      await taoBan({
+        maChiNhanh: Number(formData.maChiNhanh),
+      });
       setShowModal(false);
       fetchTables();
     } catch (err) {
-      setThongBaoLoi(err.response?.data?.message || "Lỗi khi lưu bàn!");
+      setThongBaoLoi(err.response?.data?.message || "Lỗi khi tạo bàn!");
     }
   };
 
-  const filtered = filter ? tables.filter((t) => t.trangThai === filter) : tables;
-  const counts = tables.reduce(
-    (acc, t) => {
-      acc[t.trangThai] = (acc[t.trangThai] || 0) + 1;
-      return acc;
-    },
-    { Trống: 0, "Đang phục vụ": 0, "Đã đặt trước": 0 },
-  );
+  const trongCount = tables.filter((t) => kiemTraTrong(t.trangThai)).length;
+  const phucVuCount = tables.filter((t) => !kiemTraTrong(t.trangThai)).length;
+
+  const filtered = tables.filter((t) => {
+    if (filter === "TRONG") return kiemTraTrong(t.trangThai);
+    if (filter === "DANG_PHUC_VU") return !kiemTraTrong(t.trangThai);
+    return true;
+  });
 
   return (
     <div className="p-5 flex flex-col gap-4">
+      {/* Tiêu đề & Chọn Chi Nhánh / Thêm Bàn */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2
@@ -195,7 +147,11 @@ function Tables({ chi_nhanh = [] }) {
             <Building2 size={15} style={{ color: "var(--primary)" }} />
             <select
               value={selectedBranchId}
-              onChange={(e) => setSelectedBranchId(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSelectedBranchId(val);
+                onSelectBranch?.(val);
+              }}
               className="text-xs font-600 border rounded-lg px-2.5 py-1.5 outline-none bg-white focus:ring-2 focus:ring-[var(--primary)]"
               style={{ borderColor: "var(--border)" }}
             >
@@ -209,7 +165,7 @@ function Tables({ chi_nhanh = [] }) {
 
           <button
             onClick={handleOpenAdd}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-700 text-white shadow-sm hover:opacity-90 transition-opacity"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-700 text-white shadow-xs hover:opacity-90 transition-opacity cursor-pointer"
             style={{ background: "var(--primary)" }}
           >
             <Plus size={14} /> Thêm bàn
@@ -217,15 +173,16 @@ function Tables({ chi_nhanh = [] }) {
         </div>
       </div>
 
-      {/* Thống kê trạng thái & Bộ lọc */}
+      {/* Thống kê trạng thái & Bộ lọc 2 trạng thái */}
       <div
         className="flex items-center justify-between border-y py-2.5 flex-wrap gap-2"
         style={{ borderColor: "var(--border)" }}
       >
         <div className="flex items-center gap-1.5">
           <button
+            type="button"
             onClick={() => setFilter("")}
-            className="px-3 py-1 rounded-full text-xs font-600 transition-colors"
+            className="px-3.5 py-1.5 rounded-full text-xs font-600 transition-colors cursor-pointer"
             style={{
               background: !filter ? "var(--primary)" : "var(--secondary)",
               color: !filter ? "white" : "var(--secondary-foreground)",
@@ -233,122 +190,161 @@ function Tables({ chi_nhanh = [] }) {
           >
             Tất cả ({tables.length})
           </button>
-          {STATUS_OPTIONS.map((s) => (
-            <button
-              key={s}
-              onClick={() => setFilter(s)}
-              className="px-3 py-1 rounded-full text-xs font-600 transition-colors"
-              style={{
-                background:
-                  filter === s ? "var(--primary)" : "var(--secondary)",
-                color: filter === s ? "white" : "var(--secondary-foreground)",
-              }}
-            >
-              {s} ({counts[s] || 0})
-            </button>
-          ))}
+          <button
+            type="button"
+            onClick={() => setFilter("TRONG")}
+            className="px-3.5 py-1.5 rounded-full text-xs font-600 transition-colors cursor-pointer"
+            style={{
+              background:
+                filter === "TRONG" ? "var(--primary)" : "var(--secondary)",
+              color:
+                filter === "TRONG" ? "white" : "var(--secondary-foreground)",
+            }}
+          >
+            Bàn trống ({trongCount})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter("DANG_PHUC_VU")}
+            className="px-3.5 py-1.5 rounded-full text-xs font-600 transition-colors cursor-pointer"
+            style={{
+              background:
+                filter === "DANG_PHUC_VU"
+                  ? "var(--primary)"
+                  : "var(--secondary)",
+              color:
+                filter === "DANG_PHUC_VU"
+                  ? "white"
+                  : "var(--secondary-foreground)",
+            }}
+          >
+            Đang phục vụ ({phucVuCount})
+          </button>
         </div>
 
-        <div className="flex items-center gap-4 text-xs">
-          {Object.entries(counts).map(([status, count]) => (
-            <div key={status} className="flex items-center gap-1.5">
-              <span
-                className="w-2.5 h-2.5 rounded-full"
-                style={{
-                  background: statusStyle[status]?.dot || "#999",
-                }}
-              />
-              <span style={{ color: "var(--foreground)" }}>{status}:</span>
-              <span className="font-bold">{count}</span>
-            </div>
-          ))}
+        <div className="flex items-center gap-4 text-xs font-semibold">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+            <span style={{ color: "var(--foreground)" }}>Bàn trống:</span>
+            <span className="font-bold text-emerald-600">{trongCount}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+            <span style={{ color: "var(--foreground)" }}>Đang phục vụ:</span>
+            <span className="font-bold text-rose-600">{phucVuCount}</span>
+          </div>
         </div>
       </div>
 
       {/* Sơ đồ danh sách bàn */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
-        {filtered.map((table) => {
-          const s = statusStyle[table.trangThai] || statusStyle["Trống"];
-          return (
-            <div
-              key={table.maBan}
-              onClick={(e) =>
-                handleDoiTrangThaiBan(table.maBan, table.trangThai, e)
-              }
-              className="bg-white rounded-xl border-2 p-3.5 text-left transition-all hover:shadow-md cursor-pointer relative group flex flex-col justify-between"
-              style={{
-                borderColor: s.border,
-              }}
-              title="Nhấn vào thẻ bàn để chuyển đổi trạng thái"
-            >
-              {/* Nút Edit & Delete xuất hiện khi hover */}
-              <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  type="button"
-                  onClick={(e) => handleOpenEdit(table, e)}
-                  className="p-1.5 rounded-lg bg-white/90 hover:bg-amber-100 text-amber-800 shadow-sm transition-all cursor-pointer"
-                  title="Sửa bàn"
-                >
-                  <Edit2 size={16} strokeWidth={2} />
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => handleDelete(table, e)}
-                  className="p-1.5 rounded-lg bg-white/90 hover:bg-red-100 text-red-600 shadow-sm transition-all cursor-pointer"
-                  title="Xóa bàn"
-                >
-                  <Trash2 size={16} strokeWidth={2} />
-                </button>
-              </div>
+      {filtered.length === 0 ? (
+        <div className="text-center py-12 text-gray-400 text-xs font-medium">
+          Không có bàn nào trong chi nhánh hoặc danh mục này.
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+          {filtered.map((table) => {
+            const isTrong = kiemTraTrong(table.trangThai);
+            const tenHienThi = table.soBan || `Bàn ${table.maBan}`;
 
-              <div>
-                <div
-                  className="text-xl font-800 mb-1"
-                  style={{
-                    color: s.text,
-                  }}
-                >
-                  {table.soBan}
-                </div>
-                <div
-                  className="flex items-center gap-1 text-xs mb-2.5 font-medium"
-                  style={{
-                    color: "var(--muted-foreground)",
-                  }}
-                >
-                  <Users size={11} /> {table.sucChua} chỗ
-                </div>
-              </div>
-
-              <span
-                className="text-[11px] px-2 py-0.5 rounded font-700 block text-center"
-                style={{
-                  background: s.bg,
-                  color: s.text,
-                }}
+            return (
+              <div
+                key={table.maBan}
+                className={`group relative bg-white rounded-2xl border-2 p-4 transition-all duration-200 flex flex-col justify-between hover:shadow-md ${
+                  isTrong
+                    ? "border-emerald-200 hover:border-emerald-400"
+                    : "border-rose-200 hover:border-rose-400 bg-rose-50/10"
+                }`}
               >
-                {table.trangThai}
-              </span>
-            </div>
-          );
-        })}
-      </div>
+                {/* Header thẻ: Tên bàn & Trạng thái badge */}
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h3 className="text-base font-bold text-gray-900 leading-tight">
+                      {tenHienThi}
+                    </h3>
+                    <p className="text-[11px] text-gray-400 font-medium mt-0.5">
+                      Mã số: #{table.maBan}
+                    </p>
+                  </div>
 
-      {/* Modal Thêm / Sửa Bàn */}
+                  <span
+                    className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold border ${
+                      isTrong
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : "bg-rose-50 text-rose-700 border-rose-200"
+                    }`}
+                  >
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        isTrong ? "bg-emerald-500" : "bg-rose-500"
+                      }`}
+                    />
+                    {isTrong ? "Trống" : "Đang phục vụ"}
+                  </span>
+                </div>
+
+                {/* Biểu tượng trực quan */}
+                <div className="my-3.5 py-3 px-3 rounded-xl bg-gray-50 flex items-center justify-center gap-2.5 border border-gray-100">
+                  <div
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                      isTrong
+                        ? "bg-emerald-100 text-emerald-600"
+                        : "bg-rose-100 text-rose-600"
+                    }`}
+                  >
+                    {isTrong ? <CheckCircle2 size={18} /> : <Users size={18} />}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-semibold text-gray-700 truncate">
+                      {isTrong ? "Khả dụng" : "Có khách"}
+                    </div>
+                    <div className="text-[10px] text-gray-400 truncate">
+                      {isTrong ? "Sẵn sàng đón khách" : "Đang phục vụ"}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Nút hành động đổi trạng thái */}
+                <button
+                  type="button"
+                  disabled={loadingDoiTrangThai === table.maBan}
+                  onClick={() => handleDoiTrangThaiBan(table.maBan)}
+                  className={`w-full py-1.5 px-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer border ${
+                    isTrong
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                      : "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100"
+                  }`}
+                  title="Nhấn để đổi trạng thái bàn"
+                >
+                  <RefreshCw
+                    size={12}
+                    className={
+                      loadingDoiTrangThai === table.maBan ? "animate-spin" : ""
+                    }
+                  />
+                  {isTrong ? "Đổi: Có khách" : "Đổi: Bàn trống"}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Modal Thêm Bàn Mới */}
       {showModal && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
           <form
             onSubmit={handleSave}
-            className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-3.5 shadow-xl"
+            className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-xl"
           >
             <div className="flex items-center justify-between border-b pb-3">
-              <h3 className="text-sm font-700">
-                {editingTable ? "Sửa Bàn Ăn" : "Thêm Bàn Ăn Mới"}
+              <h3 className="text-sm font-700 text-gray-900">
+                Thêm Bàn Ăn Mới
               </h3>
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 cursor-pointer"
               >
                 <X size={16} />
               </button>
@@ -360,15 +356,18 @@ function Tables({ chi_nhanh = [] }) {
               </div>
             )}
 
-            <div className="space-y-2.5 text-xs">
+            <div className="space-y-3 text-xs">
               <div>
-                <label className="block font-600 mb-1">Chi nhánh:</label>
+                <label className="block font-600 mb-1.5 text-gray-700">
+                  Chi nhánh thêm bàn:
+                </label>
                 <select
                   value={formData.maChiNhanh}
                   onChange={(e) =>
                     setFormData({ ...formData, maChiNhanh: e.target.value })
                   }
-                  className="w-full border rounded-lg p-2 font-medium"
+                  className="w-full border rounded-lg p-2.5 font-medium outline-none bg-white focus:ring-2 focus:ring-[var(--primary)]"
+                  style={{ borderColor: "var(--border)" }}
                 >
                   {chi_nhanh.map((b) => (
                     <option key={b.maChiNhanh} value={b.maChiNhanh}>
@@ -378,69 +377,27 @@ function Tables({ chi_nhanh = [] }) {
                 </select>
               </div>
 
-              <div>
-                <label className="block font-600 mb-1">Số / Tên bàn:</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Ví dụ: Bàn 01, VIP 01..."
-                  value={formData.soBan}
-                  onChange={(e) =>
-                    setFormData({ ...formData, soBan: e.target.value })
-                  }
-                  className="w-full border rounded-lg p-2"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block font-600 mb-1">
-                    Sức chứa (người):
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    required
-                    value={formData.sucChua}
-                    onChange={(e) =>
-                      setFormData({ ...formData, sucChua: e.target.value })
-                    }
-                    className="w-full border rounded-lg p-2"
-                  />
-                </div>
-                <div>
-                  <label className="block font-600 mb-1">Trạng thái:</label>
-                  <select
-                    value={formData.trangThai}
-                    onChange={(e) =>
-                      setFormData({ ...formData, trangThai: e.target.value })
-                    }
-                    className="w-full border rounded-lg p-2"
-                  >
-                    {STATUS_OPTIONS.map((s) => (
-                      <option key={s} value={s}>
-                        {s}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className="p-3 bg-emerald-50/70 border border-emerald-200 rounded-xl text-emerald-800 text-[11px] leading-relaxed">
+                Bàn mới sẽ được tạo tự động với trạng thái{" "}
+                <strong>Trống</strong> (khả dụng) và sẵn sàng phục vụ tại chi
+                nhánh đã chọn.
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t">
+            <div className="flex justify-end gap-2 pt-3 border-t">
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="px-3 py-1.5 rounded-lg text-xs font-600 border"
+                className="px-3 py-1.5 rounded-lg text-xs font-600 border border-gray-200 hover:bg-gray-50 cursor-pointer"
               >
                 Hủy
               </button>
               <button
                 type="submit"
-                className="px-4 py-1.5 rounded-lg text-xs font-700 text-white"
+                className="px-4 py-1.5 rounded-lg text-xs font-700 text-white shadow-xs hover:opacity-95 cursor-pointer"
                 style={{ background: "var(--primary)" }}
               >
-                {editingTable ? "Cập nhật" : "Tạo bàn"}
+                Tạo bàn
               </button>
             </div>
           </form>

@@ -32,10 +32,17 @@ const statusStyle = {
 
 const PAGE_SIZE = 8;
 
-function Bookings({ chi_nhanh = [] }) {
+function Bookings({
+  chi_nhanh = [],
+  selectedBranchId,
+  onSelectBranch,
+  isPos,
+}) {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [branchFilter, setBranchFilter] = useState("");
+  const [branchFilter, setBranchFilter] = useState(() =>
+    isPos && selectedBranchId ? String(selectedBranchId) : "",
+  );
   const [bookings, setBookings] = useState([]);
   const [tables, setTables] = useState([]);
   const [page, setPage] = useState(1);
@@ -47,7 +54,7 @@ function Bookings({ chi_nhanh = [] }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [thongBaoLoi, setThongBaoLoi] = useState("");
   const [formData, setFormData] = useState({
-    maChiNhanh: 1,
+    maChiNhanh: selectedBranchId ? Number(selectedBranchId) : 1,
     hoTen: "",
     soDienThoai: "",
     ngay: new Date().toISOString().slice(0, 10),
@@ -75,17 +82,24 @@ function Bookings({ chi_nhanh = [] }) {
   }, []);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (chi_nhanh.length && !formData.maChiNhanh) {
-        setFormData((prev) => ({
-          ...prev,
-          maChiNhanh: chi_nhanh[0].maChiNhanh,
-        }));
-      }
-    }, 0);
+    if (isPos && selectedBranchId) {
+      setBranchFilter(String(selectedBranchId));
+    }
+  }, [isPos, selectedBranchId]);
 
-    return () => clearTimeout(timeoutId);
-  }, [chi_nhanh, formData.maChiNhanh]);
+  useEffect(() => {
+    if (selectedBranchId) {
+      setFormData((prev) => ({
+        ...prev,
+        maChiNhanh: Number(selectedBranchId),
+      }));
+    } else if (chi_nhanh.length && !formData.maChiNhanh) {
+      setFormData((prev) => ({
+        ...prev,
+        maChiNhanh: chi_nhanh[0].maChiNhanh,
+      }));
+    }
+  }, [chi_nhanh, selectedBranchId]);
 
   const handleOpenCheckIn = (booking) => {
     setCheckInBooking(booking);
@@ -201,8 +215,10 @@ function Bookings({ chi_nhanh = [] }) {
         <select
           value={branchFilter}
           onChange={(e) => {
-            setBranchFilter(e.target.value);
+            const val = e.target.value;
+            setBranchFilter(val);
             setPage(1);
+            if (val) onSelectBranch?.(val);
           }}
           className="text-sm border rounded-lg px-3 py-1.5 outline-none bg-white focus:ring-2 focus:ring-[var(--primary)]"
           style={{ borderColor: "var(--border)" }}
