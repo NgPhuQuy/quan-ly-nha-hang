@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { trichXuatLoi } from "../utils/apiError";
+import { layThongBaoLoi } from "../utils/apiError";
 
 export function useFetch(fetchFn, deps = [], options = {}) {
   const { initialData = null, autoFetch = true } = options;
@@ -7,16 +7,15 @@ export function useFetch(fetchFn, deps = [], options = {}) {
   const [loading, setLoading] = useState(autoFetch);
   const [error, setError] = useState(null);
 
-  const execute = useCallback(async (...args) => {
+  const execute = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const result = await fetchFn(...args);
+      const result = await fetchFn();
       setData(result);
       return result;
     } catch (err) {
-      const thongTinLoi = trichXuatLoi(err);
-      setError(thongTinLoi.message);
+      setError(layThongBaoLoi(err));
       throw err;
     } finally {
       setLoading(false);

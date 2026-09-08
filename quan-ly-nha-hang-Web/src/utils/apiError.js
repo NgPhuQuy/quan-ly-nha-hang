@@ -15,6 +15,7 @@ export const layThongBaoLoi = (error, fallback = 'Đã xảy ra lỗi, vui lòng
   }
 
   // 2. BE da nhan va tra ve JSON chuan
+  const data = error.response?.data;
   if (!data) return "Máy chủ trả về mã lỗi HTTP " + error.response.status;
 
   // Truong hop validation tra ve mang errors

@@ -1,30 +1,27 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import {
   layToken,
-  dangNhap as authDangNhap,
-  dangKy as authDangKy,
   dangXuat as authDangXuat,
 } from "../services/xacThuc.service";
 import { thongTinCuaToi } from "../services/nguoiDung.service";
 import { chuanHoaVaiTro } from "../utils/vaiTro";
-import { layThongBaoLoi } from "../utils/apiError";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [nguoiDung, setNguoiDung] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const taiThongTinNguoiDung = async () => {
     if (layToken()) {
       try {
-        const u = await thongTinCuaToi();
-        setUser(u);
+        const duLieu = await thongTinCuaToi();
+        setNguoiDung(duLieu);
       } catch {
-        setUser(null);
+        setNguoiDung(null);
       }
     } else {
-      setUser(null);
+      setNguoiDung(null);
     }
     setLoading(false);
   };
@@ -33,70 +30,29 @@ export function AuthProvider({ children }) {
     taiThongTinNguoiDung();
   }, []);
 
-  const isAuth = !!user;
-  const role = chuanHoaVaiTro(user?.vaiTro || user?.role);
-  const isAdmin = role === "ADMIN";
-  const isQuanLy = role === "QUANLY";
-  const isNhanVien = ["ADMIN", "QUANLY", "NHANVIEN"].includes(role);
-  const isKhachHang = role === "KHACHHANG" || (!isNhanVien && isAuth);
-
-  const hasRole = (...roles) => {
-    const norm = roles.map(chuanHoaVaiTro);
-    return norm.includes(role);
-  };
-
-  const dangNhap = async (taiKhoan, matKhau) => {
-    try {
-      const res = await authDangNhap(taiKhoan, matKhau);
-      if (res?.token) {
-        if (res.user) {
-          setUser(res.user);
-        } else {
-          await taiThongTinNguoiDung();
-        }
-        return { thanhCong: true, user: res.user };
-      }
-      return { thanhCong: false, thongBao: "Đăng nhập thất bại" };
-    } catch (err) {
-      return {
-        thanhCong: false,
-        thongBao: layThongBaoLoi(err, "Tài khoản hoặc mật khẩu không chính xác!"),
-      };
-    }
-  };
-
-  const dangKy = async (duLieu) => {
-    try {
-      const res = await authDangKy(duLieu);
-      return { thanhCong: true, data: res };
-    } catch (err) {
-      return {
-        thanhCong: false,
-        thongBao: layThongBaoLoi(err, "Đăng ký không thành công!"),
-      };
-    }
-  };
-
   const dangXuat = async () => {
-    await authDangXuat();
-    setUser(null);
+    try {
+      await authDangXuat();
+    } catch {
+      // Bo qua loi dang xuat tu mang
+    }
+    setNguoiDung(null);
   };
+
+  const vaiTro = chuanHoaVaiTro(nguoiDung?.vaiTro || nguoiDung?.role);
+  const isAdmin = vaiTro === "ADMIN";
+  const isNhanVien = ["ADMIN", "QUAN_LY", "NHAN_VIEN"].includes(vaiTro);
 
   return (
     <AuthContext.Provider
       value={{
-        user,
-        setUser,
+        nguoiDung,
+        user: nguoiDung,
+        setUser: setNguoiDung,
         loading,
-        isAuth,
-        role,
+        isAuth: !!nguoiDung,
         isAdmin,
-        isQuanLy,
         isNhanVien,
-        isKhachHang,
-        hasRole,
-        dangNhap,
-        dangKy,
         dangXuat,
         taiLaiThongTin: taiThongTinNguoiDung,
       }}
@@ -106,6 +62,8 @@ export function AuthProvider({ children }) {
   );
 }
 
+// This context file intentionally exports its consumer hook alongside the provider.
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {

@@ -40,8 +40,12 @@ function BranchSection({ onDatBan }) {
 
   useEffect(() => {
     layDanhSachChiNhanh()
-      .then(async (data) => {
-        const danhSach = data || [];
+      .then(async (res) => {
+        const danhSach = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.data)
+            ? res.data
+            : [];
         setChiNhanhs(danhSach);
 
         const today = new Date().toLocaleDateString("en-CA");
@@ -110,7 +114,7 @@ function BranchSection({ onDatBan }) {
 
         {/* Responsive Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch">
-          {chiNhanhs.map((chiNhanh) => {
+          {(Array.isArray(chiNhanhs) ? chiNhanhs : []).map((chiNhanh) => {
             return (
               <article
                 key={chiNhanh.maChiNhanh}

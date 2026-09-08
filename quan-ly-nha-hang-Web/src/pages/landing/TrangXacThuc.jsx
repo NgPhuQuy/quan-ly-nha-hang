@@ -10,6 +10,10 @@ import {
   Mail,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
+import {
+  dangNhap as authDangNhap,
+  dangKy as authDangKy,
+} from "../../services/xacThuc.service";
 import { layThongBaoLoi } from "../../utils/apiError";
 
 function TrangXacThuc({
@@ -17,7 +21,7 @@ function TrangXacThuc({
   onDangNhapThanhCong,
   onQuayVeTrangChu,
 }) {
-  const { dangNhap, dangKy } = useAuth();
+  const { setUser, taiLaiThongTin } = useAuth();
   const [tab, setTab] = useState(defaultTab); // "login" | "register"
 
   // Login form state
@@ -51,16 +55,20 @@ function TrangXacThuc({
     setThongBaoThanhCong("");
 
     try {
-      const ketQua = await dangNhap(taiKhoan, matKhau);
-      if (ketQua.thanhCong) {
-        onDangNhapThanhCong?.(ketQua.user);
-      } else {
-        setThongBaoLoi(
-          ketQua.thongBao || "Tài khoản hoặc mật khẩu không chính xác!",
-        );
+      const res = await authDangNhap(taiKhoan, matKhau);
+      if (res?.token) {
+        if (res.user) {
+          setUser(res.user);
+          onDangNhapThanhCong?.(res.user);
+        } else {
+          await taiLaiThongTin();
+          onDangNhapThanhCong?.();
+        }
       }
     } catch (err) {
-      setThongBaoLoi(layThongBaoLoi(err));
+      setThongBaoLoi(
+        layThongBaoLoi(err, "Tài khoản hoặc mật khẩu không chính xác!"),
+      );
     } finally {
       setLoading(false);
     }
@@ -92,7 +100,7 @@ function TrangXacThuc({
 
     setLoading(true);
     try {
-      const ketQua = await dangKy({
+      await authDangKy({
         ho: regHo,
         ten: regTen,
         taiKhoan: regTaiKhoan,
@@ -101,17 +109,19 @@ function TrangXacThuc({
         soDienThoai: regSdt,
       });
 
-      if (ketQua.thanhCong) {
-        // Tu dong dang nhap truc tiep
-        const loginRes = await dangNhap(regTaiKhoan, regMatKhau);
+      // Dang ky thanh cong -> Tu dong dang nhap
+      const loginRes = await authDangNhap(regTaiKhoan, regMatKhau);
+      if (loginRes?.user) {
+        setUser(loginRes.user);
         onDangNhapThanhCong?.(loginRes.user);
       } else {
-        setThongBaoLoi(
-          ketQua.thongBao || "Đăng ký thất bại, vui lòng thử lại!",
-        );
+        await taiLaiThongTin();
+        onDangNhapThanhCong?.();
       }
     } catch (err) {
-      setThongBaoLoi(layThongBaoLoi(err));
+      setThongBaoLoi(
+        layThongBaoLoi(err, "Đăng ký không thành công, vui lòng thử lại!"),
+      );
     } finally {
       setLoading(false);
     }

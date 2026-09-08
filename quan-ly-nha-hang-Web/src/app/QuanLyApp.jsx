@@ -10,19 +10,17 @@ const DanhSachHoaDon = lazy(() => import("../pages/quanLy/DanhSachHoaDon"));
 const TaoHoaDon = lazy(() => import("../pages/quanLy/TaoHoaDon"));
 const ChiTietHoaDon = lazy(() => import("../pages/quanLy/ChiTietHoaDon"));
 const ThucDon = lazy(() => import("../pages/quanLy/ThucDon"));
-const ThuChi = lazy(() => import("../pages/quanLy/ThuChi"));
 const BaoCao = lazy(() => import("../pages/quanLy/BaoCao"));
 const ChiNhanh = lazy(() => import("../pages/quanLy/ChiNhanh"));
 const TaiKhoan = lazy(() => import("../pages/quanLy/TaiKhoan"));
 const KhachHang = lazy(() => import("../pages/quanLy/KhachHang"));
 const DanhSachBan = lazy(() => import("../pages/quanLy/DanhSachBan"));
 const DatLich = lazy(() => import("../pages/quanLy/DatLich"));
-const KhuyenMai = lazy(() => import("../pages/quanLy/KhuyenMai"));
 const CaiDat = lazy(() => import("../pages/quanLy/CaiDat"));
 
 const pageTitles = {
-  dashboard: "Tổng quan",
-  invoices: "Hóa đơn",
+  bao_cao_tong_quan: "Tổng quan",
+  hoa_don: "Hóa đơn",
   "create-invoice": "Tạo hóa đơn",
   "invoice-detail": "Chi tiết hóa đơn",
   food: "Mặt hàng & Món ăn",
@@ -33,24 +31,21 @@ const pageTitles = {
   users: "Tài khoản",
   customers: "Khách hàng",
   bookings: "Đặt lịch",
-  promotions: "Khuyến mãi",
   settings: "Cài đặt",
 };
 
 const pages = {
-  dashboard: TongQuan,
-  invoices: DanhSachHoaDon,
+  bao_cao_tong_quan: TongQuan,
+  hoa_don: DanhSachHoaDon,
   "create-invoice": TaoHoaDon,
   "invoice-detail": ChiTietHoaDon,
   food: ThucDon,
-  "income-expense": ThuChi,
   reports: BaoCao,
   tables: DanhSachBan,
   branches: ChiNhanh,
   users: TaiKhoan,
   customers: KhachHang,
   bookings: DatLich,
-  promotions: KhuyenMai,
   settings: CaiDat,
 };
 

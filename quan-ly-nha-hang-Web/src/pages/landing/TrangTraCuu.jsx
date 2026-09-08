@@ -1,7 +1,6 @@
 import { useState } from "react";
 import apis, { endpoints } from "../../services/apis";
 import { capNhatTrangThaiDatLich } from "../../services/datLich.service";
-import { layThongBaoLoi } from "../../utils/apiError";
 import {
   ArrowLeft,
   Search,
@@ -79,7 +78,7 @@ function TrangTraCuu({ onQuayLai }) {
       alert("Hủy đặt bàn thành công!");
     } catch (error) {
       console.error("Lỗi khi hủy đặt bàn:", error);
-      alert(layThongBaoLoi(error, "Không thể hủy đặt bàn. Vui lòng liên hệ hotline nhà hàng!"));
+      alert("Không thể hủy đặt bàn. Vui lòng liên hệ hotline nhà hàng!");
     } finally {
       setCancelling(false);
     }

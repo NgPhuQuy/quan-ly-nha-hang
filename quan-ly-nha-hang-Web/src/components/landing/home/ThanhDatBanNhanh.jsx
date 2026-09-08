@@ -38,9 +38,14 @@ function ThanhDatBanNhanh({ onDatBan }) {
 
   useEffect(() => {
     layDanhSachChiNhanh().then((res) => {
-      if (res && res.length) {
-        setBranches(res);
-        setSelectedBranch(res[0].maChiNhanh);
+      const list = Array.isArray(res)
+        ? res
+        : Array.isArray(res?.data)
+          ? res.data
+          : [];
+      if (list.length) {
+        setBranches(list);
+        setSelectedBranch(list[0].maChiNhanh);
       }
     });
   }, []);
