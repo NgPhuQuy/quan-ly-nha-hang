@@ -27,7 +27,7 @@ const statusStyle = {
   },
 };
 
-function Branches({ branches = [], onRefreshBranches }) {
+function Branches({ chi_nhanh = [], onRefreshBranches }) {
   const [search, setSearch] = useState("");
 
   // Modals
@@ -106,7 +106,7 @@ function Branches({ branches = [], onRefreshBranches }) {
     }
   };
 
-  const filtered = branches.filter(
+  const filtered = chi_nhanh.filter(
     (b) =>
       !search ||
       b.tenChiNhanh?.toLowerCase().includes(search.toLowerCase()) ||
@@ -132,7 +132,7 @@ function Branches({ branches = [], onRefreshBranches }) {
               color: "var(--muted-foreground)",
             }}
           >
-            {branches.length} chi nhánh trong hệ thống
+            {chi_nhanh.length} chi nhánh trong hệ thống
           </p>
         </div>
         <button

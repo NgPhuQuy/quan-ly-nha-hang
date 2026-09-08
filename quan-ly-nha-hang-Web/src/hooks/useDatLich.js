@@ -1,16 +1,59 @@
 import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { layDanhSachChiNhanh } from "../services/chiNhanh.service";
 import {
+  layDanhSachMatHangTaiChiNhanh,
   layDanhSachDichVu,
   layDanhSachMonAn,
+  layDanhSachThucUong,
 } from "../services/matHang.service";
 import { taoDatLich } from "../services/datLich.service";
 import apis, { endpoints } from "../services/apis";
 import { useAuth } from "../contexts/AuthContext";
 import { layThongBaoLoi } from "../utils/apiError";
 
+const chuyenPhut = (gio) => {
+  const [gioPhan, phutPhan] = String(gio || "08:00")
+    .split(":")
+    .map(Number);
+  return (gioPhan || 0) * 60 + (phutPhan || 0);
+};
+
+const dinhDangGio = (tongPhut) =>
+  `${String(Math.floor(tongPhut / 60)).padStart(2, "0")}:${String(
+    tongPhut % 60,
+  ).padStart(2, "0")}:00`;
+
+const SO_LUONG_DON_MAC_DINH = 30;
+
+const taoDanhSachKhungGio = (chiNhanh, khungGioDaDat) => {
+  const gioMo = chuyenPhut(chiNhanh?.gioHoatDong || "08:00");
+  const gioDong = chuyenPhut(chiNhanh?.gioDongCua || "21:00");
+  const soLuongMacDinh = SO_LUONG_DON_MAC_DINH;
+  const daDatTheoGio = new Map(
+    (Array.isArray(khungGioDaDat) ? khungGioDaDat : []).map((slot) => [
+      String(slot.gio).slice(0, 5),
+      Number(slot.soLuongConLai),
+    ]),
+  );
+  const danhSach = [];
+
+  for (let gio = gioMo; gio <= gioDong; gio += 30) {
+    const gioHienThi = dinhDangGio(gio);
+    const soLuongConLai = daDatTheoGio.has(gioHienThi.slice(0, 5))
+      ? daDatTheoGio.get(gioHienThi.slice(0, 5))
+      : soLuongMacDinh;
+
+    danhSach.push({ gio: gioHienThi, soLuongConLai });
+  }
+
+  return danhSach;
+};
+
 export function useDatLich(initialValues = null) {
   const { nguoiDung } = useAuth();
+  const hoTenNguoiDung = [nguoiDung?.ho, nguoiDung?.ten]
+    .filter(Boolean)
+    .join(" ");
 
   const layNgayDiaPhuong = (d = new Date()) => {
     const y = d.getFullYear();
@@ -47,7 +90,7 @@ export function useDatLich(initialValues = null) {
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [guestDetails, setGuestDetails] = useState({
-    hoTen: nguoiDung?.hoTen || "",
+    hoTen: hoTenNguoiDung,
     soDienThoai: nguoiDung?.soDienThoai || "",
     email: nguoiDung?.email || "",
     ghiChu: "",
@@ -58,6 +101,7 @@ export function useDatLich(initialValues = null) {
 
   const [branches, setBranches] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
+  const [nhomMenu, setNhomMenu] = useState("ALL");
   const [additionalServices, setAdditionalServices] = useState([]);
   const [timeSlots, setTimeSlots] = useState([]);
 
@@ -65,12 +109,23 @@ export function useDatLich(initialValues = null) {
   const [dangGui, setDangGui] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
+  const taiMenuTheoNhom = useCallback(async (maChiNhanh, nhom) => {
+    const taiTheoNhom = {
+      ALL: layDanhSachMatHangTaiChiNhanh,
+      MON_AN: layDanhSachMonAn,
+      THUC_UONG: layDanhSachThucUong,
+      DICH_VU: layDanhSachDichVu,
+    };
+    const duLieu = await taiTheoNhom[nhom](maChiNhanh);
+    return Array.isArray(duLieu) ? duLieu : [];
+  }, []);
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (nguoiDung) {
         setGuestDetails((prev) => ({
           ...prev,
-          hoTen: prev.hoTen || nguoiDung.hoTen || "",
+          hoTen: prev.hoTen || hoTenNguoiDung,
           soDienThoai: prev.soDienThoai || nguoiDung.soDienThoai || "",
           email: prev.email || nguoiDung.email || "",
         }));
@@ -78,7 +133,7 @@ export function useDatLich(initialValues = null) {
     }, 0);
 
     return () => clearTimeout(timeoutId);
-  }, [nguoiDung]);
+  }, [nguoiDung, hoTenNguoiDung]);
 
   useEffect(() => {
     let isActive = true;
@@ -108,8 +163,8 @@ export function useDatLich(initialValues = null) {
         const numericBranchId =
           Number(String(selectedId).replace(/\D/g, "")) || 1;
 
-        const [monAnRes, dichVuRes, khungGioRes] = await Promise.allSettled([
-          layDanhSachMonAn(numericBranchId),
+        const [menuRes, dichVuRes, khungGioRes] = await Promise.allSettled([
+          taiMenuTheoNhom(numericBranchId, nhomMenu),
           layDanhSachDichVu(numericBranchId),
           date
             ? apis.get(endpoints.khung_gio(numericBranchId, date))
@@ -117,7 +172,7 @@ export function useDatLich(initialValues = null) {
         ]);
 
         if (!isActive) return;
-        if (monAnRes.status === "fulfilled") setMenuItems(monAnRes.value || []);
+        if (menuRes.status === "fulfilled") setMenuItems(menuRes.value || []);
         if (dichVuRes.status === "fulfilled")
           setAdditionalServices(dichVuRes.value || []);
         if (khungGioRes.status === "fulfilled")
@@ -138,7 +193,7 @@ export function useDatLich(initialValues = null) {
       clearTimeout(timeoutId);
       isActive = false;
     };
-  }, []);
+  }, [nhomMenu, taiMenuTheoNhom]);
 
   const isFirstBranchEffect = useRef(true);
   useEffect(() => {
@@ -153,14 +208,14 @@ export function useDatLich(initialValues = null) {
       Number(String(maChiNhanh).replace(/\D/g, "")) || 1;
 
     Promise.allSettled([
-      layDanhSachMonAn(numericBranchId),
+      taiMenuTheoNhom(numericBranchId, nhomMenu),
       layDanhSachDichVu(numericBranchId),
       date
         ? apis.get(endpoints.khung_gio(numericBranchId, date))
         : Promise.resolve({ data: [] }),
-    ]).then(([monAnRes, dichVuRes, khungGioRes]) => {
+    ]).then(([menuRes, dichVuRes, khungGioRes]) => {
       if (!isActive) return;
-      if (monAnRes.status === "fulfilled") setMenuItems(monAnRes.value || []);
+      if (menuRes.status === "fulfilled") setMenuItems(menuRes.value || []);
       if (dichVuRes.status === "fulfilled")
         setAdditionalServices(dichVuRes.value || []);
       if (khungGioRes.status === "fulfilled")
@@ -170,7 +225,7 @@ export function useDatLich(initialValues = null) {
     return () => {
       isActive = false;
     };
-  }, [maChiNhanh]);
+  }, [maChiNhanh, nhomMenu, taiMenuTheoNhom]);
 
   const isFirstDateEffect = useRef(true);
   useEffect(() => {
@@ -198,9 +253,14 @@ export function useDatLich(initialValues = null) {
     };
   }, [date]);
 
-  const selectedBranch = useMemo(
+  const chiNhanhDaChon = useMemo(
     () => branches.find((b) => String(b.maChiNhanh) === String(maChiNhanh)),
     [branches, maChiNhanh],
+  );
+
+  const khungGioHienThi = useMemo(
+    () => taoDanhSachKhungGio(chiNhanhDaChon, timeSlots),
+    [chiNhanhDaChon, timeSlots],
   );
 
   const totalAmount = useMemo(() => {
@@ -242,7 +302,6 @@ export function useDatLich(initialValues = null) {
       maChiNhanh: Number(maChiNhanh) || 1,
       ngay: date,
       gio: selectedTime.length === 5 ? `${selectedTime}:00` : selectedTime,
-      soKhach: Number(guestCount) || 2,
       hoTen: guestDetails.hoTen,
       soDienThoai: guestDetails.soDienThoai,
       email: guestDetails.email,
@@ -275,7 +334,6 @@ export function useDatLich(initialValues = null) {
     maChiNhanh,
     date,
     selectedTime,
-    guestCount,
     guestDetails,
     selectedItems,
     selectedServices,
@@ -289,7 +347,7 @@ export function useDatLich(initialValues = null) {
     setSelectedTime("");
     setSelectedItems([]);
     setGuestDetails({
-      hoTen: nguoiDung?.hoTen || "",
+      hoTen: hoTenNguoiDung,
       soDienThoai: nguoiDung?.soDienThoai || "",
       email: nguoiDung?.email || "",
       ghiChu: "",
@@ -321,10 +379,12 @@ export function useDatLich(initialValues = null) {
     setSelectedServices,
     bookingCode,
     branches,
-    selectedBranch,
+    chiNhanhDaChon,
     menuItems,
     additionalServices,
-    timeSlots,
+    nhomMenu,
+    setNhomMenu,
+    timeSlots: khungGioHienThi,
     totalAmount,
     dangTaiDuLieu,
     dangGui,

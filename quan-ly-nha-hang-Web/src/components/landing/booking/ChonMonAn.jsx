@@ -10,12 +10,13 @@ import {
 
 function MenuSelection({
   menuItems,
+  nhomMenu,
+  setNhomMenu,
   selectedItems,
   setSelectedItems,
   onTiepTuc,
   onQuayLai,
 }) {
-  const [nhom, setNhom] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
   const loaiTabs = [
@@ -26,12 +27,10 @@ function MenuSelection({
   ];
 
   const filteredItems = menuItems.filter((mon) => {
-    const loai = mon.loaiMatHang || "MON_AN";
-    const matchesLoai = nhom === "ALL" || loai === nhom;
     const matchesSearch =
       !searchQuery ||
       mon.tenMatHang?.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesLoai && matchesSearch;
+    return matchesSearch;
   });
 
   const getSoLuong = (maMatHang) =>
@@ -117,9 +116,9 @@ function MenuSelection({
             <button
               key={tab.key}
               type="button"
-              onClick={() => setNhom(tab.key)}
+              onClick={() => setNhomMenu(tab.key)}
               className={`whitespace-nowrap px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                nhom === tab.key
+                nhomMenu === tab.key
                   ? "bg-amber-400 text-black font-bold shadow-md shadow-amber-400/20"
                   : "bg-white/5 text-amber-200/70 border border-white/10 hover:bg-white/10"
               }`}

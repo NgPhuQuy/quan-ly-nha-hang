@@ -5,6 +5,11 @@ export const layDanhSachMatHangTaiChiNhanh = async (maChiNhanh) => {
   return res.data;
 };
 
+export const layDanhSachThucUong = async (maChiNhanh) => {
+  const res = await apis.get(endpoints.thuc_uong(maChiNhanh));
+  return res.data;
+};
+
 export const layChiTietMonAn = async (id) => {
   const res = await apis.get(endpoints.chi_tiet_mon(id));
   return res.data;

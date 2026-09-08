@@ -32,7 +32,7 @@ const statusStyle = {
 
 const PAGE_SIZE = 8;
 
-function Bookings({ branches = [] }) {
+function Bookings({ chi_nhanh = [] }) {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [branchFilter, setBranchFilter] = useState("");
@@ -71,10 +71,10 @@ function Bookings({ branches = [] }) {
   }, []);
 
   useEffect(() => {
-    if (branches.length && !formData.maChiNhanh) {
-      setFormData((prev) => ({ ...prev, maChiNhanh: branches[0].maChiNhanh }));
+    if (chi_nhanh.length && !formData.maChiNhanh) {
+      setFormData((prev) => ({ ...prev, maChiNhanh: chi_nhanh[0].maChiNhanh }));
     }
-  }, [branches, formData.maChiNhanh]);
+  }, [chi_nhanh, formData.maChiNhanh]);
 
   const handleOpenCheckIn = (booking) => {
     setCheckInBooking(booking);
@@ -197,7 +197,7 @@ function Bookings({ branches = [] }) {
           style={{ borderColor: "var(--border)" }}
         >
           <option value="">Tất cả chi nhánh</option>
-          {branches.map((b) => (
+          {chi_nhanh.map((b) => (
             <option key={b.maChiNhanh} value={b.maChiNhanh}>
               {b.tenChiNhanh}
             </option>
@@ -261,7 +261,7 @@ function Bookings({ branches = [] }) {
               paged.map((b) => {
                 const s = statusStyle[b.trangThai] || statusStyle.CHO_XAC_NHAN;
                 const tenCn =
-                  branches.find((br) => br.maChiNhanh === b.maChiNhanh)
+                  chi_nhanh.find((br) => br.maChiNhanh === b.maChiNhanh)
                     ?.tenChiNhanh || `Chi nhánh #${b.maChiNhanh}`;
                 return (
                   <tr
@@ -400,7 +400,7 @@ function Bookings({ branches = [] }) {
         onClose={() => setShowCreateModal(false)}
         formData={formData}
         setFormData={setFormData}
-        branches={branches}
+        chi_nhanh={chi_nhanh}
         onSubmit={handleCreateSubmit}
         thongBaoLoi={thongBaoLoi}
       />

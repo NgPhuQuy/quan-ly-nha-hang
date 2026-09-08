@@ -51,7 +51,7 @@ const tooltipItemStyle = {
   fontSize: "12px",
 };
 
-function Reports({ branches = [] }) {
+function Reports({ chi_nhanh = [] }) {
   const [month, setMonth] = useState(layThangHienTai());
   const [branchFilter, setBranchFilter] = useState("");
   const [invoices, setInvoices] = useState([]);
@@ -120,7 +120,7 @@ function Reports({ branches = [] }) {
   }, [filteredInvoices]);
 
   const revenueByBranch = useMemo(() => {
-    return branches.map((b) => {
+    return chi_nhanh.map((b) => {
       const rev = invoices
         .filter((i) => i.maChiNhanh === b.maChiNhanh && i.trangThai === "HOAN_THANH")
         .reduce((sum, i) => sum + Number(i.tongTien || 0), 0);
@@ -129,7 +129,7 @@ function Reports({ branches = [] }) {
         revenue: rev,
       };
     });
-  }, [branches, invoices]);
+  }, [chi_nhanh, invoices]);
 
   const revenueBySource = useMemo(() => {
     let onlineRev = 0;
@@ -212,7 +212,7 @@ function Reports({ branches = [] }) {
             style={{ borderColor: "var(--border)" }}
           >
             <option value="">Tất cả chi nhánh</option>
-            {branches.map((b) => (
+            {chi_nhanh.map((b) => (
               <option key={b.maChiNhanh} value={b.maChiNhanh}>
                 {b.tenChiNhanh}
               </option>
@@ -529,7 +529,7 @@ function Reports({ branches = [] }) {
           </thead>
           <tbody>
             {filteredInvoices.slice(0, 8).map((inv) => {
-              const chiNhanh = branches.find((b) => b.maChiNhanh === inv.maChiNhanh);
+              const chiNhanh = chi_nhanh.find((b) => b.maChiNhanh === inv.maChiNhanh);
               const tenCN = chiNhanh?.tenChiNhanh || `Chi nhánh #${inv.maChiNhanh}`;
               return (
                 <tr

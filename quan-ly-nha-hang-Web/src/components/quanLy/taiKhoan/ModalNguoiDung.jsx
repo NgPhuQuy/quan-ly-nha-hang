@@ -6,7 +6,7 @@ function ModalNguoiDung({
   editingUser,
   formData,
   setFormData,
-  branches,
+  chi_nhanh,
   onSubmit,
   thongBaoLoi,
 }) {
@@ -135,7 +135,7 @@ function ModalNguoiDung({
                 }
                 className="w-full border rounded-lg p-2 font-medium"
               >
-                {branches.map((b) => (
+                {chi_nhanh.map((b) => (
                   <option key={b.maChiNhanh} value={b.maChiNhanh}>
                     {b.tenChiNhanh}
                   </option>

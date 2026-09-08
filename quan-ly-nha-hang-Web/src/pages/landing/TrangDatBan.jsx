@@ -72,6 +72,7 @@ function TrangDatBan({ onQuayLai }) {
                 )}
                 {datLich.step === 2 && (
                   <ChonKhungGio
+                    chiNhanh={datLich.chiNhanhDaChon}
                     timeSlots={datLich.timeSlots}
                     selectedTime={datLich.selectedTime}
                     setSelectedTime={datLich.setSelectedTime}
@@ -82,6 +83,8 @@ function TrangDatBan({ onQuayLai }) {
                 {datLich.step === 3 && (
                   <ChonMonAn
                     menuItems={datLich.menuItems}
+                    nhomMenu={datLich.nhomMenu}
+                    setNhomMenu={datLich.setNhomMenu}
                     selectedItems={datLich.selectedItems}
                     setSelectedItems={datLich.setSelectedItems}
                     onTiepTuc={() => datLich.setStep(4)}
@@ -104,7 +107,7 @@ function TrangDatBan({ onQuayLai }) {
 
             {/* Sidebar Summary */}
             <TomTatDatBan
-              branch={datLich.selectedBranch}
+              branch={datLich.chiNhanhDaChon}
               date={datLich.date}
               time={datLich.selectedTime}
               guestCount={datLich.guestCount}
@@ -118,7 +121,7 @@ function TrangDatBan({ onQuayLai }) {
           <div key="step-5-confirmation" className="step-transition">
             <XacNhanDatBan
               bookingCode={datLich.bookingCode}
-              branch={datLich.selectedBranch}
+              branch={datLich.chiNhanhDaChon}
               time={datLich.selectedTime}
               date={datLich.date}
               guestCount={datLich.guestCount}

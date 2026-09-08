@@ -116,7 +116,7 @@ export function ModalTaoDatLich({
   onClose,
   formData,
   setFormData,
-  branches,
+  chi_nhanh,
   onSubmit,
   thongBaoLoi,
 }) {
@@ -155,7 +155,7 @@ export function ModalTaoDatLich({
               }
               className="w-full border rounded-lg p-2 font-medium"
             >
-              {branches.map((b) => (
+              {chi_nhanh.map((b) => (
                 <option key={b.maChiNhanh} value={b.maChiNhanh}>
                   {b.tenChiNhanh}
                 </option>

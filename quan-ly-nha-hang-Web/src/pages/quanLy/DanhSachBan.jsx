@@ -30,7 +30,7 @@ const statusStyle = {
 
 const STATUS_OPTIONS = ["Trống", "Đang phục vụ", "Đã đặt trước"];
 
-function Tables({ branches = [] }) {
+function Tables({ chi_nhanh = [] }) {
   const [tables, setTables] = useState([]);
   const [selectedBranchId, setSelectedBranchId] = useState("");
   const [filter, setFilter] = useState("");
@@ -47,10 +47,10 @@ function Tables({ branches = [] }) {
   });
 
   useEffect(() => {
-    if (branches.length && !selectedBranchId) {
-      setSelectedBranchId(branches[0].maChiNhanh);
+    if (chi_nhanh.length && !selectedBranchId) {
+      setSelectedBranchId(chi_nhanh[0].maChiNhanh);
     }
-  }, [branches, selectedBranchId]);
+  }, [chi_nhanh, selectedBranchId]);
 
   const fetchTables = async () => {
     try {
@@ -96,7 +96,7 @@ function Tables({ branches = [] }) {
       soBan: `Bàn ${tables.length + 1}`,
       sucChua: 4,
       trangThai: "Trống",
-      maChiNhanh: selectedBranchId || (branches[0]?.maChiNhanh ?? 1),
+      maChiNhanh: selectedBranchId || (chi_nhanh[0]?.maChiNhanh ?? 1),
     });
     setShowModal(true);
   };
@@ -190,7 +190,7 @@ function Tables({ branches = [] }) {
               className="text-xs font-600 border rounded-lg px-2.5 py-1.5 outline-none bg-white focus:ring-2 focus:ring-[var(--primary)]"
               style={{ borderColor: "var(--border)" }}
             >
-              {branches.map((b) => (
+              {chi_nhanh.map((b) => (
                 <option key={b.maChiNhanh} value={b.maChiNhanh}>
                   {b.tenChiNhanh}
                 </option>
@@ -361,7 +361,7 @@ function Tables({ branches = [] }) {
                   }
                   className="w-full border rounded-lg p-2 font-medium"
                 >
-                  {branches.map((b) => (
+                  {chi_nhanh.map((b) => (
                     <option key={b.maChiNhanh} value={b.maChiNhanh}>
                       {b.tenChiNhanh}
                     </option>

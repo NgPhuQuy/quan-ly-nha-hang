@@ -43,9 +43,9 @@ public class DatLichService {
         NguoiDung nguoiDung = nguoiDungService.layNguoiDungTheoId(maNguoiDung);
         ChiNhanh chiNhanh = chiNhanhService.layChiNhanhTheoId(request.maChiNhanh());
 
-        validateNgayGioDatLich(request, chiNhanh);
-
-        // todo dem so dat lich dua tren gio, va ngay giong thong ke
+        if (validateNgayGioDatLich(request, chiNhanh)){
+            throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
+        }
 
         DatLich datLich = DatLich.builder()
                 .nguoiDung(nguoiDung)
@@ -70,18 +70,10 @@ public class DatLichService {
         return chuyenSangDto(savedDatLich);
     }
 
-    private void validateNgayGioDatLich(DatLichRequest request, ChiNhanh chiNhanh) {
-        if (request.ngay().isBefore(LocalDate.now())) {
-            throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
-        }
-
-        if (request.ngay().isEqual(LocalDate.now()) && request.gio().isBefore(LocalTime.now().plusHours(3))) {
-            throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
-        }
-
-        if (request.gio().isBefore(chiNhanh.getGioHoatDong()) && request.gio().isAfter(chiNhanh.getGioDongCua())) {
-            throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
-        }
+    private boolean validateNgayGioDatLich(DatLichRequest request, ChiNhanh chiNhanh) {
+        return request.ngay().isBefore(LocalDate.now()) ||
+               request.ngay().isEqual(LocalDate.now()) && request.gio().isBefore(LocalTime.now()) ||
+               request.gio().isBefore(chiNhanh.getGioHoatDong()) || request.gio().isAfter(chiNhanh.getGioDongCua());
     }
 
 
@@ -144,7 +136,7 @@ public class DatLichService {
         DatLich datLich = layDatLichTheoId(maDatLich);
         ChiNhanh chiNhanh = chiNhanhService.layChiNhanhTheoId(request.maChiNhanh());
         datLich.setChiNhanh(chiNhanh);
-        validateNgayGioDatLich(request, chiNhanh);
+        if (validateNgayGioDatLich(request, chiNhanh)) throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
         datLich.setNgay(request.ngay());
         datLich.setGio(request.gio());
         datLich.setGhiChu(request.ghiChu());

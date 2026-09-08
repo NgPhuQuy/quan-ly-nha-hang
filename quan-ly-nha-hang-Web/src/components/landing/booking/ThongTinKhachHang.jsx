@@ -15,11 +15,12 @@ import {
   Camera,
 } from "lucide-react";
 
-const getServiceIcon = (id, bieuTuong) => {
-  if (id === "hoa" || (bieuTuong && bieuTuong.includes("🌷"))) return Flower2;
-  if (id === "banh" || (bieuTuong && bieuTuong.includes("🎂"))) return Cake;
-  if (id === "ruou" || (bieuTuong && bieuTuong.includes("🍷"))) return Wine;
-  if (id === "anh" || (bieuTuong && bieuTuong.includes("📸"))) return Camera;
+const getServiceIcon = (service) => {
+  const tenDichVu = service.tenMatHang?.toLowerCase() || "";
+  if (tenDichVu.includes("hoa")) return Flower2;
+  if (tenDichVu.includes("bánh") || tenDichVu.includes("banh")) return Cake;
+  if (tenDichVu.includes("rượu") || tenDichVu.includes("ruou")) return Wine;
+  if (tenDichVu.includes("ảnh") || tenDichVu.includes("anh")) return Camera;
   return Sparkles;
 };
 
@@ -187,15 +188,13 @@ function GuestDetails({
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {additionalServices.map((service) => {
-                const isSelected = selectedServices.includes(service.id);
-                const ServiceIcon = getServiceIcon(
-                  service.id,
-                  service.bieuTuong,
-                );
+                const maDichVu = service.maMatHang;
+                const isSelected = selectedServices.includes(maDichVu);
+                const ServiceIcon = getServiceIcon(service);
                 return (
                   <div
-                    key={service.id}
-                    onClick={() => handleChonDichVu(service.id)}
+                    key={maDichVu}
+                    onClick={() => handleChonDichVu(maDichVu)}
                     className={`cursor-pointer rounded-2xl p-3 border flex items-center justify-between transition-all ${
                       isSelected
                         ? "bg-amber-500/15 border-amber-400 text-amber-100"
@@ -214,11 +213,11 @@ function GuestDetails({
                       </div>
                       <ServiceIcon size={14} className="text-amber-400 shrink-0" />
                       <span className="text-xs font-medium">
-                        {service.ten}
+                        {service.tenMatHang}
                       </span>
                     </div>
                     <span className="font-serif text-xs font-bold text-amber-300">
-                      +{Number(service.gia || 0).toLocaleString("vi-VN")}₫
+                      +{Number(service.giaMatHang || 0).toLocaleString("vi-VN")}₫
                     </span>
                   </div>
                 );

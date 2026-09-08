@@ -101,7 +101,7 @@ export default function QuanLyApp({
 
   const pageProps = {
     onNavigate: khiChuyenTrang,
-    branches: chiNhanhs,
+    chi_nhanh: chiNhanhs,
     loadingBranches: dangTaiChiNhanh,
     onRefreshBranches: taiChiNhanh,
     ...(page === "chi_tiet_hoa_don" ? { invoiceId: selectedMaHoaDon } : {}),

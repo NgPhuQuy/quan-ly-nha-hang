@@ -38,7 +38,7 @@ const statusConfig = {
   },
 };
 
-function InvoiceDetail({ invoiceId, onNavigate, branches = [] }) {
+function InvoiceDetail({ invoiceId, onNavigate, chi_nhanh = [] }) {
   const [invoice, setInvoice] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [loi, setLoi] = useState(null);
@@ -124,7 +124,7 @@ function InvoiceDetail({ invoiceId, onNavigate, branches = [] }) {
     );
   }
 
-  const chiNhanh = branches.find((b) => b.maChiNhanh === invoice.maChiNhanh);
+  const chiNhanh = chi_nhanh.find((b) => b.maChiNhanh === invoice.maChiNhanh);
   const tenChiNhanh = chiNhanh?.tenChiNhanh || `Chi nhánh #${invoice.maChiNhanh}`;
   const statusInfo = statusConfig[invoice.trangThai] || {
     label: invoice.trangThai,

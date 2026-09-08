@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { layDanhSachBan } from "../../services/banAn.service";
 import { taoHoaDon, thanhToanHoaDon } from "../../services/hoaDon.service";
-import { layDanhSachMatHang } from "../../services/matHang.service";
+import { layDanhSachMatHangTaiChiNhanh } from "../../services/matHang.service";
 import { dinhDangTien } from "../../utils/dinhDang";
 
 const statusBg = {
@@ -48,26 +48,34 @@ function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
     return () => clearTimeout(timeoutId);
   }, [chi_nhanh, selectedMaChiNhanh]);
 
-  // Load danh sách mặt hàng
+  // Load danh sách mặt hàng theo chi nhánh đang chọn
   useEffect(() => {
-    layDanhSachMatHang()
+    if (!selectedMaChiNhanh) return undefined;
+
+    layDanhSachMatHangTaiChiNhanh(selectedMaChiNhanh)
       .then((data) => {
         setDanhSachMonAn(Array.isArray(data) ? data : []);
       })
       .catch(() => {
         setDanhSachMonAn([]);
       });
-  }, []);
+  }, [selectedMaChiNhanh]);
 
   // Khi chọn chi nhánh -> load danh sách bàn trống của chi nhánh đó
   useEffect(() => {
     if (selectedMaChiNhanh) {
+      const timeoutId = setTimeout(() => {
+        setSelectedMaBan("");
+      }, 0);
       layDanhSachBan(selectedMaChiNhanh)
         .then((res) => {
           setBan(Array.isArray(res) ? res : []);
         })
         .catch(() => setBan([]));
+
+      return () => clearTimeout(timeoutId);
     }
+    return undefined;
   }, [selectedMaChiNhanh]);
 
   const loaiTabs = [

@@ -1,6 +1,7 @@
 import { Clock, ArrowLeft, ChevronRight } from "lucide-react";
 
 function TimeSelection({
+  chiNhanh,
   timeSlots,
   selectedTime,
   setSelectedTime,
@@ -25,14 +26,18 @@ function TimeSelection({
       <div className="space-y-3 pt-2">
         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-300">
           <Clock className="w-4 h-4 text-amber-400" />
-          <span>Khung Giờ Phục Vụ (08:00 – 22:00)</span>
+          <span>
+            Khung Giờ Phục Vụ ({chiNhanh?.gioHoatDong?.slice(0, 5) || "08:00"} –{" "}
+            {chiNhanh?.gioDongCua?.slice(0, 5) || "21:00"})
+          </span>
         </div>
 
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2.5">
           {timeSlots.map((slot) => {
             const isSelected = selectedTime === slot.gio;
-            const isFull = slot.trangThai === "het";
-            const isScarce = slot.trangThai === "it";
+            const soLuongConLai = Number(slot.soLuongConLai);
+            const isFull = soLuongConLai <= 0;
+            const isCrowded = soLuongConLai < 15;
 
             if (isFull) {
               return (
@@ -41,10 +46,10 @@ function TimeSelection({
                   className="p-3 rounded-xl bg-white/5 border border-white/5 opacity-40 cursor-not-allowed text-center"
                 >
                   <span className="font-mono text-sm font-semibold text-gray-400 block">
-                    {slot.gio}
+                    {slot.gio.slice(0, 5)}
                   </span>
                   <span className="text-[10px] text-red-400 font-medium">
-                    Hết bàn
+                    Hết chỗ
                   </span>
                 </div>
               );
@@ -62,18 +67,18 @@ function TimeSelection({
                 }`}
               >
                 <span className="font-mono text-sm font-bold block">
-                  {slot.gio}
+                  {slot.gio.slice(0, 5)}
                 </span>
                 <span
                   className={`text-[10px] block mt-0.5 ${
                     isSelected
                       ? "text-black font-semibold"
-                      : isScarce
+                      : isCrowded
                         ? "text-amber-400"
                         : "text-emerald-400"
                   }`}
                 >
-                  {isScarce ? "Còn ít bàn" : "Trống bàn"}
+                  {isCrowded ? "Sắp kín chỗ" : "Còn nhiều chỗ"}
                 </span>
               </button>
             );

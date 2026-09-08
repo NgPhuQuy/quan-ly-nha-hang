@@ -45,7 +45,7 @@ const roleStyle = {
   },
 };
 
-function Users({ branches = [] }) {
+function Users({ chi_nhanh = [] }) {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [users, setUsers] = useState([]);
@@ -89,7 +89,7 @@ function Users({ branches = [] }) {
       email: "",
       soDienThoai: "",
       vaiTro: "ROLE_NHAN_VIEN",
-      maChiNhanh: branches[0]?.maChiNhanh || 1,
+      maChiNhanh: chi_nhanh[0]?.maChiNhanh || 1,
       trangThai: true,
     });
     setShowModal(true);
@@ -106,7 +106,7 @@ function Users({ branches = [] }) {
       email: u.email || "",
       soDienThoai: u.soDienThoai || "",
       vaiTro: u.vaiTro || "ROLE_NHAN_VIEN",
-      maChiNhanh: branches[0]?.maChiNhanh || 1,
+      maChiNhanh: chi_nhanh[0]?.maChiNhanh || 1,
       trangThai: u.trangThai,
     });
     setShowModal(true);
@@ -383,7 +383,7 @@ function Users({ branches = [] }) {
         editingUser={editingUser}
         formData={formData}
         setFormData={setFormData}
-        branches={branches}
+        chi_nhanh={chi_nhanh}
         onSubmit={handleSave}
         thongBaoLoi={thongBaoLoi}
       />

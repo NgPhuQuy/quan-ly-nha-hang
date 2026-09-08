@@ -98,7 +98,7 @@ const statusLabel = {
   DANG_XU_LY: "Đang xử lý",
 };
 
-function Dashboard({ onNavigate, branches = [] }) {
+function Dashboard({ onNavigate, chi_nhanh = [] }) {
   const [invoices, setInvoices] = useState([]);
   const [loi, setLoi] = useState(null);
 
@@ -156,7 +156,7 @@ function Dashboard({ onNavigate, branches = [] }) {
   }, [invoices]);
 
   const revenueByBranch = useMemo(() => {
-    return branches.map((b) => {
+    return chi_nhanh.map((b) => {
       const rev = invoices
         .filter((i) => i.maChiNhanh === b.maChiNhanh && i.trangThai === "HOAN_THANH")
         .reduce((sum, i) => sum + Number(i.tongTien || 0), 0);
@@ -165,7 +165,7 @@ function Dashboard({ onNavigate, branches = [] }) {
         revenue: rev,
       };
     });
-  }, [branches, invoices]);
+  }, [chi_nhanh, invoices]);
 
   const recentInvoices = invoices.slice(0, 5);
 
@@ -195,7 +195,7 @@ function Dashboard({ onNavigate, branches = [] }) {
         />
         <DashboardKpiCard
           label="Chi nhánh"
-          value={`${branches.length}`}
+          value={`${chi_nhanh.length}`}
           sub="Chi nhánh hoạt động"
           icon={Building2}
           color="#7C3AED"
@@ -394,7 +394,7 @@ function Dashboard({ onNavigate, branches = [] }) {
             </thead>
             <tbody>
               {recentInvoices.map((inv) => {
-                const chiNhanh = branches.find((b) => b.maChiNhanh === inv.maChiNhanh);
+                const chiNhanh = chi_nhanh.find((b) => b.maChiNhanh === inv.maChiNhanh);
                 const tenCN = chiNhanh?.tenChiNhanh || `Chi nhánh #${inv.maChiNhanh}`;
                 return (
                   <tr
