@@ -1,5 +1,6 @@
 package com.npq.quanlynhahangapis.service;
 
+import com.npq.quanlynhahangapis.dto.request.ChiTietHoaDonRequest;
 import com.npq.quanlynhahangapis.dto.request.HoaDonRequest;
 import com.npq.quanlynhahangapis.dto.response.ChiTietHoaDonResponse;
 import com.npq.quanlynhahangapis.dto.response.DoanhThuTheoNgayResponse;
@@ -72,14 +73,14 @@ public class HoaDonService {
     }
 
     @Transactional
-    public HoaDonResponse chinhSuaHoaDon(Integer maHoaDon, HoaDonRequest request) {
+    public HoaDonResponse goiThemMon(Integer maHoaDon, List<ChiTietHoaDonRequest> request) {
         HoaDon hoaDon = layHoaDonTheoId(maHoaDon);
         if (hoaDon.getTrangThai() == TrangThaiHoaDon.HOAN_THANH) {
             throw new AppException(ErrorCode.FORBIDDEN);
         }
 
-        if (request != null && request.listChiTiet() != null) {
-            chiTietHoaDonService.capNhatDanhSachMon(hoaDon, request.listChiTiet());
+        if (request != null && !request.isEmpty()) {
+            chiTietHoaDonService.goiMon(hoaDon, request);
         }
 
         return chuyenSangDto(hoaDon);
@@ -118,14 +119,12 @@ public class HoaDonService {
         int maKhachHang = 0;
         NguoiDung khachHang = hoaDon.getKhachHang();
         BigDecimal tongTien = chiTietHoaDonService.layTongTien(hoaDon.getMaHoaDon());
-        hoaDon.setTongTien(tongTien != null ? tongTien : BigDecimal.ZERO);
+        hoaDon.setTongTien(tongTien);
         hoaDonRepository.save(hoaDon);
         if (khachHang != null) maKhachHang = khachHang.getMaNguoiDung();
         List<ChiTietHoaDonResponse> listChiTiet = chiTietHoaDonService.danhSachChiTietHoaDon(hoaDon);
-        Integer maBan = hoaDon.getBan() != null ? hoaDon.getBan().getMaBan() : null;
-        Integer maChiNhanh = hoaDon.getBan() != null && hoaDon.getBan().getChiNhanh() != null
-                ? hoaDon.getBan().getChiNhanh().getMaChiNhanh()
-                : null;
+        Integer maBan = hoaDon.getBan().getMaBan();
+        Integer maChiNhanh = hoaDon.getBan().getChiNhanh().getMaChiNhanh();
         return HoaDonResponse.builder()
                 .maHoaDon(hoaDon.getMaHoaDon())
                 .maChiNhanh(maChiNhanh)

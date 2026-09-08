@@ -1,5 +1,6 @@
 package com.npq.quanlynhahangapis.controller;
 
+import com.npq.quanlynhahangapis.dto.request.ChiTietHoaDonRequest;
 import com.npq.quanlynhahangapis.dto.request.HoaDonRequest;
 import com.npq.quanlynhahangapis.service.HoaDonService;
 import jakarta.validation.Valid;
@@ -9,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/hoa-don")
@@ -33,9 +36,9 @@ public class HoaDonController {
         return ResponseEntity.ok(hoaDonService.layChiTietHoaDon(maHoaDon));
     }
 
-    @PatchMapping("/{maHoaDon}")
-    public ResponseEntity<?> chinhSuaHoaDon(@PathVariable Integer maHoaDon, @RequestBody HoaDonRequest request) {
-        return ResponseEntity.ok(hoaDonService.chinhSuaHoaDon(maHoaDon, request));
+    @PostMapping("/{maHoaDon}")
+    public ResponseEntity<?> goiThemMon(@PathVariable Integer maHoaDon, @RequestBody List<ChiTietHoaDonRequest> request) {
+        return ResponseEntity.ok(hoaDonService.goiThemMon(maHoaDon, request));
     }
 
     @PostMapping("/{maHoaDon}/thanh-toan")
