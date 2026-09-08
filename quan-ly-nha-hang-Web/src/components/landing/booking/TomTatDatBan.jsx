@@ -135,7 +135,7 @@ function BookingSummary({
             Dịch vụ bổ sung:
           </div>
           {selectedServices.map((sId) => {
-            const s = additionalServices.find((x) => x.id === sId);
+            const s = additionalServices.find((x) => x.maMatHang === sId);
             if (!s) return null;
             return (
               <div
@@ -143,10 +143,10 @@ function BookingSummary({
                 className="flex items-center justify-between text-[11px] text-amber-200/80"
               >
                 <span>
-                  {s.bieuTuong} {s.ten}
+                  {s.tenMatHang}
                 </span>
                 <span className="font-mono text-amber-200">
-                  {Number(s.gia || 0).toLocaleString("vi-VN")}₫
+                  {Number(s.giaMatHang || 0).toLocaleString("vi-VN")}₫
                 </span>
               </div>
             );

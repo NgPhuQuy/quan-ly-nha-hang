@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Users, Plus, Building2, Trash2, Edit2, X } from "lucide-react";
 import {
   layDanhSachBan,
@@ -47,12 +47,16 @@ function Tables({ chi_nhanh = [] }) {
   });
 
   useEffect(() => {
-    if (chi_nhanh.length && !selectedBranchId) {
-      setSelectedBranchId(chi_nhanh[0].maChiNhanh);
-    }
+    const timeoutId = setTimeout(() => {
+      if (chi_nhanh.length && !selectedBranchId) {
+        setSelectedBranchId(chi_nhanh[0].maChiNhanh);
+      }
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, [chi_nhanh, selectedBranchId]);
 
-  const fetchTables = async () => {
+  const fetchTables = useCallback(async () => {
     try {
       const data = await layDanhSachBan(selectedBranchId || undefined);
       setTables(Array.isArray(data) ? data : []);
@@ -60,13 +64,18 @@ function Tables({ chi_nhanh = [] }) {
       console.warn("Could not fetch tables", err);
       setTables([]);
     }
-  };
+  }, [selectedBranchId]);
 
   useEffect(() => {
     if (selectedBranchId) {
-      fetchTables();
+      const timeoutId = setTimeout(() => {
+        fetchTables();
+      }, 0);
+
+      return () => clearTimeout(timeoutId);
     }
-  }, [selectedBranchId]);
+    return undefined;
+  }, [selectedBranchId, fetchTables]);
 
   const handleDoiTrangThaiBan = async (maBan, currentStatus, e) => {
     if (e) e.stopPropagation();

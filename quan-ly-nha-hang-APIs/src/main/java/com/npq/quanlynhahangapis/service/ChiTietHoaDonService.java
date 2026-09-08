@@ -34,8 +34,8 @@ public class ChiTietHoaDonService {
 
     public List<ChiTietHoaDon> goiMon(HoaDon hoaDon, List<ChiTietHoaDonRequest> requests) {
         List<ChiTietHoaDon> listChiTietHoaDon = new ArrayList<>();
-        for (ChiTietHoaDonRequest request: requests){
-            listChiTietHoaDon.add(taoChiTietHoaDon(hoaDon,request));
+        for (ChiTietHoaDonRequest request : requests) {
+            listChiTietHoaDon.add(taoChiTietHoaDon(hoaDon, request));
         }
         return listChiTietHoaDon;
     }

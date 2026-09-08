@@ -2,9 +2,7 @@ package com.npq.quanlynhahangapis.service;
 
 import com.npq.quanlynhahangapis.dto.request.MatHangRequest;
 import com.npq.quanlynhahangapis.dto.response.MatHangResponse;
-import com.npq.quanlynhahangapis.entity.ChiNhanh;
 import com.npq.quanlynhahangapis.entity.MatHang;
-import com.npq.quanlynhahangapis.entity.TrangThaiMatHangChiNhanh;
 import com.npq.quanlynhahangapis.entity.enums.LoaiMatHang;
 import com.npq.quanlynhahangapis.entity.enums.TrangThaiMatHang;
 import com.npq.quanlynhahangapis.exception.AppException;

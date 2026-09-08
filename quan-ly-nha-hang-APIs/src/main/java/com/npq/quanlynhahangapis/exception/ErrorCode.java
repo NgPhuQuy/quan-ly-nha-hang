@@ -26,7 +26,8 @@ public enum ErrorCode {
     FILE_MUST_BE_IMAGE(400, "File tải lên phải là hình ảnh"),
     FAIL_TO_UPLOAD(400, "Tải ảnh lên thất bại"),
     INVALID_TABLE(400, "Bàn đang đang được phục vụ"),
-    KHONG_THE_HUY_DAT_LICH(400, "Không thể hủy vì đã cận giờ đặt (dưới 2 tiếng). Vui lòng gọi trực tiếp nhà hàng để được hỗ trợ.");
+    KHONG_THE_HUY_DAT_LICH(400, "Không thể hủy vì đã cận giờ đặt (dưới 2 tiếng). Vui lòng gọi trực tiếp nhà hàng để được hỗ trợ."),
+    DAT_LICH_NOT_OWNER(403, "Bạn không thể hủy đặt lịch này vì bạn không phải là người đặt!");
 
     private final int status;
     private final String message;

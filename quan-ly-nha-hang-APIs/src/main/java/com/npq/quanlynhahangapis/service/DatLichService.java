@@ -6,7 +6,10 @@ import com.npq.quanlynhahangapis.dto.request.TrangThaiDatLichRequest;
 import com.npq.quanlynhahangapis.dto.response.DatLichResponse;
 import com.npq.quanlynhahangapis.dto.response.DatTruocResponse;
 import com.npq.quanlynhahangapis.dto.response.KhungGioResponse;
-import com.npq.quanlynhahangapis.entity.*;
+import com.npq.quanlynhahangapis.entity.ChiNhanh;
+import com.npq.quanlynhahangapis.entity.DatLich;
+import com.npq.quanlynhahangapis.entity.DatTruoc;
+import com.npq.quanlynhahangapis.entity.NguoiDung;
 import com.npq.quanlynhahangapis.entity.enums.TrangThaiDatLich;
 import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
@@ -43,7 +46,7 @@ public class DatLichService {
         NguoiDung nguoiDung = nguoiDungService.layNguoiDungTheoId(maNguoiDung);
         ChiNhanh chiNhanh = chiNhanhService.layChiNhanhTheoId(request.maChiNhanh());
 
-        if (validateNgayGioDatLich(request, chiNhanh)){
+        if (validateNgayGioDatLich(request, chiNhanh)) {
             throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
         }
 
@@ -72,11 +75,9 @@ public class DatLichService {
 
     private boolean validateNgayGioDatLich(DatLichRequest request, ChiNhanh chiNhanh) {
         return request.ngay().isBefore(LocalDate.now()) ||
-               request.ngay().isEqual(LocalDate.now()) && request.gio().isBefore(LocalTime.now()) ||
-               request.gio().isBefore(chiNhanh.getGioHoatDong()) || request.gio().isAfter(chiNhanh.getGioDongCua());
+                request.ngay().isEqual(LocalDate.now()) && request.gio().isBefore(LocalTime.now()) ||
+                request.gio().isBefore(chiNhanh.getGioHoatDong()) || request.gio().isAfter(chiNhanh.getGioDongCua());
     }
-
-
 
 
 //    public List<KhungGio> laySoLuongDonTrenGio(Integer maChiNhanh, LocalDate ngay){
@@ -178,9 +179,10 @@ public class DatLichService {
                 .toList();
     }
 
-    public DatLichResponse huyDatLich(Integer maDatLich) {
+    public DatLichResponse huyDatLich(Integer maNguoiDung, Integer maDatLich) {
         DatLich datLich = layDatLichTheoId(maDatLich);
-
+        NguoiDung nguoiDung = nguoiDungService.layNguoiDungTheoId(maNguoiDung);
+        if(!datLich.getNguoiDung().equals(nguoiDung)) throw new AppException(ErrorCode.DAT_LICH_NOT_OWNER);
         if (datLich.getNgay().isEqual(LocalDate.now()) && LocalTime.now().isBefore(datLich.getGio().minusHours(2)))
             throw new AppException(ErrorCode.KHONG_THE_HUY_DAT_LICH);
 

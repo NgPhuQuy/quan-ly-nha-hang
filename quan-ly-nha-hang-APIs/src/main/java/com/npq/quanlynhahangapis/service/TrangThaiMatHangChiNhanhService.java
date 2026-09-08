@@ -10,7 +10,6 @@ import com.npq.quanlynhahangapis.repository.TrangThaiMatHangChiNhanhRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,7 +21,7 @@ public class TrangThaiMatHangChiNhanhService {
 
     public void sinhTrangThaiMatHangMacDinh(ChiNhanh chiNhanh) {
         List<MatHang> listMatHang = matHangRepository.findAll();
-        for (MatHang matHang:listMatHang){
+        for (MatHang matHang : listMatHang) {
             trangThaiMatHangChiNhanhRepository.save(TrangThaiMatHangChiNhanh.builder()
                     .matHang(matHang)
                     .chiNhanh(chiNhanh)
@@ -33,7 +32,7 @@ public class TrangThaiMatHangChiNhanhService {
 
     public void sinhMonAnChiNhanhMacDinh(MatHang matHang) {
         List<ChiNhanh> listChiNhanh = chiNhanhRepository.findAll();
-        for (ChiNhanh chiNhanh:listChiNhanh){
+        for (ChiNhanh chiNhanh : listChiNhanh) {
             trangThaiMatHangChiNhanhRepository.save(TrangThaiMatHangChiNhanh.builder()
                     .matHang(matHang)
                     .chiNhanh(chiNhanh)

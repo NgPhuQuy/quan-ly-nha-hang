@@ -67,13 +67,24 @@ function Bookings({ chi_nhanh = [] }) {
   };
 
   useEffect(() => {
-    fetchBookings();
+    const timeoutId = setTimeout(() => {
+      fetchBookings();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   useEffect(() => {
-    if (chi_nhanh.length && !formData.maChiNhanh) {
-      setFormData((prev) => ({ ...prev, maChiNhanh: chi_nhanh[0].maChiNhanh }));
-    }
+    const timeoutId = setTimeout(() => {
+      if (chi_nhanh.length && !formData.maChiNhanh) {
+        setFormData((prev) => ({
+          ...prev,
+          maChiNhanh: chi_nhanh[0].maChiNhanh,
+        }));
+      }
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, [chi_nhanh, formData.maChiNhanh]);
 
   const handleOpenCheckIn = (booking) => {

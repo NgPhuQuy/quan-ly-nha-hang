@@ -2,7 +2,6 @@ package com.npq.quanlynhahangapis.controller;
 
 import com.npq.quanlynhahangapis.dto.request.BanRequest;
 import com.npq.quanlynhahangapis.service.BanService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

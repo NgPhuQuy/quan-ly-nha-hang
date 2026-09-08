@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/hoa-don")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('QUAN_LY')")
+@PreAuthorize("hasRole('QUAN_LY') or hasRole('ADMIN')")
 public class HoaDonController {
     private final HoaDonService hoaDonService;
 
@@ -23,17 +23,10 @@ public class HoaDonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(hoaDonService.taoHoaDon(maQuanLy, request));
     }
 
-
-//    @GetMapping
-//    public ResponseEntity<?> danhSachHoaDon(
-//            @RequestParam(required = false) Integer maChiNhanh,
-//            @RequestParam(required = false) String nguon,
-//            @RequestParam(required = false) String trangThai,
-//            @RequestParam(required = false) String search
-//    ) {
-//        return ResponseEntity.ok(hoaDonService.layDSHoaDon(maChiNhanh, nguon, trangThai, search));
-//    }
-
+    @GetMapping
+    public ResponseEntity<?> danhSachHoaDon() {
+        return ResponseEntity.ok(hoaDonService.layDSHoaDon());
+    }
 
     @GetMapping("/{maHoaDon}")
     public ResponseEntity<?> chiTietHoaDon(@PathVariable Integer maHoaDon) {
@@ -51,7 +44,6 @@ public class HoaDonController {
     }
 
     @DeleteMapping("/{maHoaDon}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> xoaHoaDon(@PathVariable Integer maHoaDon) {
         hoaDonService.xoaHoaDon(maHoaDon);
         return ResponseEntity.noContent().build();

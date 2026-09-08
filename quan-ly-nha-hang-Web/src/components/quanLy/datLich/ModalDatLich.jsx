@@ -92,7 +92,8 @@ export function ModalMonDatTruoc({ viewPreOrderBooking, onClose }) {
           {viewPreOrderBooking.listDatTruoc.map((item, idx) => (
             <div key={idx} className="flex justify-between items-center pt-2">
               <span className="font-semibold">
-                {item.tenMatHang || `Món #${item.maMatHang}`}
+                {item.matHang?.tenMatHang ||
+                  `Món #${item.matHang?.maMatHang || "không xác định"}`}
               </span>
               <span className="font-bold text-amber-600">×{item.soLuong}</span>
             </div>

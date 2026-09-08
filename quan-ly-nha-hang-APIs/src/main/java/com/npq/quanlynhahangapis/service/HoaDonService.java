@@ -1,8 +1,8 @@
 package com.npq.quanlynhahangapis.service;
 
-import com.npq.quanlynhahangapis.dto.request.ChiTietHoaDonRequest;
 import com.npq.quanlynhahangapis.dto.request.HoaDonRequest;
 import com.npq.quanlynhahangapis.dto.response.ChiTietHoaDonResponse;
+import com.npq.quanlynhahangapis.dto.response.DoanhThuTheoNgayResponse;
 import com.npq.quanlynhahangapis.dto.response.HoaDonResponse;
 import com.npq.quanlynhahangapis.entity.*;
 import com.npq.quanlynhahangapis.entity.enums.Nguon;
@@ -10,15 +10,13 @@ import com.npq.quanlynhahangapis.entity.enums.TrangThaiHoaDon;
 import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
 import com.npq.quanlynhahangapis.repository.BanRepository;
-import com.npq.quanlynhahangapis.repository.ChiTietHoaDonRepository;
 import com.npq.quanlynhahangapis.repository.HoaDonRepository;
-import com.npq.quanlynhahangapis.repository.MatHangRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,12 +60,12 @@ public class HoaDonService {
         ban.setTrangThai(!ban.getTrangThai());
         banRepository.save(ban);
 
-        if (request.maDatLich() != null){
+        if (request.maDatLich() != null) {
             hoaDon.setNguon(Nguon.DAT_LICH);
             ganDatLich(hoaDon, request.maDatLich());
         }
 
-        if (request.listChiTiet()!= null)
+        if (request.listChiTiet() != null)
             savedHoaDon.setListChiTietHoaDon(chiTietHoaDonService.goiMon(hoaDon, request.listChiTiet()));
 
         return chuyenSangDto(hoaDonRepository.save(savedHoaDon));
@@ -82,7 +80,7 @@ public class HoaDonService {
         DatLich datLich = datLichService.layDatLichTheoId(maDatLich);
         List<ChiTietHoaDon> listChiTiet = new ArrayList<>();
 
-        for (DatTruoc datTruoc : datLich.getListDatTruoc()){
+        for (DatTruoc datTruoc : datLich.getListDatTruoc()) {
             listChiTiet.add(chiTietHoaDonService.chuyenDatTruoc_ChiTietHD(datTruoc, hoaDon));
         }
         hoaDon.setListChiTietHoaDon(listChiTiet);
@@ -125,6 +123,24 @@ public class HoaDonService {
                 .build();
     }
 
+    public BigDecimal tongDoanhThuTrongNgay(Integer maChiNhanh, LocalDate ngay) {
+        return hoaDonRepository.tinhTongTienTheoChiNhanhTrongNgay(maChiNhanh, ngay);
+    }
 
+    public Integer soHoaDonBanTrongNgay(Integer maChiNhanh, LocalDate ngay) {
+        return hoaDonRepository.soHoaDonBanTrongNgayTheoTrangThai(maChiNhanh, ngay, TrangThaiHoaDon.HOAN_THANH);
+    }
+
+    public Integer soHoaDonDaHuyTrongNgay(Integer maChiNhanh, LocalDate ngay) {
+        return hoaDonRepository.soHoaDonBanTrongNgayTheoTrangThai(maChiNhanh, ngay, TrangThaiHoaDon.DA_HUY);
+    }
+
+    public BigDecimal trungBinhTrenHoaDon(Integer maChiNhanh, LocalDate ngay) {
+        return hoaDonRepository.trungBinhTrenHoaDon(maChiNhanh, ngay);
+    }
+
+    public List<DoanhThuTheoNgayResponse> layDoanhThuTuNgay_DenNgay(Integer maChiNhanh, LocalDate tuNgay, LocalDate denNgay) {
+        return hoaDonRepository.layDoanhThuTuNgay_DenNgay(maChiNhanh, tuNgay, denNgay);
+    }
 }
 

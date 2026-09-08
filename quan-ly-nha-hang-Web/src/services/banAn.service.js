@@ -1,7 +1,10 @@
 import apis, { endpoints } from "./apis";
 
-export const layDanhSachBan = async () => {
-  const res = await apis.get(endpoints.ban);
+export const layDanhSachBan = async (maChiNhanh) => {
+  const endpoint = maChiNhanh
+    ? endpoints.danh_sach_ban_chi_nhanh(maChiNhanh)
+    : endpoints.ban;
+  const res = await apis.get(endpoint);
   return res.data;
 };
 

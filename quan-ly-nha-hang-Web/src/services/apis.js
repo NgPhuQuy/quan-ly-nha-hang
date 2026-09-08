@@ -79,8 +79,9 @@ export const endpoints = {
   xoa_hoa_don: (maHoaDon) => `/hoa-don/${maHoaDon}`,
 
   // báo cáo POS
-  thong_ke: "/thong-ke",
+  thong_ke: "/thong-ke/theo-ngay",
   thong_ke_theo_ngay: (ngay) => `/thong-ke/theo-ngay?ngay=${ngay}`,
+  thong_ke_theo_khoan: (maChiNhanh, tuNgay, denNgay) => `/thong-ke/theo-khoan?maChiNhanh=${maChiNhanh}&tuNgay=${tuNgay}&denNgay=${denNgay}`,
 
   // báo cáo ADMIN site
   thong_ke_theo_chi_nhanh: "/thong-ke/theo-chi-nhanh",

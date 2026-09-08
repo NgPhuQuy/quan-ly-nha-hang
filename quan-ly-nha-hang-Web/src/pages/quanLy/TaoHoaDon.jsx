@@ -37,6 +37,7 @@ function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -130,25 +131,26 @@ function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
   const subTotal = cart.reduce((s, c) => s + c.unitPrice * c.quantity, 0);
 
   const handleCreate = async () => {
+    setErrorMsg("");
     if (cart.length === 0) {
-      alert("Vui lòng chọn ít nhất một món ăn!");
+      setErrorMsg("Vui lòng chọn ít nhất một món ăn!");
       return;
     }
     if (!selectedMaChiNhanh) {
-      alert("Vui lòng chọn chi nhánh!");
+      setErrorMsg("Vui lòng chọn chi nhánh!");
       return;
     }
     if (!selectedMaBan) {
-      alert("Vui lòng chọn bàn!");
+      setErrorMsg("Vui lòng chọn bàn!");
       return;
     }
     if (cart.some((item) => typeof item.foodId !== "number")) {
-      alert("Danh sách món ăn không hợp lệ!");
+      setErrorMsg("Danh sách món ăn không hợp lệ!");
       return;
     }
     const maDatLichValue = maDatLich.trim() ? Number(maDatLich) : null;
     if (maDatLichValue !== null && (!Number.isInteger(maDatLichValue) || maDatLichValue <= 0)) {
-      alert("Mã đặt lịch không hợp lệ!");
+      setErrorMsg("Mã đặt lịch không hợp lệ!");
       return;
     }
 
@@ -165,6 +167,7 @@ function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
       });
       await thanhToanHoaDon(hoaDon.maHoaDon);
 
+      setErrorMsg("");
       setSuccessMsg("Thanh toán thành công!");
       setTimeout(() => {
         setSuccessMsg("");
@@ -172,7 +175,10 @@ function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
         onNavigate("hoa_don");
       }, 1000);
     } catch (e) {
-      alert(e.response?.data?.message || "Có lỗi xảy ra khi tạo hóa đơn! Vui lòng thử lại.");
+      setErrorMsg(
+        e.response?.data?.message ||
+          "Có lỗi xảy ra khi tạo hóa đơn! Vui lòng thử lại.",
+      );
     } finally {
       setLoading(false);
     }
@@ -497,6 +503,12 @@ function TaoHoaDon({ onNavigate, chi_nhanh = [] }) {
             <div className="flex items-center gap-1.5 justify-center text-xs font-700 text-green-700 bg-green-50 py-2 rounded-lg border border-green-200">
               <CheckCircle2 size={14} />
               {successMsg}
+            </div>
+          )}
+
+          {errorMsg && (
+            <div className="flex items-center justify-center text-xs font-600 text-red-700 bg-red-50 py-2 rounded-lg border border-red-200 text-center">
+              {errorMsg}
             </div>
           )}
 

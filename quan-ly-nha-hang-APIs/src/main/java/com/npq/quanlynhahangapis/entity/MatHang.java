@@ -1,7 +1,6 @@
 package com.npq.quanlynhahangapis.entity;
 
 import com.npq.quanlynhahangapis.entity.enums.LoaiMatHang;
-import com.npq.quanlynhahangapis.entity.enums.TrangThaiMatHang;
 import jakarta.persistence.*;
 import lombok.*;
 

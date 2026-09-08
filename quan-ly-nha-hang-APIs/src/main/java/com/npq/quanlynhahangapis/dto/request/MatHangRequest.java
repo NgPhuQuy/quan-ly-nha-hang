@@ -1,8 +1,6 @@
 package com.npq.quanlynhahangapis.dto.request;
 
 import com.npq.quanlynhahangapis.entity.enums.LoaiMatHang;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

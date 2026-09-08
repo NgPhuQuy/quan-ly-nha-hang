@@ -10,5 +10,6 @@ import java.util.List;
 public interface TrangThaiMatHangChiNhanhRepository extends
         JpaRepository<TrangThaiMatHangChiNhanh, MaTrangThaiMatHangChiNhanh> {
     List<TrangThaiMatHangChiNhanh> findByChiNhanh_MaChiNhanhAndTrangThaiMatHang(Integer maChiNhanh, TrangThaiMatHang trangThaiMatHang);
+
     List<TrangThaiMatHangChiNhanh> findByChiNhanh_MaChiNhanhAndMatHang_MaMatHangAndTrangThaiMatHang(Integer maChiNhanh, Integer maMatHang, TrangThaiMatHang trangThaiMatHang);
 }
