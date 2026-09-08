@@ -29,7 +29,7 @@ export const doiTrangThaiChiNhanh = async (id) => {
   return res.data;
 };
 
-export const xoaChiNhanh = async (id) => {
-  const res = await apis.delete(endpoints.xoa_chi_nhanh(id));
+export const layKhungGio = async (maChiNhanh, ngay) => {
+  const res = await apis.get(endpoints.khung_gio(maChiNhanh, ngay));
   return res.data;
 };

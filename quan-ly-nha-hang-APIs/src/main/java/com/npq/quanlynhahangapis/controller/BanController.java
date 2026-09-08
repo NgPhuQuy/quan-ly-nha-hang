@@ -36,11 +36,6 @@ public class BanController {
         return ResponseEntity.status(HttpStatus.CREATED).body(banService.taoBan(request));
     }
 
-    @PutMapping("/ban/{maBan}")
-    public ResponseEntity<?> capNhatBan(@PathVariable Integer maBan, @RequestBody @Valid BanRequest request) {
-        return ResponseEntity.ok(banService.capNhatBan(maBan, request));
-    }
-
     @PatchMapping("/ban/{maBan}/trang-thai")
     public ResponseEntity<?> doiTrangThaiBan(@PathVariable Integer maBan) {
         return ResponseEntity.ok(banService.doiTrangThaiBan(maBan));

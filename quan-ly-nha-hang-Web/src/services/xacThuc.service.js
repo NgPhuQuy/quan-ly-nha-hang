@@ -2,52 +2,25 @@ import cookies from "react-cookies";
 import apis, { endpoints } from "./apis";
 
 export const layToken = () => {
-  return cookies.load("token") || null;
+  return cookies.load("token");
 };
 
 export const dangNhap = async (taiKhoan, matKhau) => {
-  try {
-    const res = await apis.post(endpoints.login, {
-      taiKhoan: taiKhoan.trim(),
-      matKhau: matKhau.trim(),
-    });
-
-    const token = res.data.token;
-    if (token) {
-      cookies.save("token", token);
-      return { thanhCong: true, token };
-    }
-  } catch (error) {
-    const msg = error.response.data.message;
-    return { thanhCong: false, thongBao: msg };
-  }
+  const res = await apis.post(endpoints.dang_nhap, { taiKhoan, matKhau });
+  const token = res.data.token;
+  cookies.save("token", token, { path: "/" });
+  return res.data;
 };
 
 export const dangKy = async (duLieu) => {
-  try {
-    const res = await apis.post(endpoints.register, {
-      taiKhoan: duLieu.taiKhoan,
-      matKhau: duLieu.matKhau,
-      ho: duLieu.ho,
-      ten: duLieu.ten,
-      email: duLieu.email,
-      soDienThoai: duLieu.soDienThoai,
-    });
-
-    return { thanhCong: true, duLieu: res.data };
-  } catch (error) {
-    const msg = error.response.data.message;
-    return { thanhCong: false, thongBao: msg };
-  }
+  const res = await apis.post(endpoints.dang_ky, duLieu);
+  return res.data;
 };
 
 export const dangXuat = async () => {
-  try {
-    await apis.post(endpoints.logout);
-  } catch (error) {
-    console.error("Lỗi khi đăng xuất:", error);
-  }
+  const res = await apis.post(endpoints.dang_xuat);
   cookies.remove("token", { path: "/" });
+  return res.data;
 };
 
 export const isDaDangNhap = () => {

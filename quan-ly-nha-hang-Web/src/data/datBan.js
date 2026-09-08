@@ -135,17 +135,4 @@ export const DIP_DAT_BAN = [
   { id: "giaDinh", ten: "Tiệc gia đình" },
 ];
 
-export const KHUNG_GIO = [
-  { gio: "11:00", trangThai: "con" },
-  { gio: "11:30", trangThai: "con" },
-  { gio: "12:00", trangThai: "it" },
-  { gio: "12:30", trangThai: "het" },
-  { gio: "17:30", trangThai: "con" },
-  { gio: "18:00", trangThai: "con" },
-  { gio: "18:30", trangThai: "it" },
-  { gio: "19:00", trangThai: "con" },
-  { gio: "19:30", trangThai: "het" },
-  { gio: "20:00", trangThai: "con" },
-  { gio: "20:30", trangThai: "it" },
-  { gio: "21:00", trangThai: "con" },
-];
+

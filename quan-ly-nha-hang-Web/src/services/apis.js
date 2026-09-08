@@ -32,10 +32,10 @@ apis.interceptors.response.use(
 export const authApis = () => apis;
 
 export const endpoints = {
-  login: "/auth/login",
-  logout: "/auth/logout",
-  auth_me: "/auth/me",
-  register: "/users",
+  dang_nhap: "/auth/login",
+  dang_xuat: "/auth/logout",
+  thong_tin_cua_toi: "/auth/me",
+  dang_ky: "/users",
   users: "/users",
   chi_tiet_nguoi_dung: (maNguoiDung) => `/users/${maNguoiDung}`,
   doi_trang_thai_nguoi_dung: (maNguoiDung) => `/users/${maNguoiDung}/trang-thai`,
@@ -56,6 +56,7 @@ export const endpoints = {
   chi_tiet_mat_hang: (maMatHang) => `/mat-hang/${maMatHang}`,
   cap_nhat_mat_hang: (maMatHang) => `/mat-hang/${maMatHang}`,
   xoa_mat_hang: (maMatHang) => `/mat-hang/${maMatHang}`,
+  mat_hang_theo_chi_nhanh: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/mat-hang`,
   mon_an: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/mon-an`,
   thuc_uong: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/thuc-uong`,
   dich_vu: (maChiNhanh) => `/chi-nhanh/${maChiNhanh}/dich-vu`,
@@ -70,7 +71,7 @@ export const endpoints = {
   khung_gio: (maChiNhanh, ngay) => `/dat-lich/khung-gio?maChiNhanh=${maChiNhanh}&ngay=${ngay}`,
 
   // Hóa đơn & POS
-  invoices: "/hoa-don",
+  hoa_don: "/hoa-don",
   chi_tiet_hoa_don: (maHoaDon) => `/hoa-don/${maHoaDon}`,
   thanh_toan_hoa_don: (maHoaDon) => `/hoa-don/${maHoaDon}/thanh-toan`,
   huy_hoa_don: (maHoaDon) => `/hoa-don/${maHoaDon}/huy`,
