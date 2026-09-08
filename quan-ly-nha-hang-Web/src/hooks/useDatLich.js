@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { layDanhSachChiNhanh } from "../services/chiNhanh.service";
 import {
   layDanhSachMatHangTaiChiNhanh,
@@ -30,7 +30,7 @@ const taoDanhSachKhungGio = (chiNhanh, khungGioDaDat) => {
   const gioDong = chuyenPhut(chiNhanh?.gioDongCua || "21:00");
   const soLuongMacDinh = SO_LUONG_DON_MAC_DINH;
   const daDatTheoGio = new Map(
-    (Array.isArray(khungGioDaDat) ? khungGioDaDat : []).map((slot) => [
+    khungGioDaDat.map((slot) => [
       String(slot.gio).slice(0, 5),
       Number(slot.soLuongConLai),
     ]),
@@ -99,11 +99,11 @@ export function useDatLich(initialValues = null) {
   const [selectedServices, setSelectedServices] = useState([]);
   const [bookingCode, setBookingCode] = useState("");
 
-  const [branches, setBranches] = useState([]);
-  const [menuItems, setMenuItems] = useState([]);
+  const [chi_nhanh, setChiNhanh] = useState([]);
+  const [danhSachMonAn, setDanhSachMonAn] = useState([]);
   const [nhomMenu, setNhomMenu] = useState("ALL");
-  const [additionalServices, setAdditionalServices] = useState([]);
-  const [timeSlots, setTimeSlots] = useState([]);
+  const [dichVuBoSung, setDichVuBoSung] = useState([]);
+  const [khungGio, setKhungGio] = useState([]);
 
   const [dangTaiDuLieu, setDangTaiDuLieu] = useState(false);
   const [dangGui, setDangGui] = useState(false);
@@ -117,7 +117,7 @@ export function useDatLich(initialValues = null) {
       DICH_VU: layDanhSachDichVu,
     };
     const duLieu = await taiTheoNhom[nhom](maChiNhanh);
-    return Array.isArray(duLieu) ? duLieu : [];
+    return duLieu;
   }, []);
 
   useEffect(() => {
@@ -137,75 +137,39 @@ export function useDatLich(initialValues = null) {
 
   useEffect(() => {
     let isActive = true;
-    const khoiTao = async () => {
+
+    const taiChiNhanh = async () => {
       try {
-        const dsChiNhanh = await layDanhSachChiNhanh();
+        const danhSach = await layDanhSachChiNhanh();
         if (!isActive) return;
 
-        const danhSach = Array.isArray(dsChiNhanh)
-          ? dsChiNhanh
-          : Array.isArray(dsChiNhanh?.data)
-            ? dsChiNhanh.data
-            : [];
-        setBranches(danhSach);
-
-        const selectedId =
-          maChiNhanh ||
-          savedBooking?.branchId ||
-          savedBooking?.maChiNhanh ||
-          danhSach[0]?.maChiNhanh ||
-          "";
-
-        if (!maChiNhanh && selectedId) {
-          setMaChiNhanh(selectedId);
+        setChiNhanh(danhSach);
+        if (!maChiNhanh && danhSach[0]?.maChiNhanh) {
+          setMaChiNhanh(danhSach[0].maChiNhanh);
         }
-
-        const numericBranchId =
-          Number(String(selectedId).replace(/\D/g, "")) || 1;
-
-        const [menuRes, dichVuRes, khungGioRes] = await Promise.allSettled([
-          taiMenuTheoNhom(numericBranchId, nhomMenu),
-          layDanhSachDichVu(numericBranchId),
-          date
-            ? apis.get(endpoints.khung_gio(numericBranchId, date))
-            : Promise.resolve({ data: [] }),
-        ]);
-
-        if (!isActive) return;
-        if (menuRes.status === "fulfilled") setMenuItems(menuRes.value || []);
-        if (dichVuRes.status === "fulfilled")
-          setAdditionalServices(dichVuRes.value || []);
-        if (khungGioRes.status === "fulfilled")
-          setTimeSlots(khungGioRes.value?.data || []);
       } catch (err) {
-        console.error("Lỗi tải dữ liệu khởi tạo:", err);
-      } finally {
-        if (isActive) setDangTaiDuLieu(false);
+        console.error("Lỗi tải danh sách chi nhánh:", err);
       }
     };
 
     const timeoutId = setTimeout(() => {
-      setDangTaiDuLieu(true);
-      khoiTao();
+      taiChiNhanh();
     }, 0);
 
     return () => {
-      clearTimeout(timeoutId);
       isActive = false;
+      clearTimeout(timeoutId);
     };
-  }, [nhomMenu, taiMenuTheoNhom]);
+  }, [maChiNhanh]);
 
-  const isFirstBranchEffect = useRef(true);
   useEffect(() => {
-    if (isFirstBranchEffect.current) {
-      isFirstBranchEffect.current = false;
-      return;
-    }
-    if (!maChiNhanh) return;
+    if (!maChiNhanh) return undefined;
 
     let isActive = true;
-    const numericBranchId =
-      Number(String(maChiNhanh).replace(/\D/g, "")) || 1;
+    const loadingTimeoutId = setTimeout(() => {
+      setDangTaiDuLieu(true);
+    }, 0);
+    const numericBranchId = Number(maChiNhanh);
 
     Promise.allSettled([
       taiMenuTheoNhom(numericBranchId, nhomMenu),
@@ -215,91 +179,67 @@ export function useDatLich(initialValues = null) {
         : Promise.resolve({ data: [] }),
     ]).then(([menuRes, dichVuRes, khungGioRes]) => {
       if (!isActive) return;
-      if (menuRes.status === "fulfilled") setMenuItems(menuRes.value || []);
+      if (menuRes.status === "fulfilled") setDanhSachMonAn(menuRes.value);
       if (dichVuRes.status === "fulfilled")
-        setAdditionalServices(dichVuRes.value || []);
+        setDichVuBoSung(dichVuRes.value);
       if (khungGioRes.status === "fulfilled")
-        setTimeSlots(khungGioRes.value?.data || []);
+        setKhungGio(khungGioRes.value.data);
+      setDangTaiDuLieu(false);
     });
 
     return () => {
       isActive = false;
+      clearTimeout(loadingTimeoutId);
     };
-  }, [maChiNhanh, nhomMenu, taiMenuTheoNhom]);
-
-  const isFirstDateEffect = useRef(true);
-  useEffect(() => {
-    if (isFirstDateEffect.current) {
-      isFirstDateEffect.current = false;
-      return;
-    }
-    if (!maChiNhanh || !date) return;
-
-    let isActive = true;
-    const numericBranchId =
-      Number(String(maChiNhanh).replace(/\D/g, "")) || 1;
-
-    apis
-      .get(endpoints.khung_gio(numericBranchId, date))
-      .then((res) => {
-        if (isActive) setTimeSlots(res.data || []);
-      })
-      .catch(() => {
-        if (isActive) setTimeSlots([]);
-      });
-
-    return () => {
-      isActive = false;
-    };
-  }, [date]);
+  }, [maChiNhanh, date, nhomMenu, taiMenuTheoNhom]);
 
   const chiNhanhDaChon = useMemo(
-    () => branches.find((b) => String(b.maChiNhanh) === String(maChiNhanh)),
-    [branches, maChiNhanh],
+    () => chi_nhanh.find((b) => String(b.maChiNhanh) === String(maChiNhanh)),
+    [chi_nhanh, maChiNhanh],
   );
 
   const khungGioHienThi = useMemo(
-    () => taoDanhSachKhungGio(chiNhanhDaChon, timeSlots),
-    [chiNhanhDaChon, timeSlots],
+    () => taoDanhSachKhungGio(chiNhanhDaChon, khungGio),
+    [chiNhanhDaChon, khungGio],
   );
 
   const totalAmount = useMemo(() => {
     const tienMonAn = selectedItems.reduce((total, item) => {
-      const mon = menuItems.find(
-        (m) => m.maMatHang === (item.maMatHang || item.monAnId),
+      const mon = danhSachMonAn.find(
+        (m) => m.maMatHang === item.maMatHang,
       );
       const donGia = mon?.giaMatHang ?? item.giaMatHang ?? item.gia ?? 0;
       return total + Number(donGia) * item.soLuong;
     }, 0);
 
     const tienDichVu = selectedServices.reduce((total, serviceId) => {
-      const dv = additionalServices.find(
-        (s) => (s.maMatHang || s.id) === serviceId,
+      const dv = dichVuBoSung.find(
+        (s) => s.maMatHang === serviceId,
       );
       const donGia = dv?.giaMatHang ?? dv?.gia ?? 0;
       return total + Number(donGia);
     }, 0);
 
     return tienMonAn + tienDichVu;
-  }, [selectedItems, menuItems, selectedServices, additionalServices]);
+  }, [selectedItems, danhSachMonAn, selectedServices, dichVuBoSung]);
 
   const handleDatLich = useCallback(async () => {
     setDangGui(true);
     setSubmitError("");
 
     const preorderedItems = [
-      ...(selectedItems || []).map((item) => ({
-        maMatHang: Number(item.maMatHang || item.monAnId),
-        soLuong: Number(item.soLuong) || 1,
+      ...selectedItems.map((item) => ({
+        maMatHang: Number(item.maMatHang),
+        soLuong: Number(item.soLuong),
       })),
-      ...(selectedServices || []).map((serviceId) => ({
+      ...selectedServices.map((serviceId) => ({
         maMatHang: Number(serviceId),
         soLuong: 1,
       })),
     ].filter((item) => item.maMatHang && item.soLuong > 0);
 
     const payload = {
-      maChiNhanh: Number(maChiNhanh) || 1,
+      maChiNhanh: Number(maChiNhanh),
       ngay: date,
       gio: selectedTime.length === 5 ? `${selectedTime}:00` : selectedTime,
       hoTen: guestDetails.hoTen,
@@ -341,7 +281,7 @@ export function useDatLich(initialValues = null) {
 
   const handleDatLai = () => {
     setStep(1);
-    setMaChiNhanh(branches[0]?.maChiNhanh || "");
+    setMaChiNhanh(chi_nhanh[0]?.maChiNhanh || "");
     setDate(homNayStr);
     setGuestCount(2);
     setSelectedTime("");
@@ -378,13 +318,13 @@ export function useDatLich(initialValues = null) {
     selectedServices,
     setSelectedServices,
     bookingCode,
-    branches,
+    chi_nhanh,
     chiNhanhDaChon,
-    menuItems,
-    additionalServices,
+    danhSachMonAn,
+    dichVuBoSung,
     nhomMenu,
     setNhomMenu,
-    timeSlots: khungGioHienThi,
+    khungGio: khungGioHienThi,
     totalAmount,
     dangTaiDuLieu,
     dangGui,

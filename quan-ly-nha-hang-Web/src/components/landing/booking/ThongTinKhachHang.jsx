@@ -25,7 +25,7 @@ const getServiceIcon = (service) => {
 };
 
 function GuestDetails({
-  additionalServices,
+  dichVuBoSung,
   guestDetails,
   setGuestDetails,
   selectedServices,
@@ -180,14 +180,14 @@ function GuestDetails({
         </div>
 
         {/* Additional VIP Services */}
-        {additionalServices && additionalServices.length > 0 && (
+        {dichVuBoSung && dichVuBoSung.length > 0 && (
           <div className="pt-3">
             <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-300 mb-2.5">
               <Sparkles size={13} />
               Dịch vụ hỗ trợ & setup đặc biệt:
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {additionalServices.map((service) => {
+              {dichVuBoSung.map((service) => {
                 const maDichVu = service.maMatHang;
                 const isSelected = selectedServices.includes(maDichVu);
                 const ServiceIcon = getServiceIcon(service);

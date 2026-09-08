@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, User } from "lucide-react";
+import { Search } from "lucide-react";
 import { layDanhSachNguoiDung } from "../../services/nguoiDung.service";
 
 function Customers() {

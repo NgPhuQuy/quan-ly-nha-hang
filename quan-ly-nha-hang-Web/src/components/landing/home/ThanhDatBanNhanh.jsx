@@ -35,9 +35,13 @@ function ThanhDatBanNhanh({ onDatBan, branches = [] }) {
   const [guestCount, setGuestCount] = useState(2);
 
   useEffect(() => {
-    if (branches.length && !selectedBranch) {
-      setSelectedBranch(branches[0].maChiNhanh);
-    }
+    const timeoutId = setTimeout(() => {
+      if (branches.length && !selectedBranch) {
+        setSelectedBranch(branches[0].maChiNhanh);
+      }
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, [branches, selectedBranch]);
 
   // Đóng dropdown khi click ra ngoài

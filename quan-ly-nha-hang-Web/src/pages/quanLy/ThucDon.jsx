@@ -67,7 +67,11 @@ function FoodMenu() {
   };
 
   useEffect(() => {
-    fetchFoods();
+    const timeoutId = setTimeout(() => {
+      fetchFoods();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const handleOpenAdd = () => {

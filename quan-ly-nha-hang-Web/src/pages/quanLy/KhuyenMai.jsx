@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Plus, Tag, Edit2, Trash2, X, Gift } from "lucide-react";
 // Chức năng Khuyến mãi đang được bảo trì / nâng cấp
 const layDanhSachKhuyenMai = async () => [];
@@ -48,18 +48,22 @@ function Promotions() {
   const [editingPromo, setEditingPromo] = useState(null);
   const [formData, setFormData] = useState(taoFormDataMacDinh);
 
-  const fetchPromos = async () => {
+  const fetchPromos = useCallback(async () => {
     try {
       const data = await layDanhSachKhuyenMai(filter || undefined);
       if (data) setPromos(data);
     } catch (e) {
       console.warn("Fetch promotions failed", e);
     }
-  };
+  }, [filter]);
 
   useEffect(() => {
-    fetchPromos();
-  }, [filter]);
+    const timeoutId = setTimeout(() => {
+      fetchPromos();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [fetchPromos]);
 
   const handleOpenAdd = () => {
     setEditingPromo(null);

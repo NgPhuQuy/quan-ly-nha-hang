@@ -23,7 +23,7 @@ const mauTrangThaiHoaDon = {
 
 const PAGE_SIZE = 10;
 
-function DanhSachHoaDon({ chiNhanh = [], onNavigate, onSelectInvoice }) {
+function DanhSachHoaDon({ chi_nhanh = [], onNavigate, onSelectInvoice }) {
   const [danh_sach_hoa_don, setdanh_sach_hoa_don] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -116,7 +116,7 @@ function DanhSachHoaDon({ chiNhanh = [], onNavigate, onSelectInvoice }) {
           }}
         >
           <option value="">Tất cả chi nhánh</option>
-          {chiNhanh.map((b) => (
+          {chi_nhanh.map((b) => (
             <option key={b.maChiNhanh} value={b.maChiNhanh}>
               {b.tenChiNhanh}
             </option>
@@ -192,7 +192,7 @@ function DanhSachHoaDon({ chiNhanh = [], onNavigate, onSelectInvoice }) {
                 mauTrangThaiHoaDon[inv.trangThai] ||
                 mauTrangThaiHoaDon.CHO_XU_LY;
               const tenCn =
-                chiNhanh.find((b) => b.maChiNhanh === inv.maChiNhanh)
+                chi_nhanh.find((b) => b.maChiNhanh === inv.maChiNhanh)
                   ?.tenChiNhanh || `Chi nhánh #${inv.maChiNhanh}`;
               return (
                 <tr

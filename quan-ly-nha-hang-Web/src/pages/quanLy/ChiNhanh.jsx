@@ -16,17 +16,6 @@ import {
   doiTrangThaiChiNhanh,
 } from "../../services/chiNhanh.service";
 
-const statusStyle = {
-  "Hoạt động": {
-    bg: "var(--success-bg)",
-    color: "var(--success)",
-  },
-  "Tạm đóng": {
-    bg: "var(--warning-bg)",
-    color: "var(--warning)",
-  },
-};
-
 function Branches({ chi_nhanh = [], onRefreshBranches }) {
   const [search, setSearch] = useState("");
 

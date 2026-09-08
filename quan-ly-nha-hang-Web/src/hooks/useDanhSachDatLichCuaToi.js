@@ -14,7 +14,7 @@ export function useDanhSachDatLichCuaToi() {
     loading: dangTai,
     error: loi,
     refetch: taiLai,
-  } = useFetch(danhSachDatLichCuaToi, [], { initialData: [] });
+  } = useFetch(danhSachDatLichCuaToi, { initialData: [] });
 
   const [dangHuy, setDangHuy] = useState(false);
 
@@ -58,4 +58,4 @@ export function useDanhSachDatLichCuaToi() {
   };
 }
 
-export default useDanhSachDatLichCuaToi;
+export default useDanhSachDatLichCuaToi;

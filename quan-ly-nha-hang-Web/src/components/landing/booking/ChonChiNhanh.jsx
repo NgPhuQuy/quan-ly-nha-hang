@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 function BranchSelection({
-  branches = [],
+  chi_nhanh = [],
   branchId,
   setBranchId,
   date,
@@ -156,7 +156,7 @@ function BranchSelection({
           1. Chọn Chi Nhánh L'Délice:
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-          {branches.map((b) => {
+          {chi_nhanh.map((b) => {
             const isSelected = branchId === b.maChiNhanh;
             return (
               <div

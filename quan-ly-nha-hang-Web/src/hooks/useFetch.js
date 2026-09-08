@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { layThongBaoLoi } from "../utils/apiError";
 
-export function useFetch(fetchFn, deps = [], options = {}) {
+export function useFetch(fetchFn, options = {}) {
   const { initialData = null, autoFetch = true } = options;
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(autoFetch);
@@ -20,12 +20,17 @@ export function useFetch(fetchFn, deps = [], options = {}) {
     } finally {
       setLoading(false);
     }
-  }, deps); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetchFn]);
 
   useEffect(() => {
     if (autoFetch) {
-      execute().catch(() => {});
+      const timeoutId = setTimeout(() => {
+        execute().catch(() => {});
+      }, 0);
+
+      return () => clearTimeout(timeoutId);
     }
+    return undefined;
   }, [execute, autoFetch]);
 
   return {

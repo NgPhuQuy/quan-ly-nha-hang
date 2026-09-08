@@ -7,20 +7,20 @@ function BookingSummary({
   guestCount,
   selectedItems,
   selectedServices,
-  menuItems,
-  additionalServices,
+  danhSachMonAn,
+  dichVuBoSung,
 }) {
   const branchName = branch?.tenChiNhanh || "Chưa chọn chi nhánh";
   const branchAddress = branch?.diaChi;
 
   const totalFoodAmount = selectedItems.reduce((total, item) => {
-    const dish = menuItems.find((m) => m.maMatHang === (item.maMatHang || item.monAnId));
+    const dish = danhSachMonAn.find((m) => m.maMatHang === (item.maMatHang || item.monAnId));
     const donGia = dish?.giaMatHang ?? item.giaMatHang ?? 0;
     return total + Number(donGia) * item.soLuong;
   }, 0);
 
   const totalServiceAmount = selectedServices.reduce((total, id) => {
-    const s = additionalServices.find((service) => (service.maMatHang || service.id) === id);
+    const s = dichVuBoSung.find((service) => (service.maMatHang || service.id) === id);
     const donGia = s?.giaMatHang ?? s?.gia ?? 0;
     return total + Number(donGia);
   }, 0);
@@ -106,7 +106,7 @@ function BookingSummary({
           </div>
           <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
             {selectedItems.map((item) => {
-              const dish = menuItems.find((m) => m.maMatHang === (item.maMatHang || item.monAnId));
+              const dish = danhSachMonAn.find((m) => m.maMatHang === (item.maMatHang || item.monAnId));
               const ten = dish?.tenMatHang || item.tenMatHang || item.ten || "Món ăn";
               const gia = dish?.giaMatHang ?? item.giaMatHang ?? item.gia ?? 0;
               return (
@@ -135,7 +135,7 @@ function BookingSummary({
             Dịch vụ bổ sung:
           </div>
           {selectedServices.map((sId) => {
-            const s = additionalServices.find((x) => x.maMatHang === sId);
+            const s = dichVuBoSung.find((x) => x.maMatHang === sId);
             if (!s) return null;
             return (
               <div

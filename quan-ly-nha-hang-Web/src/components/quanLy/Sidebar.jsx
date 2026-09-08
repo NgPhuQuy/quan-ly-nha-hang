@@ -2,7 +2,6 @@ import {
   LayoutDashboard,
   FileText,
   Utensils,
-  ArrowLeftRight,
   BarChart3,
   Settings,
   LogOut,
@@ -11,7 +10,6 @@ import {
   Users,
   UserCircle,
   CalendarDays,
-  Ticket,
   TableProperties,
 } from "lucide-react";
 const adminNav = [
@@ -56,23 +54,12 @@ const adminNav = [
     icon: CalendarDays,
   },
   {
-    id: "khuyen_mai",
-    label: "Khuyến mãi",
-    icon: Ticket,
-  },
-  {
-    id: "thu_chi",
-    label: "Thu chi",
-    icon: ArrowLeftRight,
-  },
-  {
     id: "bao_cao",
     label: "Báo cáo",
     icon: BarChart3,
   },
 ];
 function Sidebar({ activePage, onNavigate, onDangXuat }) {
-  const navItems = adminNav;
   const activeNav = ["tao_hoa_don", "chi_tiet_hoa_don"].includes(activePage)
     ? "hoa_don"
     : activePage;
@@ -119,10 +106,12 @@ function Sidebar({ activePage, onNavigate, onDangXuat }) {
         </div>
       </div>
       <nav className="flex-1 px-3 py-3 flex flex-col gap-0.5 overflow-y-auto">
-        {navItems.map(({ id, label, icon: Icon }) => {
+        {adminNav.map(({ id, label, icon: Icon }) => {
           const isActive = activeNav === id;
           return (
             <button
+              key={id}
+              type="button"
               onClick={() => onNavigate(id)}
               className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-500 transition-colors text-left"
               style={{
@@ -150,6 +139,7 @@ function Sidebar({ activePage, onNavigate, onDangXuat }) {
         }}
       >
         <button
+          type="button"
           onClick={() => onNavigate("cai_dat")}
           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-500 transition-colors text-left"
           style={{
@@ -171,6 +161,7 @@ function Sidebar({ activePage, onNavigate, onDangXuat }) {
           Cài đặt
         </button>
         <button
+          type="button"
           onClick={onDangXuat}
           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-500 transition-colors text-left"
           style={{

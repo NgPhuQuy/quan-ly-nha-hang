@@ -76,7 +76,11 @@ function Users({ chi_nhanh = [] }) {
   };
 
   useEffect(() => {
-    fetchUsers();
+    const timeoutId = setTimeout(() => {
+      fetchUsers();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const handleOpenAdd = () => {

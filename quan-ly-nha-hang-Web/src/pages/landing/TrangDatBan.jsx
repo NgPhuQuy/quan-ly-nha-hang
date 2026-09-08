@@ -60,7 +60,7 @@ function TrangDatBan({ onQuayLai }) {
               <div key={datLich.step} className="step-transition">
                 {datLich.step === 1 && (
                   <ChonChiNhanh
-                    branches={datLich.branches}
+                    chi_nhanh={datLich.chi_nhanh}
                     branchId={datLich.branchId}
                     setBranchId={datLich.setBranchId}
                     date={datLich.date}
@@ -73,7 +73,7 @@ function TrangDatBan({ onQuayLai }) {
                 {datLich.step === 2 && (
                   <ChonKhungGio
                     chiNhanh={datLich.chiNhanhDaChon}
-                    timeSlots={datLich.timeSlots}
+                    khungGio={datLich.khungGio}
                     selectedTime={datLich.selectedTime}
                     setSelectedTime={datLich.setSelectedTime}
                     onTiepTuc={() => datLich.setStep(3)}
@@ -82,7 +82,7 @@ function TrangDatBan({ onQuayLai }) {
                 )}
                 {datLich.step === 3 && (
                   <ChonMonAn
-                    menuItems={datLich.menuItems}
+                    danhSachMonAn={datLich.danhSachMonAn}
                     nhomMenu={datLich.nhomMenu}
                     setNhomMenu={datLich.setNhomMenu}
                     selectedItems={datLich.selectedItems}
@@ -93,7 +93,7 @@ function TrangDatBan({ onQuayLai }) {
                 )}
                 {datLich.step === 4 && (
                   <ThongTinKhachHang
-                    additionalServices={datLich.additionalServices}
+                    dichVuBoSung={datLich.dichVuBoSung}
                     guestDetails={datLich.guestDetails}
                     setGuestDetails={datLich.setGuestDetails}
                     selectedServices={datLich.selectedServices}
@@ -113,8 +113,8 @@ function TrangDatBan({ onQuayLai }) {
               guestCount={datLich.guestCount}
               selectedItems={datLich.selectedItems}
               selectedServices={datLich.selectedServices}
-              menuItems={datLich.menuItems}
-              additionalServices={datLich.additionalServices}
+              danhSachMonAn={datLich.danhSachMonAn}
+              dichVuBoSung={datLich.dichVuBoSung}
             />
           </div>
         ) : (

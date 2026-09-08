@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles, ChevronDown, HelpCircle, PhoneCall } from "lucide-react";
+import { ChevronDown, HelpCircle, PhoneCall } from "lucide-react";
 
 const DANH_SACH_CAU_HOI = [
   {

@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 function MenuSelection({
-  menuItems,
+  danhSachMonAn,
   nhomMenu,
   setNhomMenu,
   selectedItems,
@@ -26,7 +26,7 @@ function MenuSelection({
     { key: "DICH_VU", label: "Dịch vụ" },
   ];
 
-  const filteredItems = menuItems.filter((mon) => {
+  const filteredItems = danhSachMonAn.filter((mon) => {
     const matchesSearch =
       !searchQuery ||
       mon.tenMatHang?.toLowerCase().includes(searchQuery.toLowerCase());

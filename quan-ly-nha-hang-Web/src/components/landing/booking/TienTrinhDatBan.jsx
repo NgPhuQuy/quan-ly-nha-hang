@@ -40,8 +40,6 @@ function BookingProgress({ currentStep }) {
           const stepNumber = index + 1;
           const isDone = stepNumber < currentStep;
           const isCurrent = stepNumber === currentStep;
-          const Icon = step.icon;
-
           return (
             <div
               key={step.label}

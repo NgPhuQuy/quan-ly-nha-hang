@@ -2,7 +2,7 @@ import { Clock, ArrowLeft, ChevronRight } from "lucide-react";
 
 function TimeSelection({
   chiNhanh,
-  timeSlots,
+  khungGio,
   selectedTime,
   setSelectedTime,
   onTiepTuc,
@@ -33,7 +33,7 @@ function TimeSelection({
         </div>
 
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2.5">
-          {timeSlots.map((slot) => {
+          {khungGio.map((slot) => {
             const isSelected = selectedTime === slot.gio;
             const soLuongConLai = Number(slot.soLuongConLai);
             const isFull = soLuongConLai <= 0;
