@@ -72,4 +72,9 @@ public class DatLichController {
         return ResponseEntity.ok(datLichService.capNhatDatLich(maDatLich, request));
     }
 
+    @PatchMapping("/dat-lich/{maDatLich}/huy")
+    public ResponseEntity<?> huyDatLich(@PathVariable Integer maDatLich){
+        return ResponseEntity.ok(datLichService.huyDatLich(maDatLich));
+    }
+
 }

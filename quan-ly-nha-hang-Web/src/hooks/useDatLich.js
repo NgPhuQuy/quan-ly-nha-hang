@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { layDanhSachChiNhanh } from "../services/chiNhanh.service";
 import {
-  layDanhSachDichVuBoSung,
+  layDanhSachDichVu,
   layDanhSachMonAn,
-  layKhungGio,
-} from "../services/monAn.service";
+} from "../services/matHang.service";
 import { taoDatLich } from "../services/datLich.service";
+import apis, { endpoints } from "../services/apis";
 import { useAuth } from "../contexts/AuthContext";
 
 export function useDatLich() {
@@ -81,15 +81,18 @@ export function useDatLich() {
   useEffect(() => {
     if (!branchId) return;
     const numericBranchId = Number(String(branchId).replace(/\D/g, "")) || 1;
-    layDanhSachMonAn(numericBranchId).then(setMenuItems);
-    layDanhSachDichVuBoSung(numericBranchId).then(setAdditionalServices);
+    layDanhSachMonAn(numericBranchId).then(setMenuItems).catch(() => setMenuItems([]));
+    layDanhSachDichVu(numericBranchId).then(setAdditionalServices).catch(() => setAdditionalServices([]));
   }, [branchId]);
 
   useEffect(() => {
-    if (!branchId || !date || !guestCount) return;
+    if (!branchId || !date) return;
     const numericBranchId = Number(String(branchId).replace(/\D/g, "")) || 1;
-    layKhungGio(numericBranchId, date, guestCount).then(setTimeSlots);
-  }, [branchId, date, guestCount]);
+    apis
+      .get(endpoints.khung_gio(numericBranchId, date))
+      .then((res) => setTimeSlots(res.data || []))
+      .catch(() => setTimeSlots([]));
+  }, [branchId, date]);
 
   const selectedBranch = useMemo(
     () =>

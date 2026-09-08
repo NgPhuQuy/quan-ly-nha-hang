@@ -1,4 +1,6 @@
-import { useTraCuuDatLich } from "../../hooks/useTraCuuDatLich";
+import { useState } from "react";
+import apis, { endpoints } from "../../services/apis";
+import { capNhatTrangThaiDatLich } from "../../services/datLich.service";
 import {
   ArrowLeft,
   Search,
@@ -14,16 +16,73 @@ import {
 } from "lucide-react";
 
 function TrangTraCuu({ onQuayLai }) {
-  const {
-    bookingCode,
-    setBookingCode,
-    loading,
-    cancelling,
-    booking,
-    notFound,
-    handleTraCuu,
-    handleHuyDatLich,
-  } = useTraCuuDatLich();
+  const [bookingCode, setBookingCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+  const [booking, setBooking] = useState(null);
+  const [notFound, setNotFound] = useState(false);
+
+  const handleTraCuu = async () => {
+    const code = bookingCode.trim();
+    if (!code) return;
+    setLoading(true);
+    setBooking(null);
+    setNotFound(false);
+    try {
+      const id = Number(code.replace(/\D/g, "")) || code;
+      const res = await apis.get(endpoints.chi_tiet_dat_lich(id));
+      const b = res.data;
+      if (!b) {
+        setNotFound(true);
+      } else {
+        setBooking({
+          ...b,
+          id: b.maDatLich ? `BK-${b.maDatLich}` : code,
+          maDatLichId: b.maDatLich,
+          status:
+            b.trangThai === "DA_HUY"
+              ? "Đã huỷ"
+              : b.trangThai === "DA_XAC_NHAN"
+              ? "Xác nhận"
+              : b.trangThai || "Xác nhận",
+          branch: b.tenChiNhanh || `Chi nhánh #${b.maChiNhanh || 1}`,
+          date: b.ngay,
+          time: b.gio ? String(b.gio).slice(0, 5) : "",
+          guests: b.soKhach || 2,
+          customer: b.tenKhachHang || b.hoTen || "Khách hàng",
+          note: b.ghiChu,
+          listDatTruoc: b.listDatTruoc || [],
+        });
+      }
+    } catch (error) {
+      console.error("Không tìm thấy thông tin đặt chỗ:", error);
+      setNotFound(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleHuyDatLich = async () => {
+    const maId = booking?.maDatLichId || booking?.maDatLich;
+    if (!maId) return;
+    if (!window.confirm("Quý khách có chắc chắn muốn hủy đặt bàn này không?"))
+      return;
+    setCancelling(true);
+    try {
+      await capNhatTrangThaiDatLich(maId, "DA_HUY");
+      setBooking((prev) => ({
+        ...prev,
+        status: "Đã huỷ",
+        trangThai: "DA_HUY",
+      }));
+      alert("Hủy đặt bàn thành công!");
+    } catch (error) {
+      console.error("Lỗi khi hủy đặt bàn:", error);
+      alert("Không thể hủy đặt bàn. Vui lòng liên hệ hotline nhà hàng!");
+    } finally {
+      setCancelling(false);
+    }
+  };
 
   const isCancelled =
     booking?.status === "Đã huỷ" ||

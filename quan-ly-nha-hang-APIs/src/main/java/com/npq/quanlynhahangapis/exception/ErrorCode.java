@@ -25,7 +25,8 @@ public enum ErrorCode {
     INVALID_BOOKING_TIME(400, "Thời gian đặt lịch hoặc kết thúc vượt quá giờ hoạt động"),
     FILE_MUST_BE_IMAGE(400, "File tải lên phải là hình ảnh"),
     FAIL_TO_UPLOAD(400, "Tải ảnh lên thất bại"),
-    INVALID_TABLE(400, "Bàn đang đang được phục vụ");
+    INVALID_TABLE(400, "Bàn đang đang được phục vụ"),
+    KHONG_THE_HUY_DAT_LICH(400, "Không thể hủy vì đã cận giờ đặt (dưới 2 tiếng). Vui lòng gọi trực tiếp nhà hàng để được hỗ trợ.");
 
     private final int status;
     private final String message;

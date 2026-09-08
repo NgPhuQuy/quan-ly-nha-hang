@@ -185,4 +185,14 @@ public class DatLichService {
                 .filter(this::checkQuaGio)
                 .toList();
     }
+
+    public DatLichResponse huyDatLich(Integer maDatLich) {
+        DatLich datLich = layDatLichTheoId(maDatLich);
+
+        if (datLich.getNgay().isEqual(LocalDate.now()) && LocalTime.now().isBefore(datLich.getGio().minusHours(2)))
+            throw new AppException(ErrorCode.KHONG_THE_HUY_DAT_LICH);
+
+        datLich.setTrangThai(TrangThaiDatLich.DA_HUY);
+        return chuyenSangDto(datLichRepository.save(datLich));
+    }
 }
