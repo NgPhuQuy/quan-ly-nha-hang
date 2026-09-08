@@ -71,8 +71,17 @@ public class HoaDonService {
         return chuyenSangDto(hoaDonRepository.save(savedHoaDon));
     }
 
+    @Transactional
     public HoaDonResponse chinhSuaHoaDon(Integer maHoaDon, HoaDonRequest request) {
         HoaDon hoaDon = layHoaDonTheoId(maHoaDon);
+        if (hoaDon.getTrangThai() == TrangThaiHoaDon.HOAN_THANH) {
+            throw new AppException(ErrorCode.FORBIDDEN);
+        }
+
+        if (request != null && request.listChiTiet() != null) {
+            chiTietHoaDonService.capNhatDanhSachMon(hoaDon, request.listChiTiet());
+        }
+
         return chuyenSangDto(hoaDon);
     }
 
@@ -109,14 +118,19 @@ public class HoaDonService {
         int maKhachHang = 0;
         NguoiDung khachHang = hoaDon.getKhachHang();
         BigDecimal tongTien = chiTietHoaDonService.layTongTien(hoaDon.getMaHoaDon());
-        hoaDon.setTongTien(tongTien);
+        hoaDon.setTongTien(tongTien != null ? tongTien : BigDecimal.ZERO);
         hoaDonRepository.save(hoaDon);
         if (khachHang != null) maKhachHang = khachHang.getMaNguoiDung();
         List<ChiTietHoaDonResponse> listChiTiet = chiTietHoaDonService.danhSachChiTietHoaDon(hoaDon);
+        Integer maBan = hoaDon.getBan() != null ? hoaDon.getBan().getMaBan() : null;
+        Integer maChiNhanh = hoaDon.getBan() != null && hoaDon.getBan().getChiNhanh() != null
+                ? hoaDon.getBan().getChiNhanh().getMaChiNhanh()
+                : null;
         return HoaDonResponse.builder()
                 .maHoaDon(hoaDon.getMaHoaDon())
-                .maChiNhanh(hoaDon.getBan().getChiNhanh().getMaChiNhanh())
+                .maChiNhanh(maChiNhanh)
                 .maKhachHang(maKhachHang)
+                .maBan(maBan)
                 .trangThai(hoaDon.getTrangThai())
                 .tongTien(hoaDon.getTongTien())
                 .ngayLapHoaDon(hoaDon.getNgayLapHoaDon())

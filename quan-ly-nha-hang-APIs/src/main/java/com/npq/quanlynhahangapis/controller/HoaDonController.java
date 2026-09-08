@@ -34,7 +34,7 @@ public class HoaDonController {
     }
 
     @PatchMapping("/{maHoaDon}")
-    public ResponseEntity<?> chinhSuaHoaDon(@PathVariable Integer maHoaDon, HoaDonRequest request) {
+    public ResponseEntity<?> chinhSuaHoaDon(@PathVariable Integer maHoaDon, @RequestBody HoaDonRequest request) {
         return ResponseEntity.ok(hoaDonService.chinhSuaHoaDon(maHoaDon, request));
     }
 

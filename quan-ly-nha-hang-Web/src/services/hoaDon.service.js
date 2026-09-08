@@ -24,3 +24,8 @@ export const xoaHoaDon = async (maHoaDon) => {
   const res = await apis.delete(endpoints.xoa_hoa_don(maHoaDon));
   return res.data;
 };
+
+export const chinhSuaHoaDon = async (maHoaDon, data) => {
+  const res = await apis.patch(endpoints.chi_tiet_hoa_don(maHoaDon), data);
+  return res.data;
+};

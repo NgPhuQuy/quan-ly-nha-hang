@@ -9,6 +9,7 @@ import com.npq.quanlynhahangapis.entity.MatHang;
 import com.npq.quanlynhahangapis.repository.ChiTietHoaDonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -40,9 +41,23 @@ public class ChiTietHoaDonService {
         return listChiTietHoaDon;
     }
 
-    public List<ChiTietHoaDonResponse> huyGoiMon(Integer maHoaDon, List<ChiTietHoaDonRequest> listChiTietHD) {
-        List<ChiTietHoaDon> list = chiTietHoaDonRepository.findByHoaDon_MaHoaDon(maHoaDon);
-        return null;
+    @Transactional
+    public void capNhatDanhSachMon(HoaDon hoaDon, List<ChiTietHoaDonRequest> requests) {
+        List<ChiTietHoaDon> listChiTiet = chiTietHoaDonRepository.findByHoaDon_MaHoaDon(hoaDon.getMaHoaDon());
+        chiTietHoaDonRepository.deleteAll(listChiTiet);
+        chiTietHoaDonRepository.flush();
+
+        if (requests != null) {
+            java.util.Map<Integer, Integer> merged = new java.util.LinkedHashMap<>();
+            for (ChiTietHoaDonRequest r : requests) {
+                if (r.maMatHang() != null && r.soLuong() != null && r.soLuong() > 0) {
+                    merged.merge(r.maMatHang(), r.soLuong(), Integer::sum);
+                }
+            }
+            for (java.util.Map.Entry<Integer, Integer> entry : merged.entrySet()) {
+                taoChiTietHoaDon(hoaDon, new ChiTietHoaDonRequest(null, entry.getKey(), entry.getValue()));
+            }
+        }
     }
 
     public ChiTietHoaDon taoChiTietHoaDon(HoaDon hoaDon, ChiTietHoaDonRequest request) {

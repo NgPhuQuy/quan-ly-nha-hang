@@ -58,7 +58,9 @@ function DanhSachHoaDon({
   useEffect(() => {
     layDanhSachHoaDon()
       .then((data) => {
-        setdanh_sach_hoa_don(data);
+        setdanh_sach_hoa_don(
+          Array.isArray(data) ? [...data].sort((a, b) => b.maHoaDon - a.maHoaDon) : [],
+        );
       })
       .catch(() => {
         setdanh_sach_hoa_don([]);
@@ -184,6 +186,7 @@ function DanhSachHoaDon({
                 "Mã hóa đơn",
                 "Thời gian",
                 "Chi nhánh",
+                "Bàn",
                 "Số món",
                 "Tổng tiền",
                 "Trạng thái",
@@ -205,7 +208,7 @@ function DanhSachHoaDon({
             {paged.length === 0 && (
               <tr>
                 <td
-                  colSpan={7}
+                  colSpan={8}
                   className="px-4 py-8 text-center text-sm"
                   style={{
                     color: "var(--muted-foreground)",
@@ -257,6 +260,14 @@ function DanhSachHoaDon({
                     }}
                   >
                     {tenCn}
+                  </td>
+                  <td
+                    className="px-4 py-3 text-xs font-semibold"
+                    style={{
+                      color: "var(--foreground)",
+                    }}
+                  >
+                    {inv.maBan ? `Bàn #${inv.maBan}` : "—"}
                   </td>
                   <td
                     className="px-4 py-3 text-xs font-medium"
