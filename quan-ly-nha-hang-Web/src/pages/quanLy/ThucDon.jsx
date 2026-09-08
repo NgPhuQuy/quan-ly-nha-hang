@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { Search, Plus, Edit2, Trash2, X, UtensilsCrossed } from "lucide-react";
-import {
-  layTatCaMonAn,
-  taoMonAn,
-  capNhatMonAn,
-  xoaMonAn,
-} from "../../services/monAn.service";
+import { taoMonAn, capNhatMonAn } from "../../services/matHang.service";
+import apis, { endpoints } from "../../services/apis";
 import { dinhDangTien } from "../../utils/dinhDang";
 
 const statusStyle = {
@@ -56,8 +52,22 @@ function FoodMenu() {
   });
 
   const fetchFoods = async () => {
-    const data = await layTatCaMonAn();
-    if (data) setFoods(data);
+    try {
+      const res = await apis.get(endpoints.mat_hang);
+      const data = res.data || [];
+      setFoods(
+        data.map((m) => ({
+          ...m,
+          id: m.maMatHang,
+          name: m.tenMatHang,
+          price: m.giaMatHang,
+          image: m.anhMinhHoa,
+          status: "Đang bán",
+        })),
+      );
+    } catch (e) {
+      console.warn("Lỗi tải món ăn", e);
+    }
   };
 
   useEffect(() => {
@@ -95,7 +105,8 @@ function FoodMenu() {
     if (e) e.stopPropagation();
     if (!window.confirm(`Bạn có chắc muốn xóa "${f.name || f.ten}"?`)) return;
     try {
-      await xoaMonAn(f.id);
+      const id = f.maMatHang || f.id;
+      await apis.delete(endpoints.xoa_mat_hang(id));
       fetchFoods();
     } catch (err) {
       console.error(err);

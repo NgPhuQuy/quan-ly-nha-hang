@@ -15,7 +15,6 @@ import {
   taoChiNhanh,
   capNhatChiNhanh,
   doiTrangThaiChiNhanh,
-  xoaChiNhanh,
 } from "../../services/chiNhanh.service";
 import { dinhDangTienRutGon } from "../../utils/dinhDang";
 
@@ -104,13 +103,13 @@ function Branches() {
   };
 
   const handleDelete = async (b) => {
-    if (!window.confirm(`Bạn có chắc muốn xóa chi nhánh "${b.name}"?`)) return;
+    if (!window.confirm(`Bạn có chắc muốn đổi trạng thái / đóng chi nhánh "${b.name}"?`)) return;
     try {
-      await xoaChiNhanh(b.maChiNhanhId);
+      await doiTrangThaiChiNhanh(b.maChiNhanhId);
       fetchBranches();
     } catch (err) {
       console.error(err);
-      alert("Lỗi khi xóa chi nhánh!");
+      alert("Lỗi khi đổi trạng thái chi nhánh!");
     }
   };
 

@@ -66,6 +66,7 @@ export const endpoints = {
   chi_tiet_dat_lich: (maDatLich) => `/dat-lich/${maDatLich}`,
   cap_nhat_dat_lich: (maDatLich) => `/dat-lich/${maDatLich}`,
   danh_sach_dat_lich_cua_toi: "/dat-lich/me",
+  huy_dat_lich: (maDatLich) => `/dat-lich/${maDatLich}/huy`,
   cap_nhat_trang_thai_dat_lich: (maDatLich) => `/dat-lich/${maDatLich}/trang-thai`,
   xoa_dat_lich: (maDatLich) => `/dat-lich/${maDatLich}`,
   khung_gio: (maChiNhanh, ngay) => `/dat-lich/khung-gio?maChiNhanh=${maChiNhanh}&ngay=${ngay}`,

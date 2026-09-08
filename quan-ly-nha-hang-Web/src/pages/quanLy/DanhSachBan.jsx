@@ -4,9 +4,8 @@ import {
   layDanhSachBan,
   doiTrangThaiBan,
   taoBan,
-  capNhatBan,
-  xoaBan,
 } from "../../services/banAn.service";
+import apis, { endpoints } from "../../services/apis";
 import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
 
 const statusStyle = {
@@ -138,13 +137,13 @@ function Tables() {
 
   const handleDelete = async (t, e) => {
     if (e) e.stopPropagation();
-    if (!window.confirm(`Bạn có chắc muốn xóa ${t.number}?`)) return;
+    if (!window.confirm(`Bạn có chắc muốn đổi trạng thái ${t.number}?`)) return;
     try {
-      await xoaBan(t.maBanId);
+      await doiTrangThaiBan(t.maBanId);
       fetchTables();
     } catch (err) {
       console.error(err);
-      alert("Lỗi khi xóa bàn!");
+      alert("Lỗi khi đổi trạng thái bàn!");
     }
   };
 
@@ -152,7 +151,7 @@ function Tables() {
     e.preventDefault();
     try {
       if (editingTable) {
-        await capNhatBan(editingTable.maBanId, {
+        await apis.put(endpoints.cap_nhat_ban(editingTable.maBanId), {
           ...formData,
           sucChua: Number(formData.sucChua),
           maChiNhanh: Number(formData.maChiNhanh),

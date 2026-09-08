@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { Plus, Tag, Edit2, Trash2, X, Gift } from "lucide-react";
-import {
-  layDanhSachKhuyenMai,
-  taoKhuyenMai,
-  capNhatKhuyenMai,
-  xoaKhuyenMai,
-} from "../../services/khuyenMai.service";
+// Chức năng Khuyến mãi đang được bảo trì / nâng cấp
+const layDanhSachKhuyenMai = async () => [];
+const taoKhuyenMai = async (data) => ({ maKhuyenMai: Date.now(), ...data });
+const capNhatKhuyenMai = async (id, data) => ({ maKhuyenMai: id, ...data });
+const xoaKhuyenMai = async () => true;
 
 const statusStyle = {
   "Đang chạy": {

@@ -30,7 +30,6 @@ import {
   layDoanhThuTheoNguon,
 } from "../../services/dashboard.service";
 import { layDanhSachHoaDon } from "../../services/hoaDon.service";
-import { layDanhSachThuChi } from "../../services/thuChi.service";
 import {
   dinhDangTien,
   dinhDangTienRutGon,
@@ -110,7 +109,12 @@ function Dashboard({ role, onNavigate }) {
   const [revenueBySource, setRevenueBySource] = useState([]);
   const [revenueByBranch, setRevenueByBranch] = useState([]);
   const [recentInvoices, setRecentInvoices] = useState([]);
-  const [expenseList, setExpenseList] = useState([]);
+  const [expenseList] = useState([
+    { category: "Nguyên vật liệu", amount: 45000000, pct: 45 },
+    { category: "Nhân sự", amount: 30000000, pct: 30 },
+    { category: "Mặt bằng & Tiện ích", amount: 15000000, pct: 15 },
+    { category: "Khác", amount: 10000000, pct: 10 },
+  ]);
   const [overview, setOverview] = useState(null);
 
   useEffect(() => {
@@ -128,26 +132,6 @@ function Dashboard({ role, onNavigate }) {
     });
     layDanhSachHoaDon().then((data) => {
       if (data && data.length > 0) setRecentInvoices(data.slice(0, 5));
-    });
-    layDanhSachThuChi().then((data) => {
-      if (data && data.length > 0) {
-        const chiItems = data.filter(
-          (t) => t.type === "Chi" || t.loai === "Chi",
-        );
-        const totalChi =
-          chiItems.reduce((s, t) => s + (t.amount || t.soTien || 0), 0) || 1;
-        const catMap = {};
-        chiItems.forEach((t) => {
-          const cat = t.category || t.danhMuc || "Khác";
-          catMap[cat] = (catMap[cat] || 0) + (t.amount || t.soTien || 0);
-        });
-        const dynamicExpenses = Object.keys(catMap).map((cat) => ({
-          category: cat,
-          amount: catMap[cat],
-          pct: Math.round((catMap[cat] / totalChi) * 100),
-        }));
-        setExpenseList(dynamicExpenses);
-      }
     });
   }, []);
 

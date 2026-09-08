@@ -8,7 +8,7 @@ const TrangKhongCoQuyen = lazy(() => import("../pages/landing/TrangKhongCoQuyen"
 const QuanLyApp = lazy(() => import("./QuanLyApp"));
 
 import { useAuth } from "../contexts/AuthContext";
-import { chuanHoaVaiTro } from "../services/xacThuc.service";
+import { chuanHoaVaiTro } from "../utils/vaiTro";
 
 const layDuongDan = () =>
   window.location.pathname.replace(/^\/+|\/+$/g, "") || "home";

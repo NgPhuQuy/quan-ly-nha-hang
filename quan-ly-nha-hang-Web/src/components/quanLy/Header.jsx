@@ -1,6 +1,6 @@
 import { Bell, ChevronDown } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
-import { chuanHoaVaiTro } from "../../services/xacThuc.service";
+import { chuanHoaVaiTro } from "../../utils/vaiTro";
 
 function Header({ title, role }) {
   const { user: nguoiDung } = useAuth();

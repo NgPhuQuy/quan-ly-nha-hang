@@ -2,11 +2,9 @@ import { useState, useEffect } from "react";
 import { Plus, Search, Edit2, Trash2 } from "lucide-react";
 import {
   layDanhSachNguoiDung,
-  taoNguoiDung,
-  capNhatNguoiDung,
   doiTrangThaiNguoiDung,
-  xoaNguoiDung,
 } from "../../services/nguoiDung.service";
+import apis, { endpoints } from "../../services/apis";
 import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
 import ModalNguoiDung from "../../components/quanLy/taiKhoan/ModalNguoiDung";
 
@@ -126,14 +124,15 @@ function Users() {
   };
 
   const handleDelete = async (user) => {
-    if (!window.confirm(`Bạn có chắc muốn xóa tài khoản ${user.name}?`)) return;
-    if (user.maNguoiDungId) {
+    if (!window.confirm(`Bạn có chắc muốn đổi trạng thái tài khoản ${user.name}?`)) return;
+    const id = user.maNguoiDungId || user.maNguoiDung || user.id;
+    if (id) {
       try {
-        await xoaNguoiDung(user.maNguoiDungId);
+        await doiTrangThaiNguoiDung(id);
         fetchUsers();
       } catch (e) {
-        console.error("Delete user failed:", e);
-        alert("Lỗi khi xóa người dùng!");
+        console.error("Change user status failed:", e);
+        alert("Lỗi khi cập nhật trạng thái người dùng!");
       }
     }
   };
@@ -142,9 +141,11 @@ function Users() {
     e.preventDefault();
     try {
       if (editingUser) {
-        await capNhatNguoiDung(editingUser.maNguoiDungId, formData);
+        // Cập nhật trạng thái nếu có
+        const id = editingUser.maNguoiDungId || editingUser.maNguoiDung;
+        await doiTrangThaiNguoiDung(id);
       } else {
-        await taoNguoiDung(formData);
+        await apis.post(endpoints.dang_ky, formData);
       }
       setShowModal(false);
       fetchUsers();

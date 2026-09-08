@@ -4,7 +4,6 @@ import {
   layDanhSachDatLich,
   capNhatTrangThaiDatLich,
   taoDatLich,
-  xoaDatLich,
 } from "../../services/datLich.service";
 import { layDanhSachBan } from "../../services/banAn.service";
 import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
@@ -107,12 +106,12 @@ function Bookings({ role }) {
   };
 
   const handleDelete = async (booking) => {
-    if (!window.confirm(`Bạn có chắc muốn xóa lịch đặt ${booking.id}?`)) return;
+    if (!window.confirm(`Bạn có chắc muốn hủy lịch đặt ${booking.id}?`)) return;
     if (booking.maDatLichId) {
       try {
-        await xoaDatLich(booking.maDatLichId);
+        await capNhatTrangThaiDatLich(booking.maDatLichId, "DA_HUY");
       } catch (e) {
-        console.warn("Delete API error:", e);
+        console.warn("Cancel API error:", e);
       }
     }
     setBookings((prev) => prev.filter((x) => x.id !== booking.id));

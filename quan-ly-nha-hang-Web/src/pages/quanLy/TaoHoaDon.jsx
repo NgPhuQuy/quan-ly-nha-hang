@@ -14,11 +14,10 @@ import {
   CreditCard,
   CheckCircle2,
 } from "lucide-react";
-import { layTatCaMonAn } from "../../services/monAn.service";
 import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
 import { layDanhSachBan } from "../../services/banAn.service";
-import { layDanhSachKhuyenMai } from "../../services/khuyenMai.service";
 import { taoHoaDon } from "../../services/hoaDon.service";
+import apis, { endpoints } from "../../services/apis";
 import { dinhDangTien } from "../../utils/dinhDang";
 
 const statusBg = {
@@ -31,7 +30,7 @@ function CreateInvoice({ onNavigate }) {
   const [allFoods, setAllFoods] = useState([]);
   const [branches, setBranches] = useState([]);
   const [tables, setTables] = useState([]);
-  const [promotions, setPromotions] = useState([]);
+  const [promotions] = useState([]);
 
   // Form states
   const [selectedBranchId, setSelectedBranchId] = useState("");
@@ -54,15 +53,24 @@ function CreateInvoice({ onNavigate }) {
       }
     });
 
-    layDanhSachKhuyenMai("Đang chạy").then((res) => {
-      if (res) setPromotions(res);
-    });
-
-    layTatCaMonAn().then((data) => {
-      if (data && data.length > 0) {
-        setAllFoods(data);
-      }
-    });
+    apis
+      .get(endpoints.mat_hang)
+      .then((res) => {
+        const data = res.data || [];
+        if (data.length > 0) {
+          setAllFoods(
+            data.map((m) => ({
+              ...m,
+              id: m.maMatHang,
+              name: m.tenMatHang,
+              price: m.giaMatHang,
+              image: m.anhMinhHoa,
+              status: "Đang bán",
+            })),
+          );
+        }
+      })
+      .catch(() => {});
   }, []);
 
   // Khi chọn chi nhánh -> load danh sách bàn trống của chi nhánh đó

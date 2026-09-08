@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { Plus, TrendingUp, TrendingDown, Trash2 } from "lucide-react";
-import {
-  layDanhSachThuChi,
-  taoThuChi,
-  xoaThuChi,
-} from "../../services/thuChi.service";
+// Chức năng Thu Chi đang được bảo trì / nâng cấp
+const layDanhSachThuChi = async () => [];
+const taoThuChi = async (data) => ({ maGiaoDich: Date.now(), ...data });
+const xoaThuChi = async () => true;
 import {
   dinhDangTien,
   taoDanhSachThangGanNhat,

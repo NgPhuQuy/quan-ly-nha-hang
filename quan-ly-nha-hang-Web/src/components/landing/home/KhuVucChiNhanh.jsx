@@ -7,7 +7,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { layDanhSachChiNhanh } from "../../../services/chiNhanh.service";
-import { layKhungGio } from "../../../services/monAn.service";
+import apis, { endpoints } from "../../../services/apis";
 
 const layThongTinTrangThai = (trangThai) => {
   if (trangThai === "het") {
@@ -51,7 +51,8 @@ function BranchSection({ onDatBan }) {
           danhSach.map(async (cn) => {
             const id = cn.maChiNhanh ?? cn.id;
             try {
-              const slots = await layKhungGio(id, today);
+              const res = await apis.get(endpoints.khung_gio(id, today));
+              const slots = res.data || [];
               // Mặc định mỗi chi nhánh có 50 đơn có thể đặt
               if (!slots || slots.length === 0) {
                 map[id] = "con";

@@ -27,3 +27,8 @@ export const capNhatTrangThaiDatLich = async (maDatLich, trangThai, maBan) => {
   );
   return res.data;
 };
+
+export const huyDatLich = async (maDatLich) => {
+  const res = await apis.patch(endpoints.huy_dat_lich(maDatLich));
+  return res.data;
+}

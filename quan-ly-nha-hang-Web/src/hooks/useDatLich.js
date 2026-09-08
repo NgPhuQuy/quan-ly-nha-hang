@@ -7,6 +7,7 @@ import {
 import { taoDatLich } from "../services/datLich.service";
 import apis, { endpoints } from "../services/apis";
 import { useAuth } from "../contexts/AuthContext";
+import { layThongBaoLoi } from "../utils/apiError";
 
 export function useDatLich() {
   const { user } = useAuth();
@@ -151,14 +152,7 @@ export function useDatLich() {
       setStep(5);
     } catch (error) {
       console.error("Lỗi đặt bàn:", error);
-      const serverMessage =
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        error.message;
-      window.alert(
-        serverMessage ||
-          "Đặt bàn chưa thành công. Vui lòng kiểm tra lại thông tin và thử lại!",
-      );
+      window.alert(layThongBaoLoi(error));
     }
   };
 

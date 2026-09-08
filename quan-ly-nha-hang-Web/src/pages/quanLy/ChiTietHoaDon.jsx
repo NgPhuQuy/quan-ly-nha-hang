@@ -14,8 +14,8 @@ import {
 import {
   layChiTietHoaDon,
   thanhToanHoaDon,
-  huyHoaDon,
 } from "../../services/hoaDon.service";
+import apis, { endpoints } from "../../services/apis";
 import { dinhDangTien } from "../../utils/dinhDang";
 
 const statusIcon = {
@@ -75,7 +75,7 @@ function InvoiceDetail({ invoiceId, onNavigate }) {
     if (!window.confirm("Bạn có chắc chắn muốn hủy hóa đơn này?")) return;
     setActionLoading(true);
     try {
-      await huyHoaDon(invoice.maHoaDonId);
+      await apis.post(endpoints.huy_hoa_don(invoice.maHoaDonId));
       fetchDetail();
     } catch (e) {
       console.error(e);

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { ANH } from "../../../assets/anh";
-import { layTatCaMonAn } from "../../../services/monAn.service";
+import apis, { endpoints } from "../../../services/apis";
 import { dinhDangTien } from "../../../utils/dinhDang";
 import {
   Utensils,
@@ -90,34 +90,36 @@ function DishCollection({ onDatBan }) {
   const sliderRef = useRef(null);
 
   useEffect(() => {
-    layTatCaMonAn().then((res) => {
-      if (res && res.length > 0) {
-        setItems(
-          res.map((m, idx) => ({
-            id: m.maMatHang || m.id || idx + 1,
-            ten: m.tenMatHang || m.name || "Món ăn",
-            moTa: m.moTa || m.description || "Món ngon tinh hoa ẩm thực 5 sao",
-            gia: Number(m.gia ?? m.price ?? 0),
-            xuatXu:
-              m.xuatXu ||
-              m.nguonGoc ||
-              SIGNATURE_FALLBACK[idx % SIGNATURE_FALLBACK.length]?.xuatXu ||
-              "Tuyển chọn thượng hạng",
-            anh:
-              m.anh ||
-              m.image ||
-              SIGNATURE_FALLBACK[idx % SIGNATURE_FALLBACK.length].anh,
-            nhom:
-              m.loaiMatHang === "THUC_UONG"
-                ? "Thức uống"
-                : m.loaiMatHang === "DICH_VU"
+    apis
+      .get(endpoints.mat_hang)
+      .then((res) => {
+        const list = res.data || [];
+        if (list.length > 0) {
+          setItems(
+            list.map((m, idx) => ({
+              id: m.maMatHang || m.id || idx + 1,
+              ten: m.tenMatHang || m.name || "Món ăn",
+              moTa: m.moTa || m.description || "Món ngon tinh hoa ẩm thực 5 sao",
+              gia: Number(m.giaMatHang ?? m.gia ?? m.price ?? 0),
+              xuatXu:
+                SIGNATURE_FALLBACK[idx % SIGNATURE_FALLBACK.length]?.xuatXu ||
+                "Tuyển chọn thượng hạng",
+              anh:
+                m.anhMinhHoa ||
+                m.anh ||
+                SIGNATURE_FALLBACK[idx % SIGNATURE_FALLBACK.length].anh,
+              nhom:
+                m.loaiMatHang === "THUC_UONG"
+                  ? "Thức uống"
+                  : m.loaiMatHang === "DICH_VU"
                   ? "Dịch vụ"
                   : m.nhom || m.category || "Món chính",
-            isSignature: idx < 3,
-          })),
-        );
-      }
-    });
+              isSignature: idx < 3,
+            })),
+          );
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const categories = [

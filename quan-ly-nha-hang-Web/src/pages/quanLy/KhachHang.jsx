@@ -1,17 +1,29 @@
 import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
-import { layDanhSachKhachHang } from "../../services/khachHang.service";
+import { layDanhSachNguoiDung } from "../../services/nguoiDung.service";
 import { dinhDangTien } from "../../utils/dinhDang";
 function Customers() {
   const [customers, setCustomers] = useState([]);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    layDanhSachKhachHang().then((data) => {
-      if (data && data.length > 0) {
-        setCustomers(data);
-      }
-    });
+    layDanhSachNguoiDung()
+      .then((data) => {
+        if (data && data.length > 0) {
+          setCustomers(
+            data.map((u) => ({
+              id: u.maNguoiDung,
+              name: u.hoTen || u.taiKhoan || "Khách hàng",
+              phone: u.soDienThoai || "—",
+              email: u.email || "—",
+              totalOrders: u.soDonHang || 0,
+              totalSpent: u.tongChiTieu || 0,
+              lastVisit: u.ngayTao ? String(u.ngayTao).slice(0, 10) : "2026-01-01",
+            })),
+          );
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const filtered = customers.filter(
