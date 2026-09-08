@@ -24,4 +24,6 @@ hs_err_pid*
 replay_pid*
 
 .idea
-QUY_TAC_PROJECT.md
+
+.vscode/
+GEMINI.md
