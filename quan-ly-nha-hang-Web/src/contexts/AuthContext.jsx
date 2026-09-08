@@ -13,7 +13,8 @@ export function AuthProvider({ children }) {
   const taiThongTinNguoiDung = async () => {
     if (layToken()) {
       try {
-        const duLieu = await thongTinCuaToi().then(setNguoiDung(duLieu));
+        const duLieu = await thongTinCuaToi();
+        setNguoiDung(duLieu);
       } catch {
         setNguoiDung(null);
       }
@@ -31,7 +32,7 @@ export function AuthProvider({ children }) {
     try {
       await authDangXuat();
     } catch {
-      // Bo qua loi dang xuat tu mang
+      // bo qua loi dang xuat tu mang
     }
     setNguoiDung(null);
   };
@@ -40,6 +41,7 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         nguoiDung,
+        setNguoiDung,
         loading,
         isAuth: !!nguoiDung,
         dangXuat,

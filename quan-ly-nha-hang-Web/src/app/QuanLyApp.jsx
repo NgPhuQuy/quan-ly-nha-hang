@@ -10,7 +10,6 @@ const DanhSachHoaDon = lazy(() => import("../pages/quanLy/DanhSachHoaDon"));
 const TaoHoaDon = lazy(() => import("../pages/quanLy/TaoHoaDon"));
 const ChiTietHoaDon = lazy(() => import("../pages/quanLy/ChiTietHoaDon"));
 const ThucDon = lazy(() => import("../pages/quanLy/ThucDon"));
-const BaoCao = lazy(() => import("../pages/quanLy/BaoCao"));
 const ChiNhanh = lazy(() => import("../pages/quanLy/ChiNhanh"));
 const TaiKhoan = lazy(() => import("../pages/quanLy/TaiKhoan"));
 const KhachHang = lazy(() => import("../pages/quanLy/KhachHang"));
@@ -19,48 +18,41 @@ const DatLich = lazy(() => import("../pages/quanLy/DatLich"));
 const CaiDat = lazy(() => import("../pages/quanLy/CaiDat"));
 
 const pageTitles = {
-  dashboard: "Tổng quan",
   bao_cao_tong_quan: "Tổng quan",
-  invoices: "Hóa đơn",
   hoa_don: "Hóa đơn",
-  "create-invoice": "Tạo hóa đơn",
-  "invoice-detail": "Chi tiết hóa đơn",
-  food: "Mặt hàng & Món ăn",
-  "income-expense": "Thu chi",
-  reports: "Báo cáo",
-  tables: "Bàn",
-  branches: "Chi nhánh",
-  users: "Tài khoản",
-  customers: "Khách hàng",
-  bookings: "Đặt lịch",
-  settings: "Cài đặt",
+  tao_hoa_don: "Tạo hóa đơn",
+  chi_tiet_hoa_don: "Chi tiết hóa đơn",
+  mon_an: "Mặt hàng & Món ăn",
+  ban: "Bàn",
+  chi_nhanh: "Chi nhánh",
+  tai_khoan: "Tài khoản",
+  khach_hang: "Khách hàng",
+  dat_lich: "Đặt lịch",
+  cai_dat: "Cài đặt",
 };
 
 const pages = {
-  dashboard: TongQuan,
   bao_cao_tong_quan: TongQuan,
-  invoices: DanhSachHoaDon,
   hoa_don: DanhSachHoaDon,
-  "create-invoice": TaoHoaDon,
-  "invoice-detail": ChiTietHoaDon,
-  food: ThucDon,
-  reports: BaoCao,
-  tables: DanhSachBan,
-  branches: ChiNhanh,
-  users: TaiKhoan,
-  customers: KhachHang,
-  bookings: DatLich,
-  settings: CaiDat,
+  tao_hoa_don: TaoHoaDon,
+  chi_tiet_hoa_don: ChiTietHoaDon,
+  mon_an: ThucDon,
+  ban: DanhSachBan,
+  chi_nhanh: ChiNhanh,
+  tai_khoan: TaiKhoan,
+  khach_hang: KhachHang,
+  dat_lich: DatLich,
+  cai_dat: CaiDat,
 };
 
 export default function QuanLyApp({
-  initialPage = "dashboard",
+  initialPage = "bao_cao_tong_quan",
   onNavigate,
   onQuayVeTrangChu,
 }) {
   const { isAuth: daXacThuc, dangXuat: handleDangXuat } = useAuth();
   const [page, setPage] = useState(initialPage);
-  const [selectedInvoiceId, setSelectedInvoiceId] = useState("");
+  const [selectedMaHoaDon, setSelectedMaHoaDon] = useState("");
   const [chiNhanhs, setChiNhanhs] = useState([]);
   const [dangTaiChiNhanh, setDangTaiChiNhanh] = useState(false);
 
@@ -77,13 +69,17 @@ export default function QuanLyApp({
   }, []);
 
   useEffect(() => {
-    if (daXacThuc) {
+    if (!daXacThuc) return undefined;
+
+    const timeoutId = setTimeout(() => {
       taiChiNhanh();
-    }
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, [daXacThuc, taiChiNhanh]);
 
   const Page = pages[page] || TongQuan;
-  const noHeader = page === "create-invoice";
+  const noHeader = page === "tao_hoa_don";
 
   const handleDangNhapThanhCong = () => {
     setPage("dashboard");
@@ -108,8 +104,8 @@ export default function QuanLyApp({
     branches: chiNhanhs,
     loadingBranches: dangTaiChiNhanh,
     onRefreshBranches: taiChiNhanh,
-    ...(page === "invoice-detail" ? { invoiceId: selectedInvoiceId } : {}),
-    ...(page === "invoices" ? { onSelectInvoice: setSelectedInvoiceId } : {}),
+    ...(page === pages.chi_tiet_hoa_don ? { invoiceId: selectedMaHoaDon } : {}),
+    ...(page === pages.hoa_don ? { onSelectInvoice: setSelectedMaHoaDon } : {}),
   };
 
   return (

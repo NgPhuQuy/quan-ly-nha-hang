@@ -9,11 +9,14 @@ import {
   Phone,
   Mail,
 } from "lucide-react";
+
 import { useAuth } from "../../contexts/AuthContext";
+
 import {
   dangNhap as authDangNhap,
   dangKy as authDangKy,
 } from "../../services/xacThuc.service";
+
 import { layThongBaoLoi } from "../../utils/apiError";
 
 function TrangXacThuc({
@@ -21,15 +24,15 @@ function TrangXacThuc({
   onDangNhapThanhCong,
   onQuayVeTrangChu,
 }) {
-  const { setUser, taiLaiThongTin } = useAuth();
-  const [tab, setTab] = useState(defaultTab); // "login" | "register"
+  const { taiThongTinNguoiDung } = useAuth();
 
-  // Login form state
+  const [tab, setTab] = useState(defaultTab);
+
   const [taiKhoan, setTaiKhoan] = useState("");
   const [matKhau, setMatKhau] = useState("");
   const [hienMatKhau, setHienMatKhau] = useState(false);
 
-  // Register form state
+
   const [regHo, setRegHo] = useState("");
   const [regTen, setRegTen] = useState("");
   const [regTaiKhoan, setRegTaiKhoan] = useState("");
@@ -43,10 +46,14 @@ function TrangXacThuc({
   const [thongBaoLoi, setThongBaoLoi] = useState("");
   const [thongBaoThanhCong, setThongBaoThanhCong] = useState("");
 
+
   const handleDangNhap = async (e) => {
     e?.preventDefault();
+
     if (!taiKhoan.trim() || !matKhau.trim()) {
-      setThongBaoLoi("Vui lòng nhập đầy đủ tên tài khoản và mật khẩu!");
+      setThongBaoLoi(
+        "Vui lòng nhập đầy đủ tên tài khoản và mật khẩu!",
+      );
       return;
     }
 
@@ -55,27 +62,27 @@ function TrangXacThuc({
     setThongBaoThanhCong("");
 
     try {
-      const res = await authDangNhap(taiKhoan, matKhau);
-      if (res?.token) {
-        if (res.user) {
-          setUser(res.user);
-          onDangNhapThanhCong?.(res.user);
-        } else {
-          await taiLaiThongTin();
-          onDangNhapThanhCong?.();
-        }
-      }
+      await authDangNhap(taiKhoan, matKhau);
+
+      await taiThongTinNguoiDung();
+
+      onDangNhapThanhCong?.();
     } catch (err) {
       setThongBaoLoi(
-        layThongBaoLoi(err, "Tài khoản hoặc mật khẩu không chính xác!"),
+        layThongBaoLoi(
+          err,
+          "Tài khoản hoặc mật khẩu không chính xác!",
+        ),
       );
     } finally {
       setLoading(false);
     }
   };
 
+
   const handleDangKy = async (e) => {
     e?.preventDefault();
+
     setThongBaoLoi("");
     setThongBaoThanhCong("");
 
@@ -83,22 +90,26 @@ function TrangXacThuc({
       setThongBaoLoi("Vui lòng nhập tên tài khoản!");
       return;
     }
+
     if (!regSdt.trim() || !/^0\d{9}$/.test(regSdt.trim())) {
       setThongBaoLoi(
         "Số điện thoại không hợp lệ (phải bắt đầu bằng số 0 và có đúng 10 số)!",
       );
       return;
     }
+
     if (regMatKhau.length < 8) {
       setThongBaoLoi("Mật khẩu phải có tối thiểu 8 ký tự!");
       return;
     }
+
     if (regMatKhau !== regXacNhanMK) {
       setThongBaoLoi("Xác nhận mật khẩu không khớp!");
       return;
     }
 
     setLoading(true);
+
     try {
       await authDangKy({
         ho: regHo,
@@ -108,35 +119,25 @@ function TrangXacThuc({
         email: regEmail,
         soDienThoai: regSdt,
       });
+      await authDangNhap(regTaiKhoan, regMatKhau);
 
-      // Dang ky thanh cong -> Tu dong dang nhap
-      const loginRes = await authDangNhap(regTaiKhoan, regMatKhau);
-      if (loginRes?.user) {
-        setUser(loginRes.user);
-        onDangNhapThanhCong?.(loginRes.user);
-      } else {
-        await taiLaiThongTin();
-        onDangNhapThanhCong?.();
-      }
+      await taiThongTinNguoiDung();
+
+      onDangNhapThanhCong?.();
     } catch (err) {
       setThongBaoLoi(
-        layThongBaoLoi(err, "Đăng ký không thành công, vui lòng thử lại!"),
+        layThongBaoLoi(
+          err,
+          "Đăng ký không thành công, vui lòng thử lại!",
+        ),
       );
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDienNhanh = (u, p) => {
-    setTaiKhoan(u);
-    setMatKhau(p);
-    setThongBaoLoi("");
-    setThongBaoThanhCong("");
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-[#0c0905] relative overflow-hidden">
-      {/* Background Glow */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none"
         style={{
@@ -146,6 +147,7 @@ function TrangXacThuc({
       />
 
       <div className="w-full max-w-md card-warm rounded-2xl p-6 sm:p-8 relative z-10 border border-[rgba(200,136,42,0.25)] shadow-2xl">
+
         {/* Header */}
         <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[rgba(200,136,42,0.15)] border border-[rgba(200,136,42,0.3)] mb-3">
@@ -155,9 +157,11 @@ function TrangXacThuc({
               <UserPlus size={24} className="text-amber-400" />
             )}
           </div>
+
           <h1 className="font-serif text-2xl text-amber-100 font-bold">
             L'Délice Haute Gastronomie
           </h1>
+
           <p className="text-xs text-[rgba(240,216,144,0.5)] mt-1">
             {tab === "login"
               ? "Đăng nhập hệ thống khách hàng & quản trị nhà hàng"
@@ -165,7 +169,7 @@ function TrangXacThuc({
           </p>
         </div>
 
-        {/* Tab switch */}
+        {/* Tab */}
         <div className="flex rounded-xl bg-[rgba(200,136,42,0.1)] p-1 border border-[rgba(200,136,42,0.2)] mb-5">
           <button
             type="button"
@@ -182,6 +186,7 @@ function TrangXacThuc({
           >
             Đăng nhập
           </button>
+
           <button
             type="button"
             onClick={() => {
@@ -199,30 +204,38 @@ function TrangXacThuc({
           </button>
         </div>
 
-        {/* Error / Success Alerts */}
+        {/* Thông báo */}
         {thongBaoLoi && (
           <div className="mb-4 p-3 rounded-lg text-xs bg-red-950/60 border border-red-500/40 text-red-300 text-center">
             {thongBaoLoi}
           </div>
         )}
+
         {thongBaoThanhCong && (
           <div className="mb-4 p-3 rounded-lg text-xs bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-center">
             {thongBaoThanhCong}
           </div>
         )}
 
-        {/* Form Đăng nhập */}
+        {/* =========================
+            FORM ĐĂNG NHẬP
+        ========================= */}
+
         {tab === "login" && (
           <form onSubmit={handleDangNhap} className="space-y-4">
+
+            {/* Tài khoản */}
             <div>
               <label className="block text-xs font-medium text-[rgba(240,216,144,0.8)] mb-1.5">
                 Tên tài khoản
               </label>
+
               <div className="relative">
                 <User
                   size={16}
                   className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[rgba(200,136,42,0.6)]"
                 />
+
                 <input
                   type="text"
                   value={taiKhoan}
@@ -234,15 +247,18 @@ function TrangXacThuc({
               </div>
             </div>
 
+            {/* Mật khẩu */}
             <div>
               <label className="block text-xs font-medium text-[rgba(240,216,144,0.8)] mb-1.5">
                 Mật khẩu
               </label>
+
               <div className="relative">
                 <Lock
                   size={16}
                   className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[rgba(200,136,42,0.6)]"
                 />
+
                 <input
                   type={hienMatKhau ? "text" : "password"}
                   value={matKhau}
@@ -250,34 +266,48 @@ function TrangXacThuc({
                   placeholder="Nhập mật khẩu..."
                   className="input-warm w-full pl-10 pr-10 py-2.5 text-sm"
                 />
+
                 <button
                   type="button"
                   onClick={() => setHienMatKhau(!hienMatKhau)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[rgba(200,136,42,0.6)] hover:text-amber-300"
                 >
-                  {hienMatKhau ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {hienMatKhau ? (
+                    <EyeOff size={16} />
+                  ) : (
+                    <Eye size={16} />
+                  )}
                 </button>
               </div>
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
               className="btn-primary w-full py-3 rounded-xl text-sm font-semibold mt-2 flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              {loading ? "Đang xác thực..." : "Đăng nhập ngay"}
+              {loading
+                ? "Đang xác thực..."
+                : "Đăng nhập ngay"}
             </button>
           </form>
         )}
 
-        {/* Form Đăng ký */}
+        {/* =========================
+            FORM ĐĂNG KÝ
+        ========================= */}
+
         {tab === "register" && (
           <form onSubmit={handleDangKy} className="space-y-3">
+
+            {/* Họ + Tên */}
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="block text-[11px] font-medium text-[rgba(240,216,144,0.8)] mb-1">
                   Họ
                 </label>
+
                 <input
                   type="text"
                   value={regHo}
@@ -286,10 +316,12 @@ function TrangXacThuc({
                   className="input-warm w-full px-3 py-2 text-xs"
                 />
               </div>
+
               <div>
                 <label className="block text-[11px] font-medium text-[rgba(240,216,144,0.8)] mb-1">
                   Tên
                 </label>
+
                 <input
                   type="text"
                   value={regTen}
@@ -300,15 +332,19 @@ function TrangXacThuc({
               </div>
             </div>
 
+            {/* Tài khoản */}
             <div>
               <label className="block text-[11px] font-medium text-[rgba(240,216,144,0.8)] mb-1">
-                Tên tài khoản <span className="text-amber-400">*</span>
+                Tên tài khoản{" "}
+                <span className="text-amber-400">*</span>
               </label>
+
               <div className="relative">
                 <User
                   size={14}
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-[rgba(200,136,42,0.6)]"
                 />
+
                 <input
                   type="text"
                   value={regTaiKhoan}
@@ -320,15 +356,19 @@ function TrangXacThuc({
               </div>
             </div>
 
+            {/* Số điện thoại */}
             <div>
               <label className="block text-[11px] font-medium text-[rgba(240,216,144,0.8)] mb-1">
-                Số điện thoại <span className="text-amber-400">*</span>
+                Số điện thoại{" "}
+                <span className="text-amber-400">*</span>
               </label>
+
               <div className="relative">
                 <Phone
                   size={14}
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-[rgba(200,136,42,0.6)]"
                 />
+
                 <input
                   type="tel"
                   value={regSdt}
@@ -340,15 +380,18 @@ function TrangXacThuc({
               </div>
             </div>
 
+            {/* Email */}
             <div>
               <label className="block text-[11px] font-medium text-[rgba(240,216,144,0.8)] mb-1">
                 Email
               </label>
+
               <div className="relative">
                 <Mail
                   size={14}
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-[rgba(200,136,42,0.6)]"
                 />
+
                 <input
                   type="email"
                   value={regEmail}
@@ -359,16 +402,19 @@ function TrangXacThuc({
               </div>
             </div>
 
+            {/* Mật khẩu */}
             <div>
               <label className="block text-[11px] font-medium text-[rgba(240,216,144,0.8)] mb-1">
                 Mật khẩu (tối thiểu 8 ký tự){" "}
                 <span className="text-amber-400">*</span>
               </label>
+
               <div className="relative">
                 <Lock
                   size={14}
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-[rgba(200,136,42,0.6)]"
                 />
+
                 <input
                   type={hienRegMK ? "text" : "password"}
                   value={regMatKhau}
@@ -377,20 +423,28 @@ function TrangXacThuc({
                   className="input-warm w-full pl-8 pr-8 py-2 text-xs"
                   required
                 />
+
                 <button
                   type="button"
                   onClick={() => setHienRegMK(!hienRegMK)}
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[rgba(200,136,42,0.6)] hover:text-amber-300"
                 >
-                  {hienRegMK ? <EyeOff size={14} /> : <Eye size={14} />}
+                  {hienRegMK ? (
+                    <EyeOff size={14} />
+                  ) : (
+                    <Eye size={14} />
+                  )}
                 </button>
               </div>
             </div>
 
+            {/* Xác nhận mật khẩu */}
             <div>
               <label className="block text-[11px] font-medium text-[rgba(240,216,144,0.8)] mb-1">
-                Xác nhận mật khẩu <span className="text-amber-400">*</span>
+                Xác nhận mật khẩu{" "}
+                <span className="text-amber-400">*</span>
               </label>
+
               <input
                 type={hienRegMK ? "text" : "password"}
                 value={regXacNhanMK}
@@ -401,49 +455,20 @@ function TrangXacThuc({
               />
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
               className="btn-primary w-full py-2.5 rounded-xl text-xs font-semibold mt-2 flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              {loading ? "Đang tạo tài khoản..." : "Đăng ký thành viên"}
+              {loading
+                ? "Đang tạo tài khoản..."
+                : "Đăng ký thành viên"}
             </button>
           </form>
         )}
 
-        {/* Tài khoản mẫu đăng nhập nhanh */}
-        {tab === "login" && (
-          <div className="mt-5 pt-3 border-t border-[rgba(200,136,42,0.12)]">
-            <p className="text-[11px] text-[rgba(240,216,144,0.4)] text-center mb-2 font-medium">
-              Tài khoản thử nghiệm nhanh:
-            </p>
-            <div className="flex justify-center gap-1.5 flex-wrap">
-              <button
-                type="button"
-                onClick={() => handleDienNhanh("admin", "12345678")}
-                className="text-[11px] px-2.5 py-1 rounded bg-[rgba(200,136,42,0.1)] border border-[rgba(200,136,42,0.25)] text-amber-200/80 hover:bg-amber-500/20 transition-colors"
-              >
-                Admin
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDienNhanh("quanly", "12345678")}
-                className="text-[11px] px-2.5 py-1 rounded bg-[rgba(200,136,42,0.1)] border border-[rgba(200,136,42,0.25)] text-amber-200/80 hover:bg-amber-500/20 transition-colors"
-              >
-                Quản lý
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDienNhanh("nhanvien", "12345678")}
-                className="text-[11px] px-2.5 py-1 rounded bg-[rgba(200,136,42,0.1)] border border-[rgba(200,136,42,0.25)] text-amber-200/80 hover:bg-amber-500/20 transition-colors"
-              >
-                Nhân viên
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Nút về trang chủ */}
+        {/* Về trang chủ */}
         {onQuayVeTrangChu && (
           <div className="mt-4 text-center">
             <button

@@ -9,7 +9,7 @@ import XacNhanDatBan from "../../components/landing/booking/XacNhanDatBan";
 import { ArrowLeft, PhoneCall, Sparkles, ShieldCheck } from "lucide-react";
 
 function TrangDatBan({ onQuayLai }) {
-  const booking = useDatLich();
+  const datLich = useDatLich();
 
   return (
     <div className="min-h-screen bg-[#0a0704] text-amber-100 flex flex-col justify-between selection:bg-amber-500 selection:text-black">
@@ -52,51 +52,51 @@ function TrangDatBan({ onQuayLai }) {
 
       {/* Main Content */}
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 flex-1 w-full">
-        <TienTrinhDatBan currentStep={booking.step} />
+        <TienTrinhDatBan currentStep={datLich.step} />
 
-        {booking.step < 5 ? (
+        {datLich.step < 5 ? (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] items-start">
             <div className="w-full">
-              <div key={booking.step} className="step-transition">
-                {booking.step === 1 && (
+              <div key={datLich.step} className="step-transition">
+                {datLich.step === 1 && (
                   <ChonChiNhanh
-                    branches={booking.branches}
-                    branchId={booking.branchId}
-                    setBranchId={booking.setBranchId}
-                    date={booking.date}
-                    setDate={booking.setDate}
-                    guestCount={booking.guestCount}
-                    setGuestCount={booking.setGuestCount}
-                    onTiepTuc={() => booking.setStep(2)}
+                    branches={datLich.branches}
+                    branchId={datLich.branchId}
+                    setBranchId={datLich.setBranchId}
+                    date={datLich.date}
+                    setDate={datLich.setDate}
+                    guestCount={datLich.guestCount}
+                    setGuestCount={datLich.setGuestCount}
+                    onTiepTuc={() => datLich.setStep(2)}
                   />
                 )}
-                {booking.step === 2 && (
+                {datLich.step === 2 && (
                   <ChonKhungGio
-                    timeSlots={booking.timeSlots}
-                    selectedTime={booking.selectedTime}
-                    setSelectedTime={booking.setSelectedTime}
-                    onTiepTuc={() => booking.setStep(3)}
-                    onQuayLai={() => booking.setStep(1)}
+                    timeSlots={datLich.timeSlots}
+                    selectedTime={datLich.selectedTime}
+                    setSelectedTime={datLich.setSelectedTime}
+                    onTiepTuc={() => datLich.setStep(3)}
+                    onQuayLai={() => datLich.setStep(1)}
                   />
                 )}
-                {booking.step === 3 && (
+                {datLich.step === 3 && (
                   <ChonMonAn
-                    menuItems={booking.menuItems}
-                    selectedItems={booking.selectedItems}
-                    setSelectedItems={booking.setSelectedItems}
-                    onTiepTuc={() => booking.setStep(4)}
-                    onQuayLai={() => booking.setStep(2)}
+                    menuItems={datLich.menuItems}
+                    selectedItems={datLich.selectedItems}
+                    setSelectedItems={datLich.setSelectedItems}
+                    onTiepTuc={() => datLich.setStep(4)}
+                    onQuayLai={() => datLich.setStep(2)}
                   />
                 )}
-                {booking.step === 4 && (
+                {datLich.step === 4 && (
                   <ThongTinKhachHang
-                    additionalServices={booking.additionalServices}
-                    guestDetails={booking.guestDetails}
-                    setGuestDetails={booking.setGuestDetails}
-                    selectedServices={booking.selectedServices}
-                    setSelectedServices={booking.setSelectedServices}
-                    onXacNhan={booking.handleDatLich}
-                    onQuayLai={() => booking.setStep(3)}
+                    additionalServices={datLich.additionalServices}
+                    guestDetails={datLich.guestDetails}
+                    setGuestDetails={datLich.setGuestDetails}
+                    selectedServices={datLich.selectedServices}
+                    setSelectedServices={datLich.setSelectedServices}
+                    onXacNhan={datLich.handleDatLich}
+                    onQuayLai={() => datLich.setStep(3)}
                   />
                 )}
               </div>
@@ -104,27 +104,27 @@ function TrangDatBan({ onQuayLai }) {
 
             {/* Sidebar Summary */}
             <TomTatDatBan
-              branch={booking.selectedBranch}
-              date={booking.date}
-              time={booking.selectedTime}
-              guestCount={booking.guestCount}
-              selectedItems={booking.selectedItems}
-              selectedServices={booking.selectedServices}
-              menuItems={booking.menuItems}
-              additionalServices={booking.additionalServices}
+              branch={datLich.selectedBranch}
+              date={datLich.date}
+              time={datLich.selectedTime}
+              guestCount={datLich.guestCount}
+              selectedItems={datLich.selectedItems}
+              selectedServices={datLich.selectedServices}
+              menuItems={datLich.menuItems}
+              additionalServices={datLich.additionalServices}
             />
           </div>
         ) : (
           <div key="step-5-confirmation" className="step-transition">
             <XacNhanDatBan
-              bookingCode={booking.bookingCode}
-              branch={booking.selectedBranch}
-              time={booking.selectedTime}
-              date={booking.date}
-              guestCount={booking.guestCount}
-              guestDetails={booking.guestDetails}
-              totalAmount={booking.totalAmount}
-              onDatLai={booking.handleDatLai}
+              bookingCode={datLich.bookingCode}
+              branch={datLich.selectedBranch}
+              time={datLich.selectedTime}
+              date={datLich.date}
+              guestCount={datLich.guestCount}
+              guestDetails={datLich.guestDetails}
+              totalAmount={datLich.totalAmount}
+              onDatLai={datLich.handleDatLai}
               onVeTrangChu={onQuayLai}
             />
           </div>

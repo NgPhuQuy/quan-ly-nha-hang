@@ -58,7 +58,7 @@ function TrangKhongCoQuyen({ onQuayVeTrangChu, onDangNhapKhac }) {
           <div className="mb-8 p-3 rounded-xl bg-white/5 border border-white/10 text-xs text-amber-200/80 flex items-center justify-between">
             <span className="text-amber-200/60">Vai trò hiện tại:</span>
             <span className="font-bold text-amber-400 uppercase tracking-wider">
-              {user.vaiTro || "Khách hàng"}
+              {user.vaiTro}
             </span>
           </div>
         )}

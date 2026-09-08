@@ -2,7 +2,6 @@ import { lazy, Suspense, useEffect, useState } from "react";
 
 const TrangChu = lazy(() => import("../pages/landing/TrangChu"));
 const TrangDatBan = lazy(() => import("../pages/landing/TrangDatBan"));
-const TrangTraCuu = lazy(() => import("../pages/landing/TrangTraCuu"));
 const TrangXacThuc = lazy(() => import("../pages/landing/TrangXacThuc"));
 const TrangKhongCoQuyen = lazy(() => import("../pages/landing/TrangKhongCoQuyen"));
 const QuanLyApp = lazy(() => import("./QuanLyApp"));
@@ -91,12 +90,9 @@ function Router() {
     />
   ) : manHinh === "booking" ? (
     <TrangDatBan onQuayLai={() => dieuHuong("home")} />
-  ) : manHinh === "lookup" ? (
-    <TrangTraCuu onQuayLai={() => dieuHuong("home")} />
   ) : (
     <TrangChu
       onDatBan={() => dieuHuong("booking")}
-      onTraCuuDatBan={() => dieuHuong("lookup")}
       onDangNhap={() => dieuHuong("login")}
       onDangKy={() => dieuHuong("register")}
     />

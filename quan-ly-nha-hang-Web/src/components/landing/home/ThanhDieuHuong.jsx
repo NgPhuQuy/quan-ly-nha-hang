@@ -2,16 +2,14 @@ import { useState, useEffect } from "react";
 import {
   User,
   LogOut,
-  Shield,
   Menu,
   X,
   Calendar,
-  Search,
   Sparkles,
 } from "lucide-react";
 import { useAuth } from "../../../contexts/AuthContext";
 
-function ThanhDieuHuong({ onDatBan, onTraCuuDatBan, onDangNhap }) {
+function ThanhDieuHuong({ onDatBan, onDangNhap }) {
   const {
     user: nguoiDung,
     isAuth: daDangNhap,
@@ -32,10 +30,6 @@ function ThanhDieuHuong({ onDatBan, onTraCuuDatBan, onDangNhap }) {
   const handleDatBan = () => {
     handleDongMenu();
     onDatBan();
-  };
-  const handleTraCuuDatBan = () => {
-    handleDongMenu();
-    onTraCuuDatBan();
   };
   const handleDangNhap = () => {
     handleDongMenu();
@@ -100,13 +94,6 @@ function ThanhDieuHuong({ onDatBan, onTraCuuDatBan, onDangNhap }) {
               >
                 Hỏi đáp
               </a>
-              <button
-                onClick={handleTraCuuDatBan}
-                className="flex items-center gap-1.5 hover:text-amber-300 transition-colors text-amber-200/90 cursor-pointer"
-              >
-                <Search size={14} className="text-amber-400" />
-                Tra cứu đặt bàn
-              </button>
             </div>
 
             {/* Desktop Actions */}
@@ -241,13 +228,6 @@ function ThanhDieuHuong({ onDatBan, onTraCuuDatBan, onDangNhap }) {
                 >
                   Những điều quan tâm (FAQ)
                 </a>
-                <button
-                  onClick={handleTraCuuDatBan}
-                  className="flex items-center gap-2 py-2 text-left hover:text-amber-300 transition-colors border-b border-white/5"
-                >
-                  <Search size={15} className="text-amber-400" />
-                  Tra cứu đặt bàn
-                </button>
               </nav>
             </div>
 

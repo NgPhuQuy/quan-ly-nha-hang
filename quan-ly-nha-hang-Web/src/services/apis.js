@@ -18,7 +18,6 @@ apis.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Bắt lỗi 401 khi Token hết hạn
 apis.interceptors.response.use(
   (response) => response,
   (error) => {

@@ -1,6 +1,6 @@
-import { Calendar, Search, PhoneCall, Sparkles } from "lucide-react";
+import { Calendar, PhoneCall, Sparkles } from "lucide-react";
 
-function DatBan({ onDatBan, onTraCuuDatBan }) {
+function DatBan({ onDatBan }) {
   return (
     <section className="px-4 py-24 sm:px-6 lg:px-8 bg-transparent relative overflow-hidden scroll-mt-16">
 
@@ -32,14 +32,6 @@ function DatBan({ onDatBan, onTraCuuDatBan }) {
             >
               <Calendar className="w-4 h-4" />
               <span>Đặt bàn trực tuyến</span>
-            </button>
-
-            <button
-              onClick={onTraCuuDatBan}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-full text-xs sm:text-sm font-semibold text-amber-200 border border-amber-500/35 bg-white/5 hover:bg-amber-500/15 hover:border-amber-400 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg"
-            >
-              <Search className="w-4 h-4 text-amber-400" />
-              <span>Tra cứu lịch đặt</span>
             </button>
           </div>
 

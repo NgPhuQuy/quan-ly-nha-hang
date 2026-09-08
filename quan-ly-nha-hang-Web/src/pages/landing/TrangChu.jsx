@@ -13,10 +13,8 @@ import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
 
 function TrangChu({
   onDatBan,
-  onTraCuuDatBan,
   onDangNhap,
   onBookTable,
-  onLookupBooking,
 }) {
   const [chiNhanhs, setChiNhanhs] = useState([]);
 
@@ -31,7 +29,6 @@ function TrangChu({
   }, []);
 
   const handleDatBan = onDatBan || onBookTable;
-  const handleTraCuuDatBan = onTraCuuDatBan || onLookupBooking;
 
   return (
     <div className="bg-[#080604] text-amber-100 min-h-screen relative">
@@ -40,7 +37,6 @@ function TrangChu({
 
       <ThanhDieuHuong
         onDatBan={handleDatBan}
-        onTraCuuDatBan={handleTraCuuDatBan}
         onDangNhap={onDangNhap}
       />
       <PhanDauTrang onDatBan={handleDatBan} branches={chiNhanhs} />
@@ -61,7 +57,7 @@ function TrangChu({
       <CauHoiThuongGap />
 
       <DauNoiSection nhan="Đặt Bàn Trực Tuyến" />
-      <DatBan onDatBan={handleDatBan} onTraCuuDatBan={handleTraCuuDatBan} />
+      <DatBan onDatBan={handleDatBan} />
 
       <ChanTrang />
     </div>
