@@ -44,12 +44,18 @@ public class DatLichService {
 
     @Transactional
     public DatLichResponse datLich(DatLichRequest request, Integer maNguoiDung) {
-        NguoiDung nguoiDung = nguoiDungService.layNguoiDungTheoId(maNguoiDung);
         ChiNhanh chiNhanh = chiNhanhService.layChiNhanhTheoId(request.maChiNhanh());
 
         if (validateNgayGioDatLich(request, chiNhanh)) {
             throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
         }
+        Long soLuongDonConLai = datLichRepository.countDatLichTheoNgayGio(chiNhanh, request.ngay(), request.gio());
+
+        if(soLuongDonConLai <= 0){
+            throw new AppException(ErrorCode.CAPACITY_EXCEEDED);
+        }
+
+        NguoiDung nguoiDung = nguoiDungService.layNguoiDungTheoId(maNguoiDung);
 
         DatLich datLich = DatLich.builder()
                 .nguoiDung(nguoiDung)
@@ -81,7 +87,7 @@ public class DatLichService {
     }
 
     public List<KhungGioResponse> layKhungGio(Integer maChiNhanh, LocalDate ngay) {
-        return datLichRepository.countDatLichTheoGio(maChiNhanh, ngay);
+        return datLichRepository.countDatLichChiNhanhTrongNgay(maChiNhanh, ngay);
     }
 
     public List<DatLichResponse> layDSDatLich() {
