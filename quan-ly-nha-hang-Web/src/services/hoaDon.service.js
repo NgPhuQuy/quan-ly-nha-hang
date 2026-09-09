@@ -25,7 +25,10 @@ export const xoaHoaDon = async (maHoaDon) => {
   return res.data;
 };
 
-export const chinhSuaHoaDon = async (maHoaDon, data) => {
-  const res = await apis.patch(endpoints.chi_tiet_hoa_don(maHoaDon), data);
+export const goiThemMon = async (maHoaDon, data) => {
+  const res = await apis.post(endpoints.chi_tiet_hoa_don(maHoaDon), data);
   return res.data;
 };
+
+export const chinhSuaHoaDon = goiThemMon;
+

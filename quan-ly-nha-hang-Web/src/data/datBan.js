@@ -1,0 +1,138 @@
+import { ANH } from "../assets/anh";
+
+export const DICH_VU_BO_SUNG = [
+  {
+    id: "hoa",
+    ten: "Trang trí hoa tươi bàn tiệc",
+    gia: 150000,
+    bieuTuong: "🌷",
+  },
+  {
+    id: "banh",
+    ten: "Bánh kem chúc mừng nghệ thuật",
+    gia: 350000,
+    bieuTuong: "🎂",
+  },
+  {
+    id: "ruou",
+    ten: "Rượu vang khai vị cao cấp",
+    gia: 480000,
+    bieuTuong: "🍷",
+  },
+  {
+    id: "anh",
+    ten: "Chụp ảnh lưu niệm Polaroid",
+    gia: 200000,
+    bieuTuong: "📸",
+  },
+];
+
+export const MON_AN = [
+  {
+    id: "m1",
+    ten: "Gỏi cuốn tôm thịt ngũ sắc",
+    moTa: "Tôm sú tươi, thịt ba chỉ, bún tươi và rau thơm hảo hạng",
+    gia: 95000,
+    anh: ANH.monMenu4,
+    nhom: "Khai vị",
+  },
+  {
+    id: "m2",
+    ten: "Chả giò hải sản hoàng kim",
+    moTa: "Tôm, mực, cua bể trong lớp vỏ giòn rụm",
+    gia: 115000,
+    anh: ANH.monMenu2,
+    nhom: "Khai vị",
+  },
+  {
+    id: "m3",
+    ten: "Súp bào ngư vi cá thượng hạng",
+    moTa: "Bào ngư tươi, vi cá, nấm đông cô hầm nước cốt gà 12 giờ",
+    gia: 185000,
+    anh: ANH.monMenu3,
+    nhom: "Khai vị",
+  },
+  {
+    id: "m4",
+    ten: "Bò Wagyu A5 nướng đá nham thạch",
+    moTa: "Bò Wagyu A5 Nhật Bản kèm sốt nấm truffle",
+    gia: 890000,
+    anh: ANH.monAn2,
+    nhom: "Món chính",
+  },
+  {
+    id: "m5",
+    ten: "Tôm hùm Alaska đút lò phô mai",
+    moTa: "Tôm hùm 600g, phô mai Mozzarella Pháp và bơ tỏi",
+    gia: 750000,
+    anh: ANH.monAn1,
+    nhom: "Món chính",
+  },
+  {
+    id: "m6",
+    ten: "Bouillabaisse Hoàng Gia L'Délice Đặc Biệt",
+    moTa: "Súp hải sản truyền thống Pháp, saffron hảo hạng và thảo mộc Provençal",
+    gia: 680000,
+    anh: ANH.monAn3,
+    nhom: "Món chính",
+  },
+  {
+    id: "m7",
+    ten: "Cá chẽm hấp sốt tương Hong Kong",
+    moTa: "Cá chẽm phi lê tươi cùng sốt tương gừng hành",
+    gia: 420000,
+    anh: ANH.monMenu1,
+    nhom: "Món chính",
+  },
+  {
+    id: "m8",
+    ten: "Cơm chiên hải sản hoàng bào",
+    moTa: "Tôm, mực, thịt cua và trứng muối bùi ngậy",
+    gia: 195000,
+    anh: ANH.monMenu3,
+    nhom: "Món chính",
+  },
+  {
+    id: "m9",
+    ten: "Bánh Flan cà phê caramel",
+    moTa: "Flan sữa mềm mịn đượm vị cà phê nguyên chất",
+    gia: 75000,
+    anh: ANH.monMenu2,
+    nhom: "Tráng miệng",
+  },
+  {
+    id: "m10",
+    ten: "Chè yến hạt sen ngũ bảo",
+    moTa: "Yến sào, hạt sen Huế, long nhãn và nước cốt dừa",
+    gia: 85000,
+    anh: ANH.monMenu4,
+    nhom: "Tráng miệng",
+  },
+  {
+    id: "m11",
+    ten: "Rượu vang đỏ Bordeaux Pháp",
+    moTa: "Bordeaux AOP nhập khẩu niên vụ 2020",
+    gia: 185000,
+    anh: ANH.monMenu6,
+    nhom: "Đồ uống",
+  },
+  {
+    id: "m12",
+    ten: "Nước ép trái cây nhiệt đới",
+    moTa: "Cam sành, dứa mật, dưa hấu hoặc xoài cát",
+    gia: 65000,
+    anh: ANH.monMenu5,
+    nhom: "Đồ uống",
+  },
+];
+
+export const DIP_DAT_BAN = [
+  { id: "khong", ten: "Không có dịp đặc biệt" },
+  { id: "sinhNhat", ten: "Sinh nhật" },
+  { id: "kyNiem", ten: "Kỷ niệm ngày cưới" },
+  { id: "cauHon", ten: "Cầu hôn / Hẹn hò" },
+  { id: "tiepKhach", ten: "Gặp gỡ đối tác" },
+  { id: "giaDinh", ten: "Tiệc gia đình" },
+];
+
+
