@@ -76,7 +76,7 @@ public class DatLichService {
 
     private boolean validateNgayGioDatLich(DatLichRequest request, ChiNhanh chiNhanh) {
         return request.ngay().isBefore(LocalDate.now()) ||
-                request.ngay().isEqual(LocalDate.now()) && request.gio().isBefore(LocalTime.now()) ||
+                request.ngay().isEqual(LocalDate.now()) && request.gio().isBefore(LocalTime.now().plusHours(3)) ||
                 request.gio().isBefore(chiNhanh.getGioHoatDong()) || request.gio().isAfter(chiNhanh.getGioDongCua());
     }
 
