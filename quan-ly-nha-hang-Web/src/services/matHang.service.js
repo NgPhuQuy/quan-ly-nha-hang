@@ -16,7 +16,7 @@ export const layChiTietMonAn = async (id) => {
 };
 
 export const taoMonAn = async (formData) => {
-  const res = await apis.post(endpoints.foods, formData, {
+  const res = await apis.post(endpoints.mat_hang, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return res.data;
