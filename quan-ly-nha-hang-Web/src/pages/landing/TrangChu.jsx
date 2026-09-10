@@ -9,17 +9,18 @@ import CauHoiThuongGap from "../../components/landing/home/CauHoiThuongGap";
 import DatBan from "../../components/landing/home/DatBan";
 import ChanTrang from "../../components/landing/home/ChanTrang";
 import KetNoiKhongGian, { DauNoiSection } from "../../components/landing/home/KetNoiKhongGian";
-import { layDanhSachChiNhanh } from "../../services/chiNhanh.service";
+import { layDanhSachChiNhanhPublic } from "../../services/chiNhanh.service";
 
 function TrangChu({
   onDatBan,
   onDangNhap,
   onBookTable,
+  onLichDatCuaToi,
 }) {
   const [chiNhanhs, setChiNhanhs] = useState([]);
 
   useEffect(() => {
-    layDanhSachChiNhanh()
+    layDanhSachChiNhanhPublic()
       .then((data) => {
         setChiNhanhs(Array.isArray(data) ? data : []);
       })
@@ -38,6 +39,7 @@ function TrangChu({
       <ThanhDieuHuong
         onDatBan={handleDatBan}
         onDangNhap={onDangNhap}
+        onLichDatCuaToi={onLichDatCuaToi}
       />
       <PhanDauTrang onDatBan={handleDatBan} branches={chiNhanhs} />
 

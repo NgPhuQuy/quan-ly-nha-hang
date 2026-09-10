@@ -34,7 +34,7 @@ public interface DatLichRepository extends JpaRepository<DatLich, Integer> {
             GROUP BY d.gio
             ORDER BY d.gio
 """)
-    Long countDatLichTheoNgayGio(@Param("maChiNhanh") ChiNhanh chiNhanh,
+    Long countDatLichTheoNgayGio(@Param("chiNhanh") ChiNhanh chiNhanh,
                                  @Param("ngay") LocalDate ngay,
                                  @Param("gio") LocalTime gio);
 }

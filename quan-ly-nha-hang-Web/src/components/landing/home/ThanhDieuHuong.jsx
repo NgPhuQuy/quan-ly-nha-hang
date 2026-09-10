@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../../contexts/AuthContext";
 
-function ThanhDieuHuong({ onDatBan, onDangNhap }) {
+function ThanhDieuHuong({ onDatBan, onDangNhap, onLichDatCuaToi }) {
   const {
     nguoiDung,
     isAuth: daDangNhap,
@@ -30,6 +30,10 @@ function ThanhDieuHuong({ onDatBan, onDangNhap }) {
   const handleDatBan = () => {
     handleDongMenu();
     onDatBan();
+  };
+  const handleLichDat = () => {
+    handleDongMenu();
+    onLichDatCuaToi?.();
   };
   const handleDangNhap = () => {
     handleDongMenu();
@@ -94,6 +98,13 @@ function ThanhDieuHuong({ onDatBan, onDangNhap }) {
               >
                 Hỏi đáp
               </a>
+              <button
+                onClick={handleLichDat}
+                className="hover:text-amber-300 transition-colors relative py-1 hover:after:w-full after:w-0 after:h-0.5 after:bg-amber-400 after:absolute after:bottom-0 after:left-0 after:transition-all flex items-center gap-1.5 cursor-pointer text-amber-200/90 font-medium"
+              >
+                <Calendar size={14} className="text-amber-400" />
+                <span>Lịch đặt của tôi</span>
+              </button>
             </div>
 
             {/* Desktop Actions */}
@@ -228,6 +239,13 @@ function ThanhDieuHuong({ onDatBan, onDangNhap }) {
                 >
                   Những điều quan tâm (FAQ)
                 </a>
+                <button
+                  onClick={handleLichDat}
+                  className="py-2 hover:text-amber-300 transition-colors border-b border-white/5 text-left flex items-center gap-2 text-amber-300 font-medium cursor-pointer"
+                >
+                  <Calendar size={15} className="text-amber-400" />
+                  <span>Lịch đặt của tôi</span>
+                </button>
               </nav>
             </div>
 

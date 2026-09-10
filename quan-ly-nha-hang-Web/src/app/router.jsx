@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 
 const TrangChu = lazy(() => import("../pages/landing/TrangChu"));
 const TrangDatBan = lazy(() => import("../pages/landing/TrangDatBan"));
+const TrangDatLichCuaToi = lazy(() => import("../pages/landing/TrangDatLichCuaToi"));
 const TrangXacThuc = lazy(() => import("../pages/landing/TrangXacThuc"));
 const TrangKhongCoQuyen = lazy(() => import("../pages/landing/TrangKhongCoQuyen"));
 const QuanLyApp = lazy(() => import("./QuanLyApp"));
@@ -21,9 +22,15 @@ function Router() {
 
   const { isAuth } = useAuth();
 
+  const laTrangCanDangNhap = (path) =>
+    path === "booking" ||
+    path === "my-bookings" ||
+    path === "lich-dat-cua-toi" ||
+    path === "dat-lich-cua-toi";
+
   const dieuHuong = (manHinhMoi) => {
-    if (manHinhMoi === "booking" && !isAuth) {
-      setRedirectSauDangNhap("booking");
+    if (laTrangCanDangNhap(manHinhMoi) && !isAuth) {
+      setRedirectSauDangNhap(manHinhMoi);
       window.history.pushState({}, "", "/login");
       setManHinh("login");
       window.scrollTo(0, 0);
@@ -42,8 +49,8 @@ function Router() {
   useEffect(() => {
     const khiThayDoiLichSu = () => {
       const duongDanMoi = layDuongDan();
-      if (duongDanMoi === "booking" && !isAuth) {
-        setRedirectSauDangNhap("booking");
+      if (laTrangCanDangNhap(duongDanMoi) && !isAuth) {
+        setRedirectSauDangNhap(duongDanMoi);
         window.history.pushState({}, "", "/login");
         setManHinh("login");
       } else {
@@ -64,6 +71,10 @@ function Router() {
   const laKhongCoQuyen = manHinh === "403" || manHinh === "forbidden";
   const laQuanLy = manHinh.startsWith("admin") || manHinh.startsWith("pos");
   const khuVuc = manHinh.startsWith("admin") ? "admin" : "pos";
+  const laLichDatCuaToi =
+    manHinh === "my-bookings" ||
+    manHinh === "lich-dat-cua-toi" ||
+    manHinh === "dat-lich-cua-toi";
 
   const noiDung = laKhongCoQuyen ? (
     <TrangKhongCoQuyen
@@ -91,11 +102,17 @@ function Router() {
     />
   ) : manHinh === "booking" ? (
     <TrangDatBan onQuayLai={() => dieuHuong("home")} />
+  ) : laLichDatCuaToi ? (
+    <TrangDatLichCuaToi
+      onQuayLai={() => dieuHuong("home")}
+      onDatBan={() => dieuHuong("booking")}
+    />
   ) : (
     <TrangChu
       onDatBan={() => dieuHuong("booking")}
       onDangNhap={() => dieuHuong("login")}
       onDangKy={() => dieuHuong("register")}
+      onLichDatCuaToi={() => dieuHuong("my-bookings")}
     />
   );
 

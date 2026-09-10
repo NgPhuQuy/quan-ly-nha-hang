@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { layDanhSachChiNhanh } from "../services/chiNhanh.service";
+import { layDanhSachChiNhanhPublic } from "../services/chiNhanh.service";
 import {
   layDanhSachMatHangTaiChiNhanh,
   layDanhSachDichVu,
@@ -140,7 +140,7 @@ export function useDatLich(initialValues = null) {
 
     const taiChiNhanh = async () => {
       try {
-        const danhSach = await layDanhSachChiNhanh();
+        const danhSach = await layDanhSachChiNhanhPublic();
         if (!isActive) return;
 
         setChiNhanh(danhSach);
