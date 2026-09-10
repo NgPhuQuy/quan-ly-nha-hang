@@ -49,9 +49,9 @@ public class DatLichService {
         if (validateNgayGioDatLich(request, chiNhanh)) {
             throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
         }
-        Long soLuongDonConLai = datLichRepository.countDatLichTheoNgayGio(chiNhanh, request.ngay(), request.gio());
+        Long soLuongDonHienTai = datLichRepository.countDatLichTheoNgayGio(chiNhanh, request.ngay(), request.gio());
 
-        if(soLuongDonConLai <= 0){
+        if(chiNhanh.getSoLuongDon() - soLuongDonHienTai <= 0){
             throw new AppException(ErrorCode.CAPACITY_EXCEEDED);
         }
 
