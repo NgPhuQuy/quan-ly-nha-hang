@@ -1,5 +1,6 @@
 package com.npq.quanlynhahangapis.entity;
 
+import com.npq.quanlynhahangapis.entity.PK.MaChiTietHoaDon;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,15 +13,16 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChiTietHoaDon {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer maChiTietHoaDon;
+    @EmbeddedId
+    private MaChiTietHoaDon maChiTietHoaDon;
 
     @ManyToOne
+    @MapsId("matHang")
     @JoinColumn(name = "ma_mat_hang")
     private MatHang matHang;
 
     @ManyToOne
+    @MapsId("hoaDon")
     @JoinColumn(name = "ma_hoa_don")
     private HoaDon hoaDon;
 

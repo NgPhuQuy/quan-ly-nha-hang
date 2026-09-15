@@ -15,7 +15,7 @@ public record DatLichResponse(
         LocalTime gio,
         String ghiChu,
         TrangThaiDatLich trangThai,
-        List<DatTruocResponse> listDatTruoc
+        List<DatMonResponse> listDatMon
 ) {
 }
 

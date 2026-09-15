@@ -4,7 +4,6 @@ import lombok.Builder;
 
 @Builder
 public record ChiTietHoaDonResponse(
-        Integer maChiTietHoaDon,
         MatHangResponse matHang,
         Integer soLuong
 ) {

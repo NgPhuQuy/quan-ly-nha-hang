@@ -1,11 +1,11 @@
 package com.npq.quanlynhahangapis.service;
 
-import com.npq.quanlynhahangapis.dto.request.DatTruocRequest;
-import com.npq.quanlynhahangapis.dto.response.DatTruocResponse;
+import com.npq.quanlynhahangapis.dto.request.DatMonRequest;
+import com.npq.quanlynhahangapis.dto.response.DatMonResponse;
 import com.npq.quanlynhahangapis.entity.DatLich;
-import com.npq.quanlynhahangapis.entity.DatTruoc;
+import com.npq.quanlynhahangapis.entity.DatMon;
 import com.npq.quanlynhahangapis.entity.MatHang;
-import com.npq.quanlynhahangapis.repository.DatTruocRepository;
+import com.npq.quanlynhahangapis.repository.DatMonRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -15,24 +15,24 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class DatTruocService {
-    private final DatTruocRepository datTruocRepository;
+public class DatMonService {
+    private final DatMonRepository datMonRepository;
     private final MatHangService matHangService;
 
-    public DatTruoc chuyenSangObj(DatTruocRequest request, DatLich datLich) {
+    public DatMon chuyenSangObj(DatMonRequest request, DatLich datLich) {
         MatHang matHang = matHangService.layMatHangTheoId(request.maMatHang());
-        DatTruoc datTruoc = DatTruoc.builder()
+        DatMon datMon = DatMon.builder()
                 .datLich(datLich)
                 .matHang(matHang)
                 .soLuong(request.soLuong())
                 .donGia(matHang.getGiaMatHang())
                 .build();
-        return datTruocRepository.save(datTruoc);
+        return datMonRepository.save(datMon);
     }
 
-    public DatTruocResponse chuyenSangDto(DatTruoc dto) {
+    public DatMonResponse chuyenSangDto(DatMon dto) {
         MatHang matHang = dto.getMatHang();
-        return DatTruocResponse.builder()
+        return DatMonResponse.builder()
                 .matHang(matHangService.chuyenSangDto(matHang))
                 .soLuong(dto.getSoLuong())
                 .donGia(dto.getDonGia())

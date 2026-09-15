@@ -1,20 +1,20 @@
 package com.npq.quanlynhahangapis.service;
 
 import com.npq.quanlynhahangapis.dto.request.DatLichRequest;
-import com.npq.quanlynhahangapis.dto.request.DatTruocRequest;
+import com.npq.quanlynhahangapis.dto.request.DatMonRequest;
 import com.npq.quanlynhahangapis.dto.request.TrangThaiDatLichRequest;
 import com.npq.quanlynhahangapis.dto.response.DatLichResponse;
-import com.npq.quanlynhahangapis.dto.response.DatTruocResponse;
+import com.npq.quanlynhahangapis.dto.response.DatMonResponse;
 import com.npq.quanlynhahangapis.dto.response.KhungGioResponse;
 import com.npq.quanlynhahangapis.entity.ChiNhanh;
 import com.npq.quanlynhahangapis.entity.DatLich;
-import com.npq.quanlynhahangapis.entity.DatTruoc;
+import com.npq.quanlynhahangapis.entity.DatMon;
 import com.npq.quanlynhahangapis.entity.NguoiDung;
 import com.npq.quanlynhahangapis.entity.enums.TrangThaiDatLich;
 import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
 import com.npq.quanlynhahangapis.repository.DatLichRepository;
-import com.npq.quanlynhahangapis.repository.DatTruocRepository;
+import com.npq.quanlynhahangapis.repository.DatMonRepository;
 import com.npq.quanlynhahangapis.utils.JwtUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +36,9 @@ import java.util.List;
 public class DatLichService {
     private final NguoiDungService nguoiDungService;
     private final DatLichRepository datLichRepository;
-    private final DatTruocRepository datTruocRepository;
+    private final DatMonRepository datMonRepository;
     private final ChiNhanhService chiNhanhService;
-    private final DatTruocService datTruocService;
+    private final DatMonService datMonService;
     private final MatHangService matHangService;
     private final JwtUtil jwtUtil;
 
@@ -68,13 +68,13 @@ public class DatLichService {
 
         DatLich savedDatLich = datLichRepository.save(datLich);
 
-        if (request.listDatTruoc() != null && !request.listDatTruoc().isEmpty()) {
-            List<DatTruoc> listDatTruoc = new ArrayList<>();
-            for (DatTruocRequest r : request.listDatTruoc()) {
-                listDatTruoc.add(datTruocService.chuyenSangObj(r, savedDatLich));
+        if (request.listDatMon() != null && !request.listDatMon().isEmpty()) {
+            List<DatMon> listDatMon = new ArrayList<>();
+            for (DatMonRequest r : request.listDatMon()) {
+                listDatMon.add(datMonService.chuyenSangObj(r, savedDatLich));
             }
-            savedDatLich.setListDatTruoc(listDatTruoc);
-            datTruocRepository.saveAll(listDatTruoc);
+            savedDatLich.setListDatMon(listDatMon);
+            datMonRepository.saveAll(listDatMon);
         }
 
         return chuyenSangDto(savedDatLich);
@@ -141,9 +141,9 @@ public class DatLichService {
     }
 
     private DatLichResponse chuyenSangDto(DatLich dto) {
-        List<DatTruocResponse> listDatTruoc = dto.getListDatTruoc()
+        List<DatMonResponse> listDatMon = dto.getListDatMon()
                 .stream()
-                .map(datTruocService::chuyenSangDto)
+                .map(datMonService::chuyenSangDto)
                 .toList();
 
         return DatLichResponse.builder()
@@ -153,7 +153,7 @@ public class DatLichService {
                 .gio(dto.getGio())
                 .ghiChu(dto.getGhiChu())
                 .trangThai(dto.getTrangThai())
-                .listDatTruoc(listDatTruoc)
+                .listDatMon(listDatMon)
                 .build();
     }
 

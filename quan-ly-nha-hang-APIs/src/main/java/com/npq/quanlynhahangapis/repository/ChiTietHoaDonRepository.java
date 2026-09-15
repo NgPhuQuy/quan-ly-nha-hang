@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface ChiTietHoaDonRepository extends JpaRepository<ChiTietHoaDon, Integer> {
     List<ChiTietHoaDon> findByHoaDon_MaHoaDon(Integer maHoaDon);
@@ -17,5 +18,7 @@ public interface ChiTietHoaDonRepository extends JpaRepository<ChiTietHoaDon, In
                 WHERE ct.hoaDon.maHoaDon = :maHoaDon
             """)
     BigDecimal tinhTienTongHoaDon(@Param("maHoaDon") Integer maHoaDon);
+
+    Optional<ChiTietHoaDon> findByHoaDon_MaHoaDonAndMatHang_MaMatHang(Integer maHoaDon, Integer maMatHang);
 }
 

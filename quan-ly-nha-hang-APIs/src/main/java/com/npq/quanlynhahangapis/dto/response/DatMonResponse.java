@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record DatTruocResponse(
+public record DatMonResponse(
         MatHangResponse matHang,
         Integer soLuong,
         BigDecimal donGia

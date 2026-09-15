@@ -36,9 +36,10 @@ public class HoaDonController {
         return ResponseEntity.ok(hoaDonService.layChiTietHoaDon(maHoaDon));
     }
 
-    @PostMapping("/{maHoaDon}")
-    public ResponseEntity<?> goiThemMon(@PathVariable Integer maHoaDon, @RequestBody List<ChiTietHoaDonRequest> request) {
-        return ResponseEntity.ok(hoaDonService.goiThemMon(maHoaDon, request));
+    @PatchMapping("/{maHoaDon}")
+    public ResponseEntity<?> chinhSuaChiTietHoaDon(@PathVariable Integer maHoaDon,
+                                                   @RequestBody List<ChiTietHoaDonRequest> request) {
+        return ResponseEntity.ok(hoaDonService.chinhSuaChiTietHD(maHoaDon, request));
     }
 
     @PostMapping("/{maHoaDon}/thanh-toan")

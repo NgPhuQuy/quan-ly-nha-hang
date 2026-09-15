@@ -1,6 +1,6 @@
 package com.npq.quanlynhahangapis.entity;
 
-import com.npq.quanlynhahangapis.entity.PK.MaDatTruoc;
+import com.npq.quanlynhahangapis.entity.PK.MaDatMon;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,10 +12,9 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DatTruoc {
-
+public class DatMon {
     @EmbeddedId
-    private MaDatTruoc maDatTruoc;
+    private MaDatMon maDatMon;
 
     @ManyToOne
     @MapsId("datLich")

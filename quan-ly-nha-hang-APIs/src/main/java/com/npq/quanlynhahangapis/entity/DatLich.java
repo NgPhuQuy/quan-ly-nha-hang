@@ -38,6 +38,6 @@ public class DatLich {
 
     @OneToMany(mappedBy = "datLich", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
-    private List<DatTruoc> listDatTruoc = new ArrayList<>();
+    private List<DatMon> listDatMon = new ArrayList<>();
 
 }

@@ -3,7 +3,7 @@ package com.npq.quanlynhahangapis.service;
 import com.npq.quanlynhahangapis.dto.request.ChiTietHoaDonRequest;
 import com.npq.quanlynhahangapis.dto.response.ChiTietHoaDonResponse;
 import com.npq.quanlynhahangapis.entity.ChiTietHoaDon;
-import com.npq.quanlynhahangapis.entity.DatTruoc;
+import com.npq.quanlynhahangapis.entity.DatMon;
 import com.npq.quanlynhahangapis.entity.HoaDon;
 import com.npq.quanlynhahangapis.entity.MatHang;
 import com.npq.quanlynhahangapis.repository.ChiTietHoaDonRepository;
@@ -35,7 +35,17 @@ public class ChiTietHoaDonService {
     public List<ChiTietHoaDon> goiMon(HoaDon hoaDon, List<ChiTietHoaDonRequest> requests) {
         List<ChiTietHoaDon> listChiTietHoaDon = new ArrayList<>();
         for (ChiTietHoaDonRequest request : requests) {
-            listChiTietHoaDon.add(taoChiTietHoaDon(hoaDon, request));
+            ChiTietHoaDon chiTiet = chiTietHoaDonRepository
+                    .findByHoaDon_MaHoaDonAndMatHang_MaMatHang(hoaDon.getMaHoaDon(), request.maMatHang())
+                    .orElse(null);
+            if (chiTiet!=null && !request.soLuong().equals(0)){
+                chiTiet.setSoLuong(request.soLuong());
+                chiTietHoaDonRepository.save(chiTiet);
+            }
+            else {
+                chiTiet = taoChiTietHoaDon(hoaDon, request);
+                listChiTietHoaDon.add(chiTiet);
+            }
         }
         return listChiTietHoaDon;
     }
@@ -54,18 +64,17 @@ public class ChiTietHoaDonService {
     public ChiTietHoaDonResponse chuyenSangDto(ChiTietHoaDon chiTietHoaDon) {
         MatHang matHang = matHangService.layMatHangTheoId(chiTietHoaDon.getMatHang().getMaMatHang());
         return ChiTietHoaDonResponse.builder()
-                .maChiTietHoaDon(chiTietHoaDon.getMaChiTietHoaDon())
                 .matHang(matHangService.chuyenSangDto(matHang))
                 .soLuong(chiTietHoaDon.getSoLuong())
                 .build();
     }
 
-    public ChiTietHoaDon chuyenDatTruoc_ChiTietHD(DatTruoc datTruoc, HoaDon hoaDon) {
+    public ChiTietHoaDon chuyenDatMon_ChiTietHD(DatMon datMon, HoaDon hoaDon) {
         ChiTietHoaDon ct = ChiTietHoaDon.builder()
-                .matHang(datTruoc.getMatHang())
+                .matHang(datMon.getMatHang())
                 .hoaDon(hoaDon)
-                .soLuong(datTruoc.getSoLuong())
-                .donGia(datTruoc.getDonGia())
+                .soLuong(datMon.getSoLuong())
+                .donGia(datMon.getDonGia())
                 .build();
 
         return chiTietHoaDonRepository.save(ct);

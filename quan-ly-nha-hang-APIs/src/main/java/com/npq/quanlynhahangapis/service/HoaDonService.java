@@ -73,7 +73,7 @@ public class HoaDonService {
     }
 
     @Transactional
-    public HoaDonResponse goiThemMon(Integer maHoaDon, List<ChiTietHoaDonRequest> request) {
+    public HoaDonResponse chinhSuaChiTietHD(Integer maHoaDon, List<ChiTietHoaDonRequest> request) {
         HoaDon hoaDon = layHoaDonTheoId(maHoaDon);
         if (hoaDon.getTrangThai() == TrangThaiHoaDon.HOAN_THANH) {
             throw new AppException(ErrorCode.FORBIDDEN);
@@ -90,8 +90,8 @@ public class HoaDonService {
         DatLich datLich = datLichService.layDatLichTheoId(maDatLich);
         List<ChiTietHoaDon> listChiTiet = new ArrayList<>();
 
-        for (DatTruoc datTruoc : datLich.getListDatTruoc()) {
-            listChiTiet.add(chiTietHoaDonService.chuyenDatTruoc_ChiTietHD(datTruoc, hoaDon));
+        for (DatMon datMon : datLich.getListDatMon()) {
+            listChiTiet.add(chiTietHoaDonService.chuyenDatMon_ChiTietHD(datMon, hoaDon));
         }
         hoaDon.setListChiTietHoaDon(listChiTiet);
         hoaDonRepository.save(hoaDon);

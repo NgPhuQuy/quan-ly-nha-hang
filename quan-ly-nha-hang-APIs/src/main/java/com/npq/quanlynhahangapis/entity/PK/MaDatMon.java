@@ -11,7 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class MaDatTruoc implements Serializable {
+public class MaDatMon implements Serializable {
     private Integer datLich;
     private Integer matHang;
 }
