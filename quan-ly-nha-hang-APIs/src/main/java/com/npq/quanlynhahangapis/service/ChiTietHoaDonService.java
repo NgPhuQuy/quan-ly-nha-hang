@@ -38,11 +38,10 @@ public class ChiTietHoaDonService {
             ChiTietHoaDon chiTiet = chiTietHoaDonRepository
                     .findByHoaDon_MaHoaDonAndMatHang_MaMatHang(hoaDon.getMaHoaDon(), request.maMatHang())
                     .orElse(null);
-            if (chiTiet!=null && !request.soLuong().equals(0)){
-                chiTiet.setSoLuong(request.soLuong());
+            if (chiTiet != null && !request.soLuong().equals(0)) {
+                chiTiet.setSoLuong(chiTiet.getSoLuong() + request.soLuong());
                 chiTietHoaDonRepository.save(chiTiet);
-            }
-            else {
+            } else {
                 chiTiet = taoChiTietHoaDon(hoaDon, request);
                 listChiTietHoaDon.add(chiTiet);
             }

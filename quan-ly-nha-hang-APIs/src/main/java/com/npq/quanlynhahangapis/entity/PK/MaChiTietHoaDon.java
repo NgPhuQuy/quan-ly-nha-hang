@@ -12,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Embeddable
 @Builder
-public class MaChiTietHoaDon implements Serializable{
+public class MaChiTietHoaDon implements Serializable {
     private Integer matHang;
     private Integer hoaDon;
 }

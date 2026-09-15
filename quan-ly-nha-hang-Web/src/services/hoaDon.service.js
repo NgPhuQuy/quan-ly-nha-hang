@@ -26,7 +26,7 @@ export const xoaHoaDon = async (maHoaDon) => {
 };
 
 export const goiThemMon = async (maHoaDon, data) => {
-  const res = await apis.post(endpoints.chi_tiet_hoa_don(maHoaDon), data);
+  const res = await apis.patch(endpoints.chi_tiet_hoa_don(maHoaDon), data);
   return res.data;
 };
 

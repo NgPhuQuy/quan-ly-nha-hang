@@ -51,7 +51,7 @@ public class DatLichService {
         }
         Long soLuongDonHienTai = datLichRepository.countDatLichTheoNgayGio(chiNhanh, request.ngay(), request.gio());
 
-        if(chiNhanh.getSoLuongDon() - soLuongDonHienTai <= 0){
+        if (chiNhanh.getSoLuongDon() - soLuongDonHienTai <= 0) {
             throw new AppException(ErrorCode.CAPACITY_EXCEEDED);
         }
 

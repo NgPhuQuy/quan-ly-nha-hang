@@ -26,13 +26,13 @@ public interface DatLichRepository extends JpaRepository<DatLich, Integer> {
 
 
     @Query("""
-            SELECT COUNT(d)
-            FROM DatLich d
-            WHERE d.chiNhanh = :chiNhanh
-            AND d.ngay = :ngay
-            AND d.trangThai IN (com.npq.quanlynhahangapis.entity.enums.TrangThaiDatLich.DA_XAC_NHAN)
-            AND d.gio = :gio
-""")
+                        SELECT COUNT(d)
+                        FROM DatLich d
+                        WHERE d.chiNhanh = :chiNhanh
+                        AND d.ngay = :ngay
+                        AND d.trangThai IN (com.npq.quanlynhahangapis.entity.enums.TrangThaiDatLich.DA_XAC_NHAN)
+                        AND d.gio = :gio
+            """)
     Long countDatLichTheoNgayGio(@Param("chiNhanh") ChiNhanh chiNhanh,
                                  @Param("ngay") LocalDate ngay,
                                  @Param("gio") LocalTime gio);
