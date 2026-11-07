@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -48,5 +49,6 @@ public class HoaDon {
     private LocalDateTime ngayLapHoaDon;
 
     @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChiTietHoaDon> listChiTietHoaDon;
+    @Builder.Default
+    private List<ChiTietHoaDon> listChiTietHoaDon = new ArrayList<>();
 }

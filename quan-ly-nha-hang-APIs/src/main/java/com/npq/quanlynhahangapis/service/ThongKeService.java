@@ -16,7 +16,8 @@ public class ThongKeService {
 
     public ThongKeTongQuanTrongNgayResponse layTongQuanHomNay(Integer maChiNhanh, LocalDate ngay) {
         if (ngay == null) ngay = LocalDate.now();
-        BigDecimal tong = hoaDonService.tongDoanhThuTrongNgay(maChiNhanh, ngay);
+        BigDecimal tong = hoaDonService.tongDoanhThuTrongNgay(maChiNhanh, ngay) != null ?
+                hoaDonService.tongDoanhThuTrongNgay(maChiNhanh, ngay) :BigDecimal.ZERO;
         Integer soHoaDonHoanThanh = hoaDonService.soHoaDonBanTrongNgay(maChiNhanh, ngay);
         Integer soHoaDonDaHuy = hoaDonService.soHoaDonDaHuyTrongNgay(maChiNhanh, ngay);
         BigDecimal trungBinhHoaDon = hoaDonService.trungBinhTrenHoaDon(maChiNhanh, ngay);

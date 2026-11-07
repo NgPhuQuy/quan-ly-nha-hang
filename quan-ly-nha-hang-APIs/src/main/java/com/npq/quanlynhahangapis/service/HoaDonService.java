@@ -73,7 +73,8 @@ public class HoaDonService {
         }
 
         if (request.listChiTiet() != null)
-            savedHoaDon.setListChiTietHoaDon(chiTietHoaDonService.goiMon(hoaDon, request.listChiTiet()));
+            savedHoaDon.getListChiTietHoaDon()
+                    .addAll(chiTietHoaDonService.goiMon(savedHoaDon, request.listChiTiet()));
 
         return chuyenSangDto(hoaDonRepository.save(savedHoaDon));
     }
@@ -94,12 +95,10 @@ public class HoaDonService {
 
     private void ganDatLich(HoaDon hoaDon, Integer maDatLich) {
         DatLich datLich = datLichService.layDatLichTheoId(maDatLich);
-        List<ChiTietHoaDon> listChiTiet = new ArrayList<>();
-
         for (DatMon datMon : datLich.getListDatMon()) {
-            listChiTiet.add(chiTietHoaDonService.chuyenDatMon_ChiTietHD(datMon, hoaDon));
+            hoaDon.getListChiTietHoaDon()
+                    .add(chiTietHoaDonService.chuyenDatMon_ChiTietHD(datMon, hoaDon));
         }
-        hoaDon.setListChiTietHoaDon(listChiTiet);
         hoaDonRepository.save(hoaDon);
     }
 
