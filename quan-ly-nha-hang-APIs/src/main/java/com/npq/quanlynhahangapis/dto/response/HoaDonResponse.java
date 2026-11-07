@@ -14,6 +14,7 @@ public record HoaDonResponse(
         Integer maChiNhanh,
         Integer maKhachHang,
         Integer maBan,
+        Integer maDatLich,
         TrangThaiHoaDon trangThai,
         BigDecimal tongTien,
         LocalDateTime ngayLapHoaDon,

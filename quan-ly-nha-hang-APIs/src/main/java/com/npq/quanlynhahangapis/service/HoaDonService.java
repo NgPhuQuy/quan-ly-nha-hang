@@ -7,10 +7,12 @@ import com.npq.quanlynhahangapis.dto.response.DoanhThuTheoNgayResponse;
 import com.npq.quanlynhahangapis.dto.response.HoaDonResponse;
 import com.npq.quanlynhahangapis.entity.*;
 import com.npq.quanlynhahangapis.entity.enums.Nguon;
+import com.npq.quanlynhahangapis.entity.enums.TrangThaiDatLich;
 import com.npq.quanlynhahangapis.entity.enums.TrangThaiHoaDon;
 import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
 import com.npq.quanlynhahangapis.repository.BanRepository;
+import com.npq.quanlynhahangapis.repository.DatLichRepository;
 import com.npq.quanlynhahangapis.repository.HoaDonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ import java.util.List;
 public class HoaDonService {
     private final HoaDonRepository hoaDonRepository;
     private final BanRepository banRepository;
+    private final DatLichRepository datLichRepository;
     private final NguoiDungService nguoiDungService;
     private final BanService banService;
     private final DatLichService datLichService;
@@ -62,7 +65,10 @@ public class HoaDonService {
         banRepository.save(ban);
 
         if (request.maDatLich() != null) {
+            DatLich datLich = datLichService.layDatLichTheoId(request.maDatLich());
             hoaDon.setNguon(Nguon.DAT_LICH);
+            datLich.setTrangThai(TrangThaiDatLich.DANG_PHUC_VU);
+            datLichRepository.save(datLich);
             ganDatLich(hoaDon, request.maDatLich());
         }
 

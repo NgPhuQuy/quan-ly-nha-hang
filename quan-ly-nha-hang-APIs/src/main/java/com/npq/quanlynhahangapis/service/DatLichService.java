@@ -6,6 +6,7 @@ import com.npq.quanlynhahangapis.dto.request.TrangThaiDatLichRequest;
 import com.npq.quanlynhahangapis.dto.response.DatLichResponse;
 import com.npq.quanlynhahangapis.dto.response.DatMonResponse;
 import com.npq.quanlynhahangapis.dto.response.KhungGioResponse;
+import com.npq.quanlynhahangapis.entity.Ban;
 import com.npq.quanlynhahangapis.entity.ChiNhanh;
 import com.npq.quanlynhahangapis.entity.DatLich;
 import com.npq.quanlynhahangapis.entity.DatMon;
@@ -13,6 +14,7 @@ import com.npq.quanlynhahangapis.entity.NguoiDung;
 import com.npq.quanlynhahangapis.entity.enums.TrangThaiDatLich;
 import com.npq.quanlynhahangapis.exception.AppException;
 import com.npq.quanlynhahangapis.exception.ErrorCode;
+import com.npq.quanlynhahangapis.repository.BanRepository;
 import com.npq.quanlynhahangapis.repository.DatLichRepository;
 import com.npq.quanlynhahangapis.repository.DatMonRepository;
 import com.npq.quanlynhahangapis.utils.JwtUtil;
@@ -38,6 +40,8 @@ public class DatLichService {
     private final DatLichRepository datLichRepository;
     private final DatMonRepository datMonRepository;
     private final ChiNhanhService chiNhanhService;
+    private final BanService banService;
+    private final BanRepository banRepository;
     private final DatMonService datMonService;
     private final MatHangService matHangService;
     private final JwtUtil jwtUtil;
@@ -62,6 +66,7 @@ public class DatLichService {
                 .chiNhanh(chiNhanh)
                 .ngay(request.ngay())
                 .gio(request.gio())
+                .soKhach(request.soKhach())
                 .ghiChu(request.ghiChu())
                 .trangThai(TrangThaiDatLich.DA_XAC_NHAN)
                 .build();
@@ -135,6 +140,7 @@ public class DatLichService {
         if (validateNgayGioDatLich(request, chiNhanh)) throw new AppException(ErrorCode.INVALID_BOOKING_TIME);
         datLich.setNgay(request.ngay());
         datLich.setGio(request.gio());
+        datLich.setSoKhach(request.soKhach());
         datLich.setGhiChu(request.ghiChu());
 
         return chuyenSangDto(datLichRepository.save(datLich));
@@ -149,6 +155,7 @@ public class DatLichService {
         return DatLichResponse.builder()
                 .maDatLich(dto.getMaDatLich())
                 .maChiNhanh(dto.getChiNhanh().getMaChiNhanh())
+                .soKhach(dto.getSoKhach())
                 .ngay(dto.getNgay())
                 .gio(dto.getGio())
                 .ghiChu(dto.getGhiChu())
@@ -167,6 +174,7 @@ public class DatLichService {
 
     public List<DatLich> danhSachDatLichQuaGio() {
         return datLichRepository.findAll().stream()
+                .filter(d -> d.getTrangThai() == TrangThaiDatLich.CHO_XAC_NHAN || d.getTrangThai() == TrangThaiDatLich.DA_XAC_NHAN)
                 .filter(this::checkQuaGio)
                 .toList();
     }

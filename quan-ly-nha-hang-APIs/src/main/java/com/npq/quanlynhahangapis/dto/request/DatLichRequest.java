@@ -14,6 +14,7 @@ public record DatLichRequest(
         LocalDate ngay,
         @NotNull(message = "Giờ đến không được để trống!")
         LocalTime gio,
+        Integer soKhach,
         String ghiChu,
         List<@Valid DatMonRequest> listDatMon
 ) {

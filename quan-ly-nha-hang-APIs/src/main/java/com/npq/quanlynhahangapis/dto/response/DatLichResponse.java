@@ -11,6 +11,7 @@ import java.util.List;
 public record DatLichResponse(
         Integer maDatLich,
         Integer maChiNhanh,
+        Integer soKhach,
         LocalDate ngay,
         LocalTime gio,
         String ghiChu,

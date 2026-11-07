@@ -42,31 +42,44 @@ export function ModalGanBan({
             onChange={(e) => setSelectedTableId(e.target.value)}
             className="w-full text-xs border rounded-lg p-2 outline-none font-semibold focus:ring-2 focus:ring-[var(--primary)]"
           >
-            <option value="">-- Chọn bàn trống --</option>
-            {tables.map((t) => (
-              <option key={t.maBan} value={t.maBan}>
-                {t.soBan || `Bàn ${t.maBan}`} (
-                {t.trangThai === true || t.trangThai === 1 || t.trangThai === "true"
-                  ? "Trống"
-                  : "Đang phục vụ"}
-                )
-              </option>
-            ))}
+            <option value="">-- Chọn bàn phục vụ --</option>
+            {tables.map((t) => {
+              const isTrong =
+                t.trangThai === true || t.trangThai === 1 || t.trangThai === "true";
+              return (
+                <option
+                  key={t.maBan}
+                  value={t.maBan}
+                  disabled={!isTrong}
+                >
+                  {t.soBan || `Bàn ${t.maBan}`} {isTrong ? "✓ (Trống)" : "✗ (Đang phục vụ)"}
+                </option>
+              );
+            })}
           </select>
         </div>
-        <div className="flex justify-end gap-2 pt-2 border-t">
+        <div className="flex flex-wrap items-center justify-end gap-2 pt-2 border-t">
           <button
+            type="button"
             onClick={onClose}
             className="px-3 py-1.5 rounded-lg text-xs font-600 border cursor-pointer hover:bg-gray-50"
           >
             Hủy
           </button>
           <button
-            onClick={onConfirmCheckIn}
-            className="px-4 py-1.5 rounded-lg text-xs font-700 text-white cursor-pointer shadow-sm"
+            type="button"
+            onClick={() => onConfirmCheckIn(false)}
+            className="px-3 py-1.5 rounded-lg text-xs font-700 bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-300 cursor-pointer shadow-xs"
+          >
+            Check-in Xếp bàn
+          </button>
+          <button
+            type="button"
+            onClick={() => onConfirmCheckIn(true)}
+            className="px-3.5 py-1.5 rounded-lg text-xs font-700 text-white cursor-pointer shadow-xs hover:opacity-90"
             style={{ background: "var(--primary)" }}
           >
-            Xác nhận Check-in
+            Check-in & Mở Hóa đơn
           </button>
         </div>
       </div>

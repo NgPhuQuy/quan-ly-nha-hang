@@ -27,6 +27,7 @@ public class DatLich {
     @ManyToOne
     @JoinColumn(name = "ma_chi_nhanh", nullable = false)
     private ChiNhanh chiNhanh;
+    private Integer soKhach;
 
     private LocalDate ngay;
     private LocalTime gio;
