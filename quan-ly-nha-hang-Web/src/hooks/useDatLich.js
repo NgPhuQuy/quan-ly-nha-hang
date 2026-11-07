@@ -247,7 +247,7 @@ export function useDatLich(initialValues = null) {
       email: guestDetails.email,
       ghiChu: guestDetails.ghiChu ? guestDetails.ghiChu.trim() : "",
       dip: guestDetails.dip || "khong",
-      listDatTruoc: preorderedItems.length > 0 ? preorderedItems : null,
+      listDatMon: preorderedItems.length > 0 ? preorderedItems : null,
     };
 
     try {

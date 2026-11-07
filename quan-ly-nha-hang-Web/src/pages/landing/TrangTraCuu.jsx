@@ -51,7 +51,7 @@ function TrangTraCuu({ onQuayLai }) {
           guests: b.soKhach || 2,
           customer: b.tenKhachHang || b.hoTen || "Khách hàng",
           note: b.ghiChu,
-          listDatTruoc: b.listDatTruoc || [],
+          listDatMon: b.listDatMon || [],
         });
       }
     } catch (error) {
@@ -280,13 +280,13 @@ function TrangTraCuu({ onQuayLai }) {
               )}
 
               {/* Pre-ordered items */}
-              {booking.listDatTruoc && booking.listDatTruoc.length > 0 && (
+              {booking.listDatMon && booking.listDatMon.length > 0 && (
                 <div className="pt-3 border-t border-amber-500/15 space-y-2">
                   <div className="text-[11px] font-bold text-amber-300 uppercase tracking-wider">
-                    Món ăn đặt trước ({booking.listDatTruoc.length}):
+                    Món ăn đặt trước ({booking.listDatMon.length}):
                   </div>
                   <div className="space-y-1.5 max-h-32 overflow-y-auto">
-                    {booking.listDatTruoc.map((item, idx) => (
+                    {booking.listDatMon.map((item, idx) => (
                       <div
                         key={idx}
                         className="flex items-center justify-between text-xs text-amber-200/80 p-2 rounded-lg bg-white/5"

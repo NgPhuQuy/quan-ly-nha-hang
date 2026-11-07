@@ -320,12 +320,12 @@ function Bookings({
                       {b.soKhach} khách
                     </td>
                     <td className="px-4 py-3">
-                      {b.listDatTruoc && b.listDatTruoc.length > 0 ? (
+                      {b.listDatMon && b.listDatMon.length > 0 ? (
                         <button
                           onClick={() => setViewPreOrderBooking(b)}
                           className="flex items-center gap-1 text-[11px] px-2 py-0.5 rounded bg-amber-50 text-amber-700 font-semibold border border-amber-200 hover:bg-amber-100 cursor-pointer"
                         >
-                          <Utensils size={11} /> {b.listDatTruoc.length} món
+                          <Utensils size={11} /> {b.listDatMon.length} món
                         </button>
                       ) : (
                         <span className="text-xs text-gray-400">—</span>

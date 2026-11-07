@@ -106,7 +106,7 @@ export function ModalMonDatTruoc({ viewPreOrderBooking, onClose }) {
           </button>
         </div>
         <div className="space-y-2 text-xs divide-y">
-          {viewPreOrderBooking.listDatTruoc.map((item, idx) => (
+          {viewPreOrderBooking.listDatMon.map((item, idx) => (
             <div key={idx} className="flex justify-between items-center pt-2">
               <span className="font-semibold">
                 {item.matHang?.tenMatHang ||

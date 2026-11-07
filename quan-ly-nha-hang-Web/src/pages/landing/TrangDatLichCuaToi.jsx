@@ -368,17 +368,17 @@ function TrangDatLichCuaToi({ onQuayLai, onDatBan }) {
                   </div>
 
                   {/* Pre-ordered Items */}
-                  {Array.isArray(item.listDatTruoc) &&
-                    item.listDatTruoc.length > 0 && (
+                  {Array.isArray(item.listDatMon) &&
+                    item.listDatMon.length > 0 && (
                       <div className="p-3.5 rounded-xl bg-black/30 border border-amber-500/15 space-y-2">
                         <div className="flex items-center gap-2 text-[11px] font-bold text-amber-300 uppercase tracking-wider">
                           <UtensilsCrossed size={13} className="text-amber-400" />
                           <span>
-                            Món đã đăng ký trước ({item.listDatTruoc.length} món)
+                            Món đã đăng ký trước ({item.listDatMon.length} món)
                           </span>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                          {item.listDatTruoc.map((dt, idx) => (
+                          {item.listDatMon.map((dt, idx) => (
                             <div
                               key={idx}
                               className="flex items-center justify-between text-xs p-2 rounded-lg bg-white/5"
