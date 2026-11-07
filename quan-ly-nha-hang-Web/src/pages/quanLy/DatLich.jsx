@@ -40,9 +40,13 @@ function Bookings({
 }) {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [branchFilter, setBranchFilter] = useState(() =>
+  const [branchFilterState, setBranchFilterState] = useState(() =>
     isPos && selectedBranchId ? String(selectedBranchId) : "",
   );
+  const branchFilter =
+    isPos && selectedBranchId
+      ? String(selectedBranchId)
+      : branchFilterState;
   const [bookings, setBookings] = useState([]);
   const [tables, setTables] = useState([]);
   const [page, setPage] = useState(1);
@@ -81,13 +85,7 @@ function Bookings({
     return () => clearTimeout(timeoutId);
   }, []);
 
-  useEffect(() => {
-    if (isPos && selectedBranchId) {
-      setBranchFilter(String(selectedBranchId));
-    }
-  }, [isPos, selectedBranchId]);
-
-  useEffect(() => {
+  const handleOpenCreateModal = () => {
     if (selectedBranchId) {
       setFormData((prev) => ({
         ...prev,
@@ -99,7 +97,8 @@ function Bookings({
         maChiNhanh: chi_nhanh[0].maChiNhanh,
       }));
     }
-  }, [chi_nhanh, selectedBranchId]);
+    setShowCreateModal(true);
+  };
 
   const handleOpenCheckIn = (booking) => {
     setCheckInBooking(booking);
@@ -185,7 +184,7 @@ function Bookings({
           </p>
         </div>
         <button
-          onClick={() => setShowCreateModal(true)}
+          onClick={handleOpenCreateModal}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-600 hover:opacity-90 transition-opacity"
           style={{ background: "var(--primary)", color: "white" }}
         >
@@ -216,7 +215,7 @@ function Bookings({
           value={branchFilter}
           onChange={(e) => {
             const val = e.target.value;
-            setBranchFilter(val);
+            setBranchFilterState(val);
             setPage(1);
             if (val) onSelectBranch?.(val);
           }}
